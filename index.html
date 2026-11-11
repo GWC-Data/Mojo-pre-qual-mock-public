@@ -311,7 +311,7 @@ tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: var(--
 .prs { flex-wrap: wrap; cursor: default; } .prs .who { flex: 1; min-width: 10rem; } .prs b { display: block; font-size: var(--text-sm); font-weight: 600; } .prs small { color: var(--color-muted); font-size: var(--text-xs); } .prs .ct { font-size: var(--text-xs); color: var(--color-muted); display: grid; }
 .cal .dt { width: 2.75rem; text-align: center; border: 1px solid var(--color-rule); border-radius: var(--radius-tag); padding: var(--space-2xs) 0; flex: none; } .cal .dt b { display: block; font-size: var(--text-md); line-height: 1.1; font-weight: 600; } .cal .dt small { font-size: var(--text-xs); color: var(--color-muted); font-weight: 500; }
 .cal .tx { flex: 1; min-width: 0; } .cal .tx b { display: block; font-size: var(--text-sm); font-weight: 600; } .cal .tx small { color: var(--color-muted); font-size: var(--text-xs); }
-.team-co { margin-bottom: var(--space-lg); } .ghd { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) 0; flex-wrap: wrap; border-bottom: 1px solid var(--color-rule); }
+.team-co { margin-bottom: var(--space-lg); } .ghd { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); flex-wrap: wrap; border-bottom: 1px solid var(--color-rule); }
 .kv { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--space-xs) var(--space-md); font-size: var(--text-sm); } .kv small { color: var(--color-muted); font-weight: 500; font-size: var(--text-sm); }
 .pmodal-hd { display: flex; gap: var(--space-md); align-items: center; }
 .rel { display: flex; gap: var(--space-xs); flex-wrap: wrap; align-items: center; margin: calc(-1 * var(--space-xs)) 0 var(--space-md); font-size: var(--text-xs); color: var(--color-muted); }
@@ -355,6 +355,7 @@ tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: var(--
 .step.on { border-color: var(--color-accent); color: var(--color-accent-strong); } .step.on::before { background: var(--color-accent); color: var(--color-accent-ink); } .step.done { border-color: var(--color-success); } .step.done::before { content: "\2713"; background: var(--color-success); color: var(--color-paper); }
 .steps { counter-reset: s; }
 .file { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-rule); } .file:last-child { border-bottom: 0; }
+.file.row-card { border: 1px solid var(--color-rule); border-radius: var(--radius-card); padding: var(--space-sm) var(--space-md); background: var(--color-paper); } .file.row-card:last-child { border-bottom: 1px solid var(--color-rule); } .file.row-card.need { border-style: dashed; border-color: var(--color-edge); background: var(--color-paper-2); } .file.row-card.need.warn { border-color: var(--warn-t); background: var(--warn-l); } .file.row-card .btn { flex: none; }
 .file .fi, .fi { width: 2.25rem; height: 2.25rem; border-radius: var(--radius-ctl); background: var(--tint-bad); color: var(--color-error); display: grid; place-items: center; font-size: var(--text-xs); font-weight: 600; flex: none; }
 .fi.d { background: var(--tint-info); color: var(--color-info); } .fi.x { background: var(--tint-ok); color: var(--color-success); }
 .qrow { padding: var(--space-md) 0; border-bottom: 1px solid var(--color-rule); } .qrow:last-child { border: 0; }
@@ -411,7 +412,7 @@ tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: var(--
 
 /* ---------- admin log, review timeline (kept) ---------- */
 .mini { width: 1.375rem; height: 1.375rem; border-radius: 50%; display: inline-grid; place-items: center; font-size: var(--text-xs); font-weight: 600; color: var(--color-accent-ink); flex: none; } .mini.sqr { border-radius: var(--space-2xs); width: 1.125rem; height: 1.125rem; }
-.fbar { display: grid; gap: var(--space-sm); padding: var(--space-md) 0; border-bottom: 1px solid var(--color-rule); } .fbar-top { display: flex; align-items: center; gap: var(--space-sm) var(--space-md); flex-wrap: wrap; } .fbar-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-sm) var(--space-md); } .fgroups { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-lg); align-items: center; } .fgroup { display: flex; align-items: center; gap: var(--space-xs); flex-wrap: wrap; } .fbar-end { display: flex; align-items: center; gap: var(--space-sm); justify-content: flex-end; margin-left: auto; } .fbar .search { width: 12rem; } .fbar-count { font-size: var(--text-xs); color: var(--color-muted); white-space: nowrap; } .flbl { font-size: var(--text-xs); font-weight: 500; color: var(--color-muted); } .fsel { width: 10rem !important; } .fclear { display: inline-flex; align-items: center; gap: var(--space-2xs); font-size: var(--text-xs); font-weight: 600; color: var(--color-accent-strong); background: none; border: 0; padding: var(--space-2xs); }
+.fbar { display: grid; gap: var(--space-sm); padding: var(--space-md); border-bottom: 1px solid var(--color-rule); } .fbar-top { display: flex; align-items: center; gap: var(--space-sm) var(--space-md); flex-wrap: wrap; } .fbar-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-sm) var(--space-md); } .fgroups { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-lg); align-items: center; } .fgroup { display: flex; align-items: center; gap: var(--space-xs); flex-wrap: wrap; } .fbar-end { display: flex; align-items: center; gap: var(--space-sm); justify-content: flex-end; margin-left: auto; } .fbar .search { width: 12rem; } .fbar-count { font-size: var(--text-xs); color: var(--color-muted); white-space: nowrap; } .flbl { font-size: var(--text-xs); font-weight: 500; color: var(--color-muted); } .fsel { width: 10rem !important; } .fclear { display: inline-flex; align-items: center; gap: var(--space-2xs); font-size: var(--text-xs); font-weight: 600; color: var(--color-accent-strong); background: none; border: 0; padding: var(--space-2xs); }
 .rng { display: inline-flex; align-items: center; gap: var(--space-3xs); padding: var(--space-2xs); background: var(--color-paper-3); border-radius: var(--radius-ctl); max-width: 100%; overflow-x: auto; scrollbar-width: none; } .rng button { border: 0; background: none; min-height: var(--ctl-sm); padding: 0 var(--space-sm); border-radius: var(--radius-ctl); font-size: var(--text-xs); font-weight: 500; color: var(--color-muted); white-space: nowrap; } .rng button.on { background: var(--color-paper); color: var(--color-ink); }
 .rng-custom { display: inline-flex; align-items: center; gap: var(--space-xs); padding: var(--space-2xs) var(--space-xs) var(--space-2xs) var(--space-sm); border: 1px solid var(--color-edge); border-radius: var(--radius-ctl); color: var(--color-muted); font-size: var(--text-xs); } .rng-custom .inp { width: 8.75rem; min-height: var(--ctl-sm); font-size: var(--text-xs); } .rng-err { font-size: var(--text-xs); color: var(--color-error); display: inline-flex; gap: var(--space-xs); align-items: center; }
 .rvt { padding: var(--space-xs) var(--space-lg) var(--space-lg); } .tl-sum { display: flex; gap: var(--space-xs); flex-wrap: wrap; margin: var(--space-md) 0 var(--space-2xs); } .tl-day { margin-top: var(--space-lg); } .tl-dayhd { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-md); font-size: var(--text-xs); font-weight: 600; color: var(--color-muted); } .tl-dayhd::after { content: ""; flex: 1; height: 1px; background: var(--color-rule); } .tl-dayhd .n { font-weight: 500; background: var(--color-paper-3); color: var(--color-ink-2); border-radius: var(--radius-pill); padding: 0 var(--space-xs); }
@@ -420,7 +421,7 @@ tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: var(--
 .tl-card { border-top: 1px solid var(--color-rule); padding: var(--space-md) 0; } .tl-hd { display: flex; align-items: center; gap: var(--space-sm); } .tl-hd .meta { min-width: 0; flex: 1; } .tl-hd .meta b { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .tl-hd .meta small { color: var(--color-muted); } .tl-badges { display: flex; align-items: center; gap: var(--space-xs); flex-wrap: wrap; justify-content: flex-end; } .tl-time { font-size: var(--text-xs); color: var(--color-muted); font-variant-numeric: tabular-nums; } .tl-q { font-size: var(--text-sm); font-weight: 600; margin: var(--space-sm) 0; } .tl-box { border-radius: var(--radius-ctl); padding: var(--space-sm); background: var(--color-paper-2); } .tl-lbl { font-size: var(--text-xs); font-weight: 500; color: var(--color-muted); margin-bottom: var(--space-3xs); } .tl-fb { margin-top: var(--space-xs); background: var(--color-paper-2); } .tl-ft { display: flex; align-items: center; gap: var(--space-xs); margin-top: var(--space-sm); padding-top: var(--space-sm); font-size: var(--text-xs); color: var(--color-muted); }
 .logtbl { table-layout: fixed; } .logtbl .c-date { width: 7.75rem; } .logtbl .c-when { width: 5.25rem; } .logtbl .c-cat { width: 9.75rem; } .logtbl .c-by { width: 13.75rem; } .logtbl .b.cat { min-width: 8rem; justify-content: center; } .logtbl .msg { font-weight: 500; } .logtbl .sub { display: flex; align-items: center; gap: var(--space-xs); margin-top: var(--space-2xs); font-size: var(--text-xs); color: var(--color-muted); } .logtbl .dayrow td { background: var(--color-paper-2); padding: var(--space-xs) var(--space-md); font-size: var(--text-xs); font-weight: 600; color: var(--color-muted); } .logtbl .dayrow .n { font-weight: 500; margin-left: var(--space-xs); } .logtbl .tm { font-variant-numeric: tabular-nums; color: var(--color-muted); } .logtbl .who { display: flex; align-items: center; gap: var(--space-xs); min-width: 0; } .logtbl .who span.t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tree { display: grid; gap: var(--space-sm); } .gcard { overflow: hidden; } .ghd.click { cursor: pointer; } .car { display: inline-flex; color: var(--color-muted); } .car.open { transform: rotate(90deg); }
-.gnode { padding: var(--space-sm) 0; } .pnode { margin-top: var(--space-sm); border-left: 1px solid var(--color-rule); padding-left: var(--space-md); } .phd { display: flex; align-items: center; gap: var(--space-xs); padding: var(--space-2xs) 0; } .tnode { margin: var(--space-xs) 0; padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-rule); } .trow { display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap; cursor: pointer; } .tq { display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-xs); }
+.gnode { padding: var(--space-sm) var(--space-md); } .pnode { margin-top: var(--space-sm); border-left: 1px solid var(--color-rule); padding-left: var(--space-md); } .phd { display: flex; align-items: center; gap: var(--space-xs); padding: var(--space-2xs) 0; } .tnode { margin: var(--space-xs) 0; padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-rule); } .trow { display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap; cursor: pointer; } .tq { display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-top: var(--space-xs); }
 .qchip { display: inline-flex; align-items: center; gap: var(--space-xs); background: var(--color-paper-2); border-radius: var(--radius-pill); padding: var(--space-3xs) var(--space-sm) var(--space-3xs) var(--space-3xs); font-size: var(--text-xs); color: var(--color-ink); cursor: pointer; text-decoration: none; } .qchip:hover { background: var(--color-paper-3); text-decoration: none; }
 .gmeta { display: flex; gap: var(--space-lg); margin-left: auto; flex-wrap: wrap; } .gmeta span { display: grid; gap: var(--space-3xs); } .gmeta small { color: var(--color-muted); } .gmeta b { font-size: var(--text-sm); }
 
@@ -673,6 +674,29 @@ body { background: var(--color-canvas); }
 .card > .qrow:first-child, .card > div > .qrow:first-child { border-top: 0; }
 .qcell{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:8.5rem}.qtop{display:flex;align-items:center;gap:6px;white-space:nowrap}.qcell .b{white-space:nowrap}.qmore{font-size:var(--text-xs);color:var(--color-muted)}.qsub{font-size:var(--text-xs);color:var(--color-muted);line-height:1.2}
 th{white-space:nowrap}
+
+/* ---- alignment pass: consistent inner padding for rows placed directly in cards ---- */
+.card>.toolbar { padding: var(--space-sm) var(--space-lg); }
+.card>.bd.np>.list>div { padding: var(--space-sm) var(--space-lg); }
+.tt th, .tt td { padding-inline: var(--space-sm); } .tt th:first-child, .tt td:first-child { padding-left: var(--space-lg); } .tt th:last-child, .tt td:last-child { padding-right: var(--space-lg); }
+.tt td .b { white-space: normal; } .tt td .cell b { overflow-wrap: anywhere; }
+.logtbl td { overflow-wrap: anywhere; }
+.row.wrap { flex-wrap: wrap; }
+@media (max-width: 51.25rem) {
+ .card>.toolbar, .card>.bd.np>.list>div { padding-inline: var(--space-md); }
+ .tt th:first-child, .tt td:first-child { padding-left: var(--space-md); } .tt th:last-child, .tt td:last-child { padding-right: var(--space-md); }
+}
+@media (max-width: 40rem) {
+ .logtbl, .logtbl tbody { display: block; width: 100%; } .logtbl { table-layout: auto; } .logtbl colgroup { display: none; } .logcard { overflow: visible; }
+ .logtbl tbody tr { padding: var(--space-sm) var(--space-md); } .logtbl td { padding: var(--space-3xs) 0 !important; text-align: right; } .logtbl td:first-child { display: grid; text-align: right; padding-bottom: var(--space-3xs) !important; } .logtbl td:first-child::before { display: block; }
+ .logtbl td[data-label="What"], .logtbl td[data-label="Activity"] { display: block; text-align: left; } .logtbl td[data-label="What"]::before, .logtbl td[data-label="Activity"]::before { display: block; margin-bottom: var(--space-3xs); } .logtbl td[data-label="What"] .b { white-space: normal; }
+ .logtbl .who { justify-content: flex-end; } .logtbl .b.cat { min-width: 0; }
+ .file { flex-wrap: wrap; } .file>div:not(.fi) { flex: 1 1 10rem; min-width: 0; } .file .btn, .file .b { margin-left: auto; }
+ .file.row-card .ml { margin-left: auto; }
+}
+@media (max-width: 40rem) {
+ .fbar { grid-template-columns: minmax(0, 1fr); } .fbar-top { flex-direction: column; align-items: stretch; } .fbar-end { width: 100%; margin-left: 0; flex-wrap: wrap; justify-content: stretch; } .fbar-end>* { flex: 1 1 100%; } .fbar .search, .fsel { width: 100% !important; } .fbar-row { grid-template-columns: minmax(0, 1fr); } .fbar-count { white-space: normal; } .fclear { justify-self: start; flex: none !important; }
+}
 </style>
 </head>
 <body>
@@ -854,6 +878,74 @@ const ACTIVITY=[
  {t:`${PYR}-09-05 09:40`,cat:'Billing',actor:'Marcus Lee',co:'Titan Steel Erectors',msg:'Marked project fee as paid (wire transfer)'},
  {t:`${PYR}-03-09 10:10`,cat:'Review',actor:'Dana Whitfield',co:'Bayou Mechanical',msg:'Rejected answer: Certificate of Insurance'}
 ];
+
+/* Company-level events shown in the Mojo admin > Company > Activity tab (assignments, submissions, invites, documents) */
+const COACT=[
+ {t:dAgo(0)+' 14:05',cat:'Submission',actor:'Priya Raman',co:'Apex Electrical',msg:'Submitted "Trade Safety Questionnaire" for Harbor Point Tower'},
+ {t:dAgo(0)+' 09:12',cat:'Assignment',actor:'Sarah Whitfield',co:'Meridian Development',msg:'Assigned "GC Pre-Qualification" to Ironbridge Construction'},
+ {t:dAgo(1)+' 16:30',cat:'Invitation',actor:'Daniel Ortiz',co:'Ironbridge Construction',msg:'Invited estimator@bayoumech.com (Bayou Mechanical) to Harbor Point Tower'},
+ {t:dAgo(1)+' 10:44',cat:'Document',actor:'Priya Raman',co:'Apex Electrical',msg:'Uploaded Workers Comp Certificate.pdf (expires in 8 days)'},
+ {t:dAgo(2)+' 13:18',cat:'Assignment',actor:'Daniel Ortiz',co:'Ironbridge Construction',msg:'Assigned "Harbor Point Site Orientation" to Apex Electrical'},
+ {t:dAgo(2)+' 11:02',cat:'Submission',actor:'Mei Chen',co:'Ironbridge Construction',msg:'Submitted "GC Pre-Qualification" for Harbor Point Tower'},
+ {t:dAgo(3)+' 15:40',cat:'Project',actor:'Sarah Whitfield',co:'Meridian Development',msg:'Created project Riverside Mixed-Use and assigned Lonestar General as GC'},
+ {t:dAgo(4)+' 09:50',cat:'Invitation',actor:'Bayou Mechanical',co:'Bayou Mechanical',msg:'Accepted invitation from Ironbridge Construction'},
+ {t:dAgo(6)+' 17:22',cat:'Team',actor:'Priya Raman',co:'Apex Electrical',msg:'Added Tom Brennan as Contributor'},
+ {t:dAgo(7)+' 12:10',cat:'Submission',actor:'Titan Steel Erectors',co:'Titan Steel Erectors',msg:'Resubmitted fall protection answer after rejection'},
+ {t:dAgo(12)+' 10:35',cat:'Assignment',actor:'Daniel Ortiz',co:'Ironbridge Construction',msg:'Assigned "Trade Safety Questionnaire" to Titan Steel Erectors'},
+ {t:dAgo(20)+' 14:00',cat:'Document',actor:'Mei Chen',co:'Ironbridge Construction',msg:'Uploaded Ironbridge EMR Letter.pdf'}
+];
+
+/* Role activity feeds: Owner / GC / Trade "Activity" page, keyed by workspace */
+const WS_ACT={
+ o1:[
+  {t:dAgo(0)+' 14:05',cat:'Submission',actor:'Titan Steel Erectors',msg:'Submitted a pre-qualification for Harbor Point Tower',go:'submission/s1'},
+  {t:dAgo(0)+' 11:20',cat:'Review',actor:'Sarah Whitfield',msg:'Approved Apex Electrical for Medical Plaza Renovation',go:'submission/s5'},
+  {t:dAgo(0)+' 09:12',cat:'Assignment',actor:'Sarah Whitfield',msg:'Assigned "GC Pre-Qualification" to Ironbridge Construction (due in 3 days)',go:'q-assignments'},
+  {t:dAgo(1)+' 16:48',cat:'Submission',actor:'Ironbridge Construction',msg:'Submitted "Financial Review — Tier 1" for Medical Plaza Renovation',go:'q-assignments'},
+  {t:dAgo(1)+' 10:02',cat:'Invitation',actor:'Bayou Mechanical',msg:'Accepted your invitation to Harbor Point Tower',go:'trades'},
+  {t:dAgo(2)+' 15:30',cat:'Review',actor:'Marcus Lee',msg:'Requested more information from Prime Roofing Co: current workers’ comp certificate',go:'trades'},
+  {t:dAgo(3)+' 09:44',cat:'Document',actor:'Coastal Fire Protection',msg:'COI expires in 14 days, reminder sent to the trade',go:'trades'},
+  {t:dAgo(5)+' 13:15',cat:'Project',actor:'Sarah Whitfield',msg:'Changed Harbor Point Tower status from Planning to Active',go:'projects'},
+  {t:dAgo(8)+' 11:00',cat:'Invitation',actor:'Sarah Whitfield',msg:'Invited bids@lonestargeneral.com (Lonestar General) as GC',go:'invite'},
+  {t:dAgo(15)+' 14:25',cat:'Team',actor:'Sarah Whitfield',msg:'Added Elena Petrova to your team as Contributor',go:'team'},
+  {t:dAgo(40)+' 10:10',cat:'Project',actor:'Sarah Whitfield',msg:'Created project Medical Plaza Renovation',go:'projects'}
+ ],
+ o2:[
+  {t:dAgo(0)+' 10:05',cat:'Submission',actor:'Titan Steel Erectors',msg:'Submitted a pre-qualification for Westside Clinic Expansion',go:'submission/s21'},
+  {t:dAgo(2)+' 14:30',cat:'Review',actor:'Hannah Cole',msg:'Asked Coastal Fire Protection for more information',go:'submission/s23'},
+  {t:dAgo(9)+' 09:20',cat:'Review',actor:'Raj Patel',msg:'Approved Gulf Coast Concrete for Westside Clinic Expansion',go:'submission/s22'}
+ ],
+ g1:[
+  {t:dAgo(0)+' 09:12',cat:'Assignment',actor:'Meridian Development',msg:'Assigned you "GC Pre-Qualification" for Harbor Point Tower (due in 3 days)',go:'my-assign'},
+  {t:dAgo(0)+' 08:41',cat:'Submission',actor:'Titan Steel Erectors',msg:'Submitted a pre-qualification for Harbor Point Tower',go:'submission/s1'},
+  {t:dAgo(1)+' 15:10',cat:'Review',actor:'Daniel Ortiz',msg:'Flagged Bayou Mechanical: EMR 1.18 is above the 1.0 threshold',go:'submission/s2'},
+  {t:dAgo(2)+' 13:18',cat:'Assignment',actor:'Daniel Ortiz',msg:'Assigned "Harbor Point Site Orientation" to Apex Electrical',go:'q-assignments'},
+  {t:dAgo(2)+' 11:02',cat:'Submission',actor:'Mei Chen',msg:'Submitted "Financial Review — Tier 1" to Meridian Development',go:'my-assign'},
+  {t:dAgo(4)+' 09:50',cat:'Invitation',actor:'Bayou Mechanical',msg:'Accepted your invitation to Harbor Point Tower',go:'trades'},
+  {t:dAgo(7)+' 16:05',cat:'Review',actor:'Daniel Ortiz',msg:'Approved Apex Electrical for Medical Plaza Renovation',go:'submission/s5'},
+  {t:dAgo(12)+' 10:35',cat:'Assignment',actor:'Daniel Ortiz',msg:'Assigned "Trade Safety Questionnaire" to Titan Steel Erectors',go:'q-assignments'},
+  {t:dAgo(20)+' 14:00',cat:'Document',actor:'Mei Chen',msg:'Uploaded Ironbridge EMR Letter.pdf',go:'docs'},
+  {t:dAgo(35)+' 09:30',cat:'Team',actor:'Daniel Ortiz',msg:'Added Luis Romero to your team as Contributor',go:'team'}
+ ],
+ g2:[
+  {t:dAgo(2)+' 10:15',cat:'Submission',actor:'Bayou Mechanical',msg:'Submitted a pre-qualification for Pasadena Refinery Turnaround',go:'submission/s41'},
+  {t:dAgo(20)+' 15:00',cat:'Review',actor:'Daniel Ortiz',msg:'Approved Titan Steel Erectors for Pasadena Refinery Turnaround',go:'submission/s42'}
+ ],
+ t1:[
+  {t:dAgo(0)+' 14:05',cat:'Submission',actor:'Priya Raman',msg:'Submitted "Trade Safety Questionnaire" for Harbor Point Tower, now under review',go:'my-assign'},
+  {t:dAgo(0)+' 10:20',cat:'Assignment',actor:'Ironbridge Construction',msg:'Assigned you "Harbor Point Site Orientation" (due in 7 days)',go:'my-assign'},
+  {t:dAgo(1)+' 10:44',cat:'Document',actor:'Priya Raman',msg:'Uploaded Workers Comp Certificate.pdf, expires in 8 days',go:'docs'},
+  {t:dAgo(2)+' 16:00',cat:'Assignment',actor:'Meridian Development',msg:'Assigned you "Trade Safety Questionnaire" for Harbor Point Tower (due in 1 day)',go:'my-assign'},
+  {t:dAgo(5)+' 11:30',cat:'Review',actor:'Ironbridge Construction',msg:'Requested more information: updated EMR letter',go:'my-assign'},
+  {t:dAgo(6)+' 17:22',cat:'Team',actor:'Priya Raman',msg:'Added Tom Brennan to your team as Contributor',go:'team'},
+  {t:dAgo(10)+' 09:15',cat:'Review',actor:'Meridian Development',msg:'Approved your submission for Medical Plaza Renovation',go:'projects'},
+  {t:dAgo(25)+' 13:40',cat:'Invitation',actor:'Ironbridge Construction',msg:'Invited you to Harbor Point Tower; you accepted',go:'projects'}
+ ],
+ t2:[
+  {t:dAgo(1)+' 12:00',cat:'Assignment',actor:'Summit Builders Group',msg:'Assigned you "Harbor Point Site Orientation" (due in 14 days)',go:'my-assign'},
+  {t:dAgo(18)+' 10:30',cat:'Invitation',actor:'Summit Builders Group',msg:'Invited you to Eastgate Distribution Center; you accepted',go:'projects'}
+ ]
+};
 
 
 /* ============ FORM STATE + QUESTION BANK / INVITE DATA ============ */
@@ -1092,9 +1184,9 @@ function gauge(score,label,big=false){
 
 /* ============ NAV ============ */
 const NAV={
- owner:[['Overview'],['dashboard','Dashboard','home'],['Projects & Partners'],['projects','Projects','folder'],['gcs','General Contractors','hard'],['trades','Trades','wrench'],['Compliance'],['questionnaires','Questionnaires','clip'],['q-assignments','Assignments','swap'],['bank','Question Bank','db'],['scorecard','Safety Scorecard','gauge'],['docs','Document Library','file'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
- gc:[['Overview'],['dashboard','Dashboard','home'],['Projects & Partners'],['projects','Projects','folder'],['trades','Trades','wrench'],['Compliance'],['questionnaires','Questionnaires','clip'],['my-assign','Assignments','swap',2],['docs','Document Library','file'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
- trade:[['Overview'],['dashboard','Dashboard','home'],['Work'],['projects','My Projects','folder'],['my-assign','Assignments','swap',3],['docs','Document Library','file'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
+ owner:[['Overview'],['dashboard','Dashboard','home'],['Projects & Partners'],['projects','Projects','folder'],['gcs','General Contractors','hard'],['trades','Trades','wrench'],['Compliance'],['questionnaires','Questionnaires','clip'],['q-assignments','Assignments','swap'],['bank','Question Bank','db'],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
+ gc:[['Overview'],['dashboard','Dashboard','home'],['Projects & Partners'],['projects','Projects','folder'],['trades','Trades','wrench'],['Compliance'],['questionnaires','Questionnaires','clip'],['my-assign','Assignments','swap',2],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
+ trade:[['Overview'],['dashboard','Dashboard','home'],['Work'],['projects','My Projects','folder'],['my-assign','Assignments','swap',3],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
  mojo:[['Platform'],['dashboard','Dashboard','home'],['mojo-companies','Companies','bldg'],['mojo-bank','Question Bank','db'],['mojo-queue','Review Queue','shield',3],['mojo-activity','Activity Log','list']]
 };
 /* ============ PAGES ============ */
@@ -1175,7 +1267,6 @@ function aiRun(){
 }
 
 /* ---- Review ---- */
-/* ---- Scorecard ---- */
 /* ---- Mojo ---- */
 /* ============ AUTH SCREENS ============ */
 /* ============ STATEFUL FORM HELPERS ============ */
@@ -1250,7 +1341,7 @@ P.invite=(arg)=>{
  ${isNew?(proj?`<div class="fld"><label>Project</label><div class="lock">${I('folder','sm')} ${proj.name}<span class="muted sm ml fw">Invitation will be linked to this project</span></div></div>`
  :`<div class="fld"><label>Attach to project(s) <span class="muted fw">(optional)</span></label><div class="picker">${PROJECTS.map(p=>`<label class="chkrow"><input type="checkbox" data-act="ftoggle" data-path="inv.projects" data-v="${p.id}" ${v.projects.includes(p.id)?'checked':''}>${p.name}</label>`).join('')}</div><small>Leave unchecked to add them to your ecosystem without connecting a project yet.</small></div>`):''}`;
  const sentBanner=v.sent?`<div class="banner ok">${I('check')}<div style="flex:1"><b>Invitation sent!</b><div class="sm">Email sent to <b>${esc(v.sent.email)}</b>, expires in 7 days</div><a class="sm fw" data-act="invemail">View email</a><a class="sm fw" data-act="fset" data-path="inv.tab" data-v="qr">View QR code for this invite</a></div><a class="btn sm g" data-act="fset" data-path="inv.sent" data-v="">${I('x','sm')}</a></div>`:'';
- const emailTab=`${sentBanner}<div class="card"><div class="bd"><div class="form1">${fields}<div class="fld"><label>Recipient email address *</label>${bin('inv.email','contractor@company.com',{type:'email',err:v.err.email,enter:'invsend'})}${ferr(v.err.email)}</div></div><div class="row mt" style="justify-content:space-between"><a class="btn" data-act="back">Cancel</a><span class="row" style="gap:8px"><a class="btn" data-act="invpreview">${I('eye','sm')} Preview email</a><a class="btn p" data-act="invsend">${I('send','sm')} Send invitation</a></span></div></div></div>`;
+ const emailTab=`${sentBanner}<div class="card"><div class="bd"><div class="form1">${fields}<div class="fld"><label>Recipient email address *</label>${bin('inv.email','contractor@company.com',{type:'email',err:v.err.email,enter:'invsend'})}${ferr(v.err.email)}</div></div><div class="row mt wrap" style="justify-content:space-between"><a class="btn" data-act="back">Cancel</a><span class="row wrap" style="gap:8px"><a class="btn" data-act="invpreview">${I('eye','sm')} Preview email</a><a class="btn p" data-act="invsend">${I('send','sm')} Send invitation</a></span></div></div></div>`;
  const qrTab=`<div class="card"><div class="bd"><div class="form1">${fields}</div>${v.qr?`<div class="qrbox"><div class="qrwrap">${qrSvg(v.qr.url,200)}</div><b>${meta.h}</b><small class="muted">Scan with a phone camera to create an account and join, valid for 7 days</small><div class="muted sm" style="word-break:break-all;max-width:320px">${v.qr.url}</div><div class="row wrap" style="justify-content:center"><a class="btn" data-act="invcopy">${I(v.copied?'check':'copy','sm')} ${v.copied?'Copied!':'Copy link'}</a><a class="btn" data-act="qrpng">${I('dl','sm')} PNG</a><a class="btn" data-act="qrsvg">${I('dl','sm')} SVG</a><a class="btn" data-act="qrprint">${I('file','sm')} Print</a><a class="btn" data-act="invnewqr">${I('qr','sm')} New QR code</a></div></div>`
  :`<div class="qrempty">${I('qr')}<p>Generate a QR code to share in person.<br>The recipient scans it, then enters their own email to complete sign-up.</p><a class="btn p" data-act="invqr">${I('qr','sm')} Generate QR code</a></div>`}</div></div>`;
  const recent=visI().filter(i=>i.role===role&&(!proj||i.projects.includes(proj.name)));
@@ -1583,7 +1674,7 @@ P.submit=(pid)=>{
  (mine&&mine.status==='Needs info'?`<div class="banner warn">${I('msg')}<div><b>The reviewer asked for more information.</b> Update the documents below and resubmit.${mine.hist&&mine.hist.length?` Last note: “${esc(mine.hist[mine.hist.length-1].note||'—')}”`:''}</div></div>`:'')+
  (sd.err?`<div class="banner bad">${I('alert')}<div>${sd.err}</div></div>`:'')+
  `<div class="grid g21"><div>${card('Profile snapshot',`<div class="grid g3" style="gap:12px">${[['EMR',ORG.emr||'—'],['TRIR',ORG.trir||'—'],['PTP program',ORG.ptp],['GL expiry',ORG.gl_exp?fmtD(ORG.gl_exp):'—'],['WC expiry',ORG.wc_exp?fmtD(ORG.wc_exp):'—'],['Bonding',ORG.bond_single||'—']].map(x=>`<div style="background:var(--surface2);padding:12px;border-radius:10px"><small class="muted">${x[0]}</small><div class="fw" style="font-size:16px">${esc(x[1])}</div></div>`).join('')}</div><p class="sm muted mt">A snapshot of your Organization profile is captured when you submit. <a data-go="org">Edit profile</a></p>`)}
- <div class="mt">${card('Project documents',`<div style="display:grid;gap:10px">${req.map(r=>docs[r[0]]?`<div class="file"><div class="fi">${extOf(docs[r[0]])}</div><div><b class="sm">${r[1]}</b><div class="muted sm">${esc(docs[r[0]])}</div></div><span class="ml b ok nodot">Uploaded</span>${locked?'':`<a class="btn sm g" data-act="subdocclr" data-pid="${p.id}" data-v="${r[0]}">Remove</a>`}</div>`:`<div class="file" style="border-style:dashed"><div class="fi" style="background:var(--track);color:var(--color-muted)">${I('upload','sm')}</div><div><b class="sm">${r[1]}</b><div class="muted sm">Required</div></div><label class="btn sm ml" style="cursor:pointer"><input type="file" style="display:none" data-change="subdoc" data-pid="${p.id}" data-v="${r[0]}">Upload</label></div>`).join('')}</div>`)}</div></div>
+ <div class="mt">${card('Project documents',`<div style="display:grid;gap:10px">${req.map(r=>docs[r[0]]?`<div class="file row-card"><div class="fi">${extOf(docs[r[0]])}</div><div><b class="sm">${r[1]}</b><div class="muted sm">${esc(docs[r[0]])}</div></div><span class="ml b ok nodot">Uploaded</span>${locked?'':`<a class="btn sm g" data-act="subdocclr" data-pid="${p.id}" data-v="${r[0]}">Remove</a>`}</div>`:`<div class="file row-card need"><div class="fi" style="background:var(--track);color:var(--color-muted)">${I('upload','sm')}</div><div><b class="sm">${r[1]}</b><div class="muted sm">Required, PDF or image</div></div><label class="btn sm p ml" style="cursor:pointer"><input type="file" style="display:none" data-change="subdoc" data-pid="${p.id}" data-v="${r[0]}">${I('upload','sm')} Upload</label></div>`).join('')}</div>`)}</div></div>
  <div>${card('Checklist',`<div style="display:grid;gap:10px">${chk.map(c=>`<div class="row"><span style="color:${c[1]?'var(--ok)':'var(--faint)'}">${I(c[1]?'check':'clock')}</span><span class="${c[1]?'':'muted'}">${c[0]}</span></div>`).join('')}</div>`)}
  <div class="card mt"><div class="bd"><div class="banner info" style="margin-bottom:14px">${I('alert')}<div class="sm">Auto-flags: EMR above 1.0 or no PTP program are highlighted for the reviewer.</div></div>${locked?'<div class="muted sm" style="text-align:center">This submission is locked while under review.</div>':`<div style="display:grid;gap:10px"><a class="btn" data-act="subsave" data-pid="${p.id}" data-v="draft">Save draft</a><a class="btn p" data-act="subsave" data-pid="${p.id}" data-v="submit">${mine&&mine.status==='Needs info'?'Resubmit for review':'Submit for review'}</a></div>`}</div></div></div></div>`;
 };
@@ -1703,40 +1794,20 @@ P.account=()=>{
  `<div class="grid g21"><div class="grid" style="gap:18px;align-content:start">
  ${card('Profile',`<div class="row" style="gap:16px;margin-bottom:20px"><div class="av" style="width:64px;height:64px;font-size:22px;background:${col(CUR.name)}">${ini(a.name||CUR.name)}</div><div><b style="font-size:16px">${esc(a.name||CUR.name)}</b><div class="muted sm">${esc(CUR.email)}</div><span class="b brand nodot" style="margin-top:6px">${ROLELBL[S.role]}</span></div></div><div class="form"><div class="fld"><label>Full name *</label>${bin('acct.name','Jane Smith',{err:a.eP.name,rr:'focus'})}${ferr(a.eP.name)}</div><div class="fld"><label>Job title</label>${bin('acct.title','e.g. Safety Director',{rr:'focus'})}</div><div class="fld"><label>Email</label><input class="inp" value="${esc(CUR.email)}" disabled><small>Email cannot be changed</small></div><div class="fld"><label>Phone</label>${bin('acct.phone','(713) 555-0142',{err:a.eP.phone,rr:'focus'})}${ferr(a.eP.phone)}</div></div><div class="row mt"><a class="btn p" data-act="acctsave" ${dirty?'':'disabled'}>Save changes</a></div>`)}
  ${card('Change password',imp?`<div class="banner info" style="margin:0">${I('lock')}<div class="sm">Passwords can't be changed while impersonating.</div></div>`:`<div class="form"><div class="fld full"><label>Current password</label>${bin('acct.cur','',{type:'password',err:a.eW.cur})}${ferr(a.eW.cur)}</div><div class="fld"><label>New password</label>${bin('acct.nw','At least 8 characters',{type:'password',err:a.eW.nw})}${ferr(a.eW.nw)}<div class="rules" id="acrules">${acRules(a.nw)}</div></div><div class="fld"><label>Confirm new password</label>${bin('acct.cf','',{type:'password',err:a.eW.cf})}${ferr(a.eW.cf)}</div></div><div class="row mt"><a class="btn p" data-act="pwsave">Update password</a></div>`)}
- ${card('Notification preferences',`<div class="list" style="margin:-20px">${NP.map(n=>`<div><div style="flex:1"><b class="sm">${n[1]}</b><div class="muted sm">${n[2]}</div></div><button class="sw ${CUR.notif[n[0]]?'on':''}" data-act="notifpref" data-v="${n[0]}" aria-label="${n[1]}"></button></div>`).join('')}</div>`)}</div>
+ ${card('Notification preferences',`<div class="list">${NP.map(n=>`<div><div style="flex:1"><b class="sm">${n[1]}</b><div class="muted sm">${n[2]}</div></div><button class="sw ${CUR.notif[n[0]]?'on':''}" data-act="notifpref" data-v="${n[0]}" aria-label="${n[1]}"></button></div>`).join('')}</div>`,'',true)}</div>
  <div class="grid" style="gap:18px;align-content:start">${card('Workspaces & access',`<p class="sm muted" style="margin-bottom:12px">You can belong to more than one company. Your access level is set per workspace by that company's admins.</p><div style="display:grid;gap:10px">${wsList().map((x,i)=>`<div class="file" style="${i===S.tenant?'border-color:var(--color-accent);background:var(--brand-l)':''}"><div class="tav" style="background:${col(x.name)}">${ini(x.name)}</div><div style="min-width:0"><b class="sm">${esc(x.name)}</b><div class="muted sm">${typeLbl(x.type)}${x.type!=='mojo'?', '+(x.ur==='admin'?'Admin':'Contributor'):''}</div></div>${i===S.tenant?'<span class="b brand nodot ml">Current</span>':`<a class="btn sm ml" data-act="tenant" data-v="${i}">Switch</a>`}</div>`).join('')}</div>`)}
  ${card('Session',`<div class="sm muted" style="margin-bottom:12px">Signed in as <b>${esc(CUR.email)}</b>.</div><a class="btn bad" data-act="auth" data-v="login" data-ctx="">${I('logout','sm')} Sign out</a>`)}</div></div>`;
 };
 const acRules=p=>[[(p||'').length>=8,'8+ characters'],[/[A-Z]/.test(p||''),'Uppercase letter'],[/[0-9]/.test(p||''),'Number']].map(r=>`<span class="rule ${r[0]?'ok':''}">${I(r[0]?'check':'x','sm')}${r[1]}</span>`).join('');
 
-/* ============ v3, DOCUMENTS / SCORECARD / NOTIFICATIONS ============ */
+/* ============ v3, DOCUMENTS / NOTIFICATIONS ============ */
 P.docs=()=>{
  const f=S.filter.doc||'All',types=['All','COI','Safety Manual','PTP Plan','Loss Runs','W-9','Bond'],list=DOCS.filter(d=>f==='All'||d.t===f);
  return head('Document Library','One unified pool for COIs, manuals and compliance files. Everything here powers questionnaire autofill.','<a class="btn p" data-act="upload">'+I('upload','sm')+' Upload document</a>')+
  `<div class="banner ai">${I('sparkle')}<div><b>${DOCS.length} document${DOCS.length===1?' is':'s are'} available to AI autofill.</b> Files from the Document Library, Organization profile and project submissions are used when you run "Complete with AI" on a questionnaire.</div></div>`+
  (DOCS.length?card('',`<div class="toolbar">${types.map(c=>`<button class="chip ${f===c?'on':''}" data-act="filter" data-k="doc" data-v="${c}">${c}</button>`).join('')}</div>${list.length?`<table><thead><tr><th>Document</th><th>Type</th><th>Source</th><th>Expires</th><th>Size</th><th></th></tr></thead><tbody>${list.map(d=>{const n=daysTo(d.exp);const i=DOCS.indexOf(d);return `<tr><td><div class="cell"><div class="file" style="padding:0;border:0"><div class="fi ${d.ext==='DOC'?'d':''}">${d.ext}</div></div><b>${esc(d.n)}</b></div></td><td><span class="b brand nodot">${d.t}</span></td><td class="muted">${d.src}</td><td>${d.exp==='—'?'<span class="muted">—</span>':`${d.exp}${n!==null&&n<=60?` <span class="b ${n<0?'bad':'warn'} nodot">${n<0?'Expired':n+' days'}</span>`:''}`}</td><td class="muted">${d.size}</td><td style="white-space:nowrap"><a class="btn sm g" data-act="docdl" data-i="${i}" title="Download">${I('dl','sm')}</a>${isAdmin()?`<a class="btn sm g" data-act="docdel" data-i="${i}" title="Delete">${I('trash','sm')}</a>`:''}</td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:34px;text-align:center">No documents of this type.</div>'}`,'',true):emptyState('No documents yet','Upload your COI, safety manual and other compliance files.',''));
 };
-const SC_CATS=[['Pre Task Plan',88],['Observation',74],['Responsiveness',91],['Kudos',65],['WPS',82]];
 const hashN=s=>[...String(s)].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);
-function scScores(){
- const f=F.sc||(F.sc={proj:'All projects',sub:'All subcontractors',month:'October 2026'});
- const adj=k=>((hashN(f.proj+f.sub+f.month+k)%25)-12);
- const clamp=v=>Math.max(38,Math.min(99,v));
- const cats=SC_CATS.map(c=>[c[0],clamp(c[1]+adj(c[0]))]);
- const overall=Math.round(cats.reduce((a,c)=>a+c[1],0)/cats.length);
- const months=['May','Jun','Jul','Aug','Sep','Oct'];
- return {f,cats,overall,trend:months.map((m,i)=>clamp(overall-10+i*2+((hashN(f.proj+f.sub+m)%7)-3))),months};
-}
-P.scorecard=()=>{
- const {f,cats,overall,trend,months}=scScores();
- const subs=TRADES.filter(t=>(f.proj==='All projects'||t.proj.includes(f.proj))&&(f.sub==='All subcontractors'||t.n===f.sub));
- return head('Safety Scorecard','Subcontractor safety performance across your projects.','<a class="btn" data-act="scexport">'+I('dl','sm')+' Export CSV</a>')+
- `<div class="banner info">${I('alert')}<div class="sm"><b>Preview with sample data.</b> Scores are illustrative until the tracking data model is connected. Filters recalculate the sample scores.</div></div>
- <div class="card" style="margin-bottom:18px"><div class="toolbar">${bsel('sc.proj',[['All projects','All projects'],...PROJECTS.map(p=>[p.name,p.name])],{rr:1}).replace('class="inp"','class="inp" style="width:210px"')}${bsel('sc.sub',[['All subcontractors','All subcontractors'],...TRADES.map(t=>[t.n,t.n])],{rr:1}).replace('class="inp"','class="inp" style="width:210px"')}${bsel('sc.month',['October 2026','September 2026','August 2026'].map(x=>[x,x]),{rr:1}).replace('class="inp"','class="inp" style="width:170px"')}</div></div>
- <div class="grid g3"><div class="card" style="grid-row:span 2"><div class="hd"><h2 class="sh">Overall Safety Score</h2></div><div class="bd" style="text-align:center">${gauge(overall,'Overall',true)}<div class="legend" style="justify-content:center"><span><i style="background:var(--color-error)"></i>&lt;60</span><span><i style="background:var(--color-warn)"></i>60–80</span><span><i style="background:var(--color-success)"></i>80+</span></div><div style="margin-top:20px;text-align:left"><b class="sm">MoM trend</b>${lineChart(trend,months,'var(--color-accent)',150)}</div></div></div>
- ${cats.map(c=>card(c[0],`<div class="row"><div style="width:130px">${gauge(c[1],c[0])}</div><div><div class="fw" style="font-size:22px">${c[1]}</div><div class="sm ${c[1]>=80?'up':'dn'}">${c[1]>=80?'▲ +'+(hashN(c[0]+f.proj)%5+1):'▼ −'+(hashN(c[0]+f.sub)%5+1)} vs last month</div></div></div>`)).join('')}</div>
- <div class="grid g2 mt">${card('Score by subcontractor',subs.length?bars(subs.map(t=>[t.n,Math.max(40,Math.min(99,Math.round(100-t.emr*20+(t.ptp?4:-8))+((hashN(t.n+f.month)%7)-3))),t.emr>1?'var(--color-error)':'var(--color-success)']),100):'<div class="muted sm" style="text-align:center;padding:24px">No subcontractors match these filters.</div>')}${card('Overview',subs.length?`<table><thead><tr><th>Subcontractor</th><th>PTP</th><th>Obs.</th><th>Resp.</th><th>Score</th></tr></thead><tbody>${subs.map(t=>{const h=hashN(t.n+f.month+f.proj);const sc=Math.max(40,Math.min(99,Math.round(100-t.emr*20+(t.ptp?4:-8))+(h%7)-3));return `<tr><td><b>${esc(t.n)}</b></td><td>${60+h%35}</td><td>${55+(h>>3)%40}</td><td>${60+(h>>5)%38}</td><td><span class="b ${sc>=80?'ok':sc>=60?'warn':'bad'}">${sc}</span></td></tr>`}).join('')}</tbody></table>`:'<div class="muted sm" style="text-align:center;padding:24px">No data.</div>','',true)}</div>`;
-};
 P.notifications=()=>head('Notifications','Updates on invitations, assignments and submissions.',S.notifs.some(n=>n.un)?'<a class="btn" data-act="readall">Mark all read</a>':'')+
  (S.notifs.length?card('',`<div class="list">${S.notifs.map((n,i)=>`<div style="${n.un?'background:var(--unread)':''};cursor:pointer" data-act="notifgo" data-i="${i}"><span class="tav" style="background:${n.un?'var(--brand)':'var(--border2)'}">${I('bell','sm')}</span><div><div class="${n.un?'fw':''}">${n.t}</div><small class="muted">${n.time}</small></div>${n.un?'<span class="ml b brand nodot">New</span>':''}</div>`).join('')}</div>`,'',true):emptyState('You are all caught up','New notifications will appear here.',''));
 
@@ -1834,7 +1905,7 @@ P['mojo-activity']=()=>{
  const dirty=f!=='All'||a!=='All'||qs||r.p!=='l30';
  const meta={Review:['brand','shield'],Company:['ok','bldg'],Billing:['warn','file'],Impersonation:['bad','eye'],'Question Bank':['info','db']};
  const days={};list.forEach(x=>(days[x.t.slice(0,10)]=days[x.t.slice(0,10)]||[]).push(x));
- const row=x=>{const m=meta[x.cat]||['mute','list'];return `<tr><td class="tm">${shortD(x.t.slice(0,10))}</td><td class="tm">${x.t.slice(11)}</td><td><span class="b cat ${m[0]} nodot">${I(m[1],'sm')}${x.cat}</span></td><td><div class="msg">${esc(x.msg)}</div>${x.co==='—'?'':`<div class="sub"><span class="mini sqr" style="background:${col(x.co)}">${ini(x.co)}</span>${esc(x.co)}</div>`}</td><td><div class="who"><span class="mini" style="background:${col(x.actor)}">${ini(x.actor)}</span><span class="t">${esc(x.actor)}</span></div></td></tr>`};
+ const row=x=>{const m=meta[x.cat]||['mute','list'];return `<tr><td class="tm" data-label="Date">${shortD(x.t.slice(0,10))}</td><td class="tm" data-label="Time">${x.t.slice(11)}</td><td data-label="Category"><span class="b cat ${m[0]} nodot">${I(m[1],'sm')}${x.cat}</span></td><td data-label="Activity"><div class="msg">${esc(x.msg)}</div>${x.co==='—'?'':`<div class="sub"><span class="mini sqr" style="background:${col(x.co)}">${ini(x.co)}</span>${esc(x.co)}</div>`}</td><td><div class="who"><span class="mini" style="background:${col(x.actor)}">${ini(x.actor)}</span><span class="t">${esc(x.actor)}</span></div></td></tr>`};
  const body=list.map(row).join('');
  return head('Activity Log','Audit trail of Mojo admin actions across the platform.',`<a class="btn" data-act="exportlog">${I('dl','sm')} Export CSV</a>`)+
  `<div class="card"><div class="fbar">
@@ -1844,6 +1915,23 @@ P['mojo-activity']=()=>{
    <span class="fbar-count">Showing <b>${list.length}</b> of ${ACTIVITY.length}, ${rangeSummary(r)}</span>
   </div></div>
   ${list.length?`<div class="logcard"><table class="logtbl"><colgroup><col class="c-date"><col class="c-when"><col class="c-cat"><col><col class="c-by"></colgroup><thead><tr><th>Date</th><th>Time</th><th>Category</th><th>Activity</th><th>Performed by</th></tr></thead><tbody>${body}</tbody></table></div>`:emptyFiltered('activity entries','ma')}</div>`;
+};
+
+/* ---- Owner / GC / Trade activity ---- */
+P.activity=()=>{
+ const all=(WS_ACT[curKey()]||[]).slice();
+ const cats=['All','Assignment','Submission','Review','Invitation','Document','Project','Team'];
+ const f=S.filter.wa||'All',qs=(F.waq||'').trim().toLowerCase();
+ const base=all.filter(x=>!qs||(x.msg+' '+x.actor+' '+x.cat).toLowerCase().includes(qs));
+ const cnt=c=>base.filter(x=>c==='All'||x.cat===c).length;
+ const list=base.filter(x=>f==='All'||x.cat===f).sort((x,y)=>y.t.localeCompare(x.t));
+ const meta={Assignment:['info','clip'],Submission:['brand','send'],Review:['ok','shield'],Invitation:['warn','mail'],Document:['mute','file'],Project:['brand','folder'],Team:['mute','users']};
+ const sub=S.role==='trade'?'Questionnaires assigned to you, your submissions and decisions.':S.role==='gc'?'What your trades and the project owners are doing on your projects.':'What your GCs and trades are doing on your projects.';
+ const row=x=>{const m=meta[x.cat]||['mute','list'];return `<tr ${x.go?`class="click" data-go="${x.go}"`:''}><td class="tm">${shortD(x.t.slice(0,10))}</td><td class="tm">${x.t.slice(11)}</td><td><span class="b cat ${m[0]} nodot">${I(m[1],'sm')}${x.cat}</span></td><td data-label="Activity"><div class="msg">${esc(x.msg)}</div></td><td data-label="By"><div class="who"><span class="mini" style="background:${col(x.actor)}">${ini(x.actor)}</span><span class="t">${esc(x.actor)}</span></div></td></tr>`};
+ return head('Activity',sub)+
+ `<div class="card"><div class="fbar"><div class="fbar-top"><div class="fbar-end"><div class="search">${I('search','sm')}<input placeholder="Search activity" data-bind="waq" data-rr="focus" value="${esc(F.waq||'')}"></div>${(f!=='All'||qs)?`<button class="fclear" data-act="mclear" data-k="wa">${I('x','sm')} Clear</button>`:''}</div></div>
+  <div class="fbar-row"><div class="fgroups"><div class="fgroup"><span class="flbl">Category</span>${cats.map(c=>chipBtn(f===c,'filter','wa',c,c,cnt(c))).join('')}</div></div><span class="fbar-count">Showing <b>${list.length}</b> of ${all.length}</span></div></div>
+  ${list.length?`<div class="logcard"><table class="logtbl"><colgroup><col class="c-date"><col class="c-when"><col class="c-cat"><col><col class="c-by"></colgroup><thead><tr><th>Date</th><th>Time</th><th>Category</th><th>Activity</th><th>By</th></tr></thead><tbody>${list.map(row).join('')}</tbody></table></div>`:(all.length?emptyFiltered('activity entries','wa'):emptyState('No activity yet','Assignments, submissions and decisions will appear here.',''))}</div>`;
 };
 
 const setupLink=c=>appLink('setup',c.pending.token);
@@ -2037,6 +2125,7 @@ Object.assign(ACT,{
  },
  mclear:e=>{
   if(e.dataset.k==='mh'){S.filter.mh='All';S.filter.mhai='Any';F.mhc='All';F.mhq='';F.mhr={p:'l30',from:'',to:''}}
+  else if(e.dataset.k==='wa'){S.filter.wa='All';F.waq=''}
   else{S.filter.ma='All';F.maa='All';F.maq='';F.mar={p:'l30',from:'',to:''}}
   rerender();
  },
@@ -2222,7 +2311,6 @@ Object.assign(ACT,{
   const d=DOCS[+e.dataset.v];if(d){DOCS.splice(+e.dataset.v,1);Object.keys(ORG).forEach(k=>{if(k.startsWith('f_')&&ORG[k]===d.n)ORG[k]=''});F.orgf=null}
   closeModal();rerender();toast('Document deleted');
  },
- scexport:()=>{const {f,cats,overall}=scScores();dl('safety-scorecard.csv','Project,Subcontractor,Month,Category,Score\n'+[['Overall',overall],...cats].map(c=>[f.proj,f.sub,f.month,c[0],c[1]].map(x=>'"'+x+'"').join(',')).join('\n'));toast('Scorecard exported')},
  /* ---- organization ---- */
  orgfile:t=>{
   const f=t.files&&t.files[0];if(!f)return;
@@ -2384,7 +2472,7 @@ const coRoute=n=>{
  return '';
 };
 const coLink=(n,cls='')=>(!n||n==='Unassigned'||n==='—')?`<span class="muted">${esc(n||'—')}</span>`:`<a class="colink ${cls}" ${coRoute(n)?`data-go="${coRoute(n)}"`:`data-act="cocard" data-v="${esc(n)}"`}>${esc(n)}</a>`;
-const coType=n=>GCS.find(g=>g.n===n)?'General Contractor':TRADES.find(t=>t.n===n)?'Trade contractor':Object.values(PM).some(m=>m.owner===n)?'Project Owner':PROJECTS.some(p=>p.gc===n)?'General Contractor':'Company';
+const coType=n=>GCS.find(g=>g.n===n)?'General Contractor':TRADES.find(t=>t.n===n)?'Trade contractor':PROJECTS.some(p=>p.gc===n)?'General Contractor':Object.values(PM).some(m=>m.owner===n)?'Project Owner':'Company';
 const coProjects=n=>PROJECTS.filter(p=>p.gc===n||pmeta(p).owner===n||TRADES.some(t=>t.n===n&&t.proj.includes(p.name)));
 const typeBadge=n=>`<span class="b brand nodot">${coType(n)}</span>`;
 
@@ -2579,7 +2667,7 @@ P.gcs=()=>head('General Contractors','GCs in your ecosystem — open one to see 
   const f=S.filter.tr||'All',q=((F.trq)||'').toLowerCase();const base=TRADES.filter(t=>(t.n+' '+t.t).toLowerCase().includes(q));const list=base.filter(t=>f==='All'||t.stat===f);
   return head('Trades','Subcontractors in your ecosystem — who they are, where they work and their compliance status.',viewToggle()+(S.role!=='trade'?'<a class="btn p" data-go="invite/trade">'+I('send','sm')+' Invite Trade</a>':''))+
   card('',`<div class="toolbar">${['All','Approved','Under review','Needs info','Flagged'].map(c=>`<button class="chip ${f===c?'on':''}" data-act="filter" data-k="tr" data-v="${c}">${c}<span class="cn">${c==='All'?base.length:base.filter(t=>t.stat===c).length}</span></button>`).join('')}<div class="search" style="width:240px;margin-left:auto;max-width:100%">${I('search','sm')}<input placeholder="Search trades" data-bind="trq" data-rr="focus" value="${esc(F.trq||'')}"></div></div>
-  ${list.length?`<table><thead><tr><th>Trade company</th><th>Key contact</th><th>General Contractor</th><th>Projects</th><th>Questionnaires</th><th>PTP</th><th>EMR</th><th>COI exp.</th><th>Status</th></tr></thead><tbody>${list.map(t=>{const gcs=[...new Set(t.proj.map(p=>(projOf(p)||{}).gc).filter(Boolean))],kc=peopleOf(t.n)[0],qs=qOf(t.n),dd=daysTo('1 '+t.exp);return `<tr class="click" data-go="trade-detail/${encodeURIComponent(t.n)}"><td><div class="cell">${avt(t.n)}<div><b>${esc(t.n)}</b><small>${esc(t.t)}</small></div></div></td><td>${kc?`<a class="row" style="gap:8px;color:inherit" data-act="person" data-v="${esc(kc.n+'|'+t.n)}">${pav(kc.n,26)}<span class="sm">${esc(kc.n)}</span></a>`:'<span class="muted">—</span>'}</td><td class="sm">${gcs.map(g=>coLink(g)).join('<br>')||'<span class="muted">—</span>'}</td><td>${t.proj.map(p=>{const pr=projOf(p);return pr?`<a class="b mute nodot" style="margin:0 4px 4px 0" data-go="project/${pr.id}">${esc(p)}</a>`:''}).join('')}</td><td>${qCell(qs)}</td><td>${t.ptp?'<span style="color:var(--ok)">'+I('check','sm')+'</span>':'<span class="b bad nodot">None</span>'}</td><td>${emrB(t.emr)}</td><td class="muted">${t.exp}${dd!==null&&dd<=60?(dd<0?' <span class="b bad nodot">expired</span>':' <span class="b warn nodot">soon</span>'):''}</td><td>${badge(t.stat)}</td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:34px;text-align:center">No trades match.</div>'}`,'',true);
+  ${list.length?`<table class="tt"><thead><tr><th>Trade company</th><th>Key contact</th><th>General Contractor</th><th>Projects</th><th>Questionnaires</th><th>PTP</th><th>EMR</th><th>COI exp.</th><th>Status</th></tr></thead><tbody>${list.map(t=>{const gcs=[...new Set(t.proj.map(p=>(projOf(p)||{}).gc).filter(Boolean))],kc=peopleOf(t.n)[0],qs=qOf(t.n),dd=daysTo('1 '+t.exp);return `<tr class="click" data-go="trade-detail/${encodeURIComponent(t.n)}"><td><div class="cell">${avt(t.n)}<div><b>${esc(t.n)}</b><small>${esc(t.t)}</small></div></div></td><td>${kc?`<a class="row" style="gap:8px;color:inherit" data-act="person" data-v="${esc(kc.n+'|'+t.n)}">${pav(kc.n,26)}<span class="sm">${esc(kc.n)}</span></a>`:'<span class="muted">—</span>'}</td><td class="sm">${gcs.map(g=>coLink(g)).join('<br>')||'<span class="muted">—</span>'}</td><td>${t.proj.map(p=>{const pr=projOf(p);return pr?`<a class="b mute nodot" style="margin:0 4px 4px 0" data-go="project/${pr.id}">${esc(p)}</a>`:''}).join('')}</td><td>${qCell(qs)}</td><td>${t.ptp?'<span style="color:var(--ok)">'+I('check','sm')+'</span>':'<span class="b bad nodot">None</span>'}</td><td>${emrB(t.emr)}</td><td class="muted">${t.exp}${dd!==null&&dd<=60?(dd<0?' <span class="b bad nodot">expired</span>':' <span class="b warn nodot">soon</span>'):''}</td><td>${badge(t.stat)}</td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:34px;text-align:center">No trades match.</div>'}`,'',true);
  };
  const peopleCard=n=>card('People at '+esc(n),peopleOf(n).length?`<div class="pgrid">${peopleOf(n).map(x=>pchip({...x,co:n},x.title)).join('')}</div>`:'<div class="muted sm">No contacts on file.</div>');
  const projCard2=(n)=>{const ps=coProjects(n);return card('Projects together',ps.length?ps.map(pr=>{const st=projStats(pr);return `<a class="prow" data-go="project/${pr.id}"><span class="pw1"><b>${esc(pr.name)}</b><small>${esc(pr.addr)}</small></span><span class="pbar"><div class="prog"><i style="width:${pr.pct}%;background:var(--brand)"></i></div></span>${avStack(projPeople(pr),3)}${hBadge(st.h)}</a>`}).join(''):'<div class="muted sm" style="padding:20px;text-align:center">No shared projects.</div>','',true)};
@@ -2753,7 +2841,7 @@ P['mojo-company']=(n)=>{
  const c=MOJO_COS.find(x=>x.n===decodeURIComponent(n))||MOJO_COS[0],isO=c.t==='owner',M=mojoCo(c.n);
  const keys=['overview','profile','projects','network','team','activity'];
  let t=curTab('mc3','overview');if(!keys.includes(t))t='overview';
- const pp=DIR[c.n]||[],act=ACTIVITY.filter(a=>a.co===c.n),rv=REVIEW_HISTORY.filter(r=>r.co===c.n),q=QUEUE.filter(x=>x.co===c.n&&!x.done);
+ const pp=DIR[c.n]||[],act=ACTIVITY.concat(COACT).filter(a=>a.co===c.n).sort((x,y)=>y.t.localeCompare(x.t)),rv=REVIEW_HISTORY.filter(r=>r.co===c.n),q=QUEUE.filter(x=>x.co===c.n&&!x.done);
  const slug=c.n.toLowerCase().replace(/[^a-z]/g,'');
  const team=(pp.length?pp.map((x,i)=>({n:x.n,e:x.email,r:i<2?'Admin':'Contributor',title:x.title})):[['Primary Admin','admin@'+slug+'.com','Admin'],['Operations Lead','ops@'+slug+'.com','Admin'],['Site Coordinator','site@'+slug+'.com','Contributor']].map(m=>({n:m[0],e:m[1],r:m[2],title:''}))).slice(0,Math.max(1,Math.min(4,c.users)));
  const nProj=M.projects.length||c.proj,active=M.projects.filter(x=>x.p.status==='Active').length;
@@ -2774,7 +2862,7 @@ P['mojo-company']=(n)=>{
  if(t==='projects')body=M.projects.length?card('',`<table><thead><tr><th>Project</th><th>${c.t==='owner'?'General Contractor':'Owner'}</th><th>Trades</th><th>${c.t==='trade'?'Submission':'Submissions'}</th><th>Timeline</th><th>Status</th></tr></thead><tbody>${M.projects.map(x=>{const ap=x.subs.filter(s=>s.status==='Approved').length,one=c.t==='trade'?x.subs[0]:null;return `<tr class="click" data-act="mprojview" data-c="${esc(c.n)}" data-v="${esc(x.p.name)}"><td><div class="cell">${avt(x.p.name)}<div><b>${esc(x.p.name)}</b><small>${esc(x.p.addr)}</small></div></div></td><td>${coLink(c.t==='owner'?x.gc:x.owner)}</td><td>${x.trades.length}</td><td>${one?badge(one.status):x.subs.length?`${ap} of ${x.subs.length} approved`:'<span class="muted">—</span>'}</td><td class="muted">${x.p.start} to ${x.p.end}</td><td>${badge(x.p.status)}</td></tr>`}).join('')}</tbody></table>`,'',true):emptyState('No projects yet','Projects this company owns, manages or works on will appear here.','');
  if(t==='network')body=M.network.length?card('',`<table><thead><tr><th>Company</th><th>Relationship</th><th>Shared projects</th><th>Compliance</th></tr></thead><tbody>${M.network.map(x=>{const mc=MOJO_COS.find(y=>y.n===x.n);return `<tr class="${mc?'click':''}" ${mc?`data-go="mojo-company/${encodeURIComponent(x.n)}"`:''}><td><div class="cell">${avt(x.n)}<b>${esc(x.n)}</b></div></td><td><span class="b brand nodot">${x.role}</span></td><td>${x.projects}</td><td>${x.stat&&x.stat!=='—'?badge(x.stat):'<span class="muted">—</span>'}</td></tr>`}).join('')}</tbody></table>`,'',true):emptyState('No connected companies','Companies working with this one appear here.','');
  if(t==='team')body=card('',team.map(m=>`<div class="prs"><span>${pav(m.n,34)}</span><div class="who"><b>${esc(m.n)}</b><small>${esc(m.title||m.e)}</small></div>${badge(m.r)}<span class="b ok">Active</span></div>`).join(''),'',true);
- if(t==='activity')body=(act.length||rv.length)?card('',`<table><thead><tr><th>When</th><th>What</th><th>By</th></tr></thead><tbody>${act.map(a=>`<tr><td class="muted">${a.t}</td><td><span class="b mute nodot">${a.cat}</span> ${esc(a.msg)}</td><td class="muted">${esc(a.actor)}</td></tr>`).join('')}${rv.map(r=>`<tr><td class="muted">${r.d} ${r.tm}</td><td>${badge(r.decision)} ${esc(r.q)}</td><td class="muted">${esc(r.reviewer)}</td></tr>`).join('')}</tbody></table>`,'',true):emptyState('No activity yet','Reviews and admin actions for this company will appear here.','');
+ if(t==='activity')body=(act.length||rv.length)?card('',`<table class="logtbl"><colgroup><col style="width:10.5rem"><col><col style="width:12rem"></colgroup><thead><tr><th>When</th><th>What</th><th>By</th></tr></thead><tbody>${act.map(a=>`<tr><td class="muted" data-label="When">${a.t}</td><td data-label="What"><span class="b mute nodot">${a.cat}</span> ${esc(a.msg)}</td><td class="muted" data-label="By">${esc(a.actor)}</td></tr>`).join('')}${rv.map(r=>`<tr><td class="muted" data-label="When">${r.d} ${r.tm}</td><td data-label="What">${badge(r.decision)} ${esc(r.q)}</td><td class="muted" data-label="By">${esc(r.reviewer)}</td></tr>`).join('')}</tbody></table>`,'',true):emptyState('No activity yet','Reviews and admin actions for this company will appear here.','');
  if(t==='profile')body=mojoProfileHtml(c);
  return head(c.n,c.loc+', '+c.t.toUpperCase(),pp[0]?`<a class="btn" data-act="mailto" data-v="${esc(pp[0].n)}">${I('mail','sm')} Email ${esc(pp[0].n.split(' ')[0])}</a>`:'',crumb(['Companies','mojo-companies'],[c.n]))+sum+`<div class="kpis k3">${kp('Projects',nProj,active+' active','projects')}${kp(netLbl,M.network.length,'Connected companies','network')}${kp('Awaiting review',q.length,q.length?'In the Mojo queue':'Nothing waiting','activity')}</div>`+
  tabs('mc3',[['overview','Overview'],['profile','Profile'],['projects','Projects',M.projects.length||null],['network',netLbl,M.network.length||null],['team','Team',team.length],['activity','Activity',act.length+rv.length||null]])+body;
@@ -2816,7 +2904,7 @@ function trail(r,a){
  const proj=id=>PROJECTS.find(p=>p.id===id);
  switch(r){
   case 'dashboard':return null;
-  case 'projects':case 'gcs':case 'trades':case 'questionnaires':case 'team':case 'org':case 'docs':case 'bank':case 'scorecard':case 'invite':
+  case 'projects':case 'gcs':case 'trades':case 'questionnaires':case 'team':case 'org':case 'docs':case 'bank':case 'invite':
    if(r==='invite'&&a){const [role,pid]=a.split('/'),pr=proj(pid||role),lbl=(INVMETA[role]||{}).lbl;
     return [H,...(pr?[sect('projects'),[pr.name,'project/'+pr.id],['Invite']]:[sect('invite'),[lbl||'Invite']])]}
    return [H,[navLbl(r)||r]];
@@ -2836,7 +2924,7 @@ function trail(r,a){
   case 'respond':{const x=ASSIGN.find(y=>y.id===a)||myAssign()[0],lbl=x?x.q:'Respond';return S.role==='gc'?[H,['Assignments','my-assign'],['Assigned to me','my-assign'],[lbl]]:[H,['Assignments','my-assign'],[lbl]]}
   case 'account':return [H,['My account']];
   case 'notifications':return [H,['Notifications']];
-  case 'mojo-companies':case 'mojo-bank':case 'mojo-queue':case 'mojo-activity':return [H,[navLbl(r)||r]];
+  case 'activity':case 'mojo-companies':case 'mojo-bank':case 'mojo-queue':case 'mojo-activity':return [H,[navLbl(r)||r]];
   case 'mojo-history':return [H,sect('mojo-queue'),['Review history']];
   case 'mojo-company':return [H,sect('mojo-companies'),...tabCrumb('mc3',[a||'—','mojo-company/'+encodeURIComponent(a||'')])];
  }
@@ -2877,7 +2965,6 @@ function can(a){
   case 'submit':return r==='trade'||r==='gc';
   case 'docs.upload':return r!=='mojo';
   case 'docs.delete':return adm&&r!=='mojo';
-  case 'scorecard':return r==='owner';
   case 'access.assign':return adm&&r!=='mojo';
  }
  return true;
@@ -2993,7 +3080,6 @@ function denied(r,a){
  if(r==='bank'&&!can('bank.view'))return adm;
  if((r==='respond'||r==='submit')&&!(role==='trade'||role==='gc'))return "Only contractors respond to questionnaires and submit pre-qualifications";
  if((r==='review'||r==='q-assignments'||r==='submission')&&!(role==='owner'||role==='gc'))return "Only the reviewing company can open that page";
- if(r==='scorecard'&&role!=='owner')return "The Safety Scorecard is available to Owners";
  return null;
 }
 {
@@ -3105,7 +3191,7 @@ function subDetail(id){
   ${card('Review checklist',`<div>${i.checks.map(c=>{const x=ic(c);return `<div class="todo" style="cursor:default"><span class="ti" style="background:${x[2]};color:${x[1]}">${I(x[0],'sm')}</span><span style="flex:1;min-width:0"><b>${c.k}</b><small>${esc(c.d)}</small></span></div>`}).join('')}</div>`,i.fails?`<span class="b bad nodot">${i.fails} of 4 need attention</span>`:'<span class="b ok nodot">4 of 4 passed</span>',true)}
   ${card('Safety & company profile',`<div class="grid g3" style="gap:10px">${[['EMR',i.emr.toFixed(2),i.emr>1?'var(--bad-t)':'inherit'],['TRIR',i.trir,'inherit'],['DART',i.dart,'inherit'],['PTP program',i.ptp?'In place':'None',i.ptp?'inherit':'var(--bad-t)'],['Bonding capacity',i.bond,'inherit'],['Employees',i.emp,'inherit']].map(x=>`<div style="background:var(--surface2);padding:11px 13px;border-radius:10px"><small class="muted">${x[0]}</small><div class="fw" style="font-size:17px;color:${x[2]}">${x[1]}</div></div>`).join('')}</div><p class="sm muted mt">${i.yrs} years in business. Figures are a snapshot taken when the contractor submitted.</p>`)}
   ${card('Insurance',ins.map(r=>`<div class="prs"><div class="who"><b>${r[0]}</b><small>${r[1]}, ${r[2]}</small></div><span class="due ${i.ed!==null&&i.ed<=0?'bad':i.ed!==null&&i.ed<=60?'warn':''}">${i.ed!==null&&i.ed<=0?'Expired':'Exp '+i.exp}</span></div>`).join(''),'',true)}
-  ${card('Documents',`<div style="display:grid;gap:10px">${i.names.map(k=>{const f=s.docs&&s.docs[k]?s.docs[k]:k+'.pdf',ok=i.have.includes(k);return ok?`<div class="file"><div class="fi">${extOf(f)}</div><div><b class="sm">${esc(k)}</b><div class="muted sm">${esc(f)}, uploaded ${s.date}</div></div><a class="btn sm ml" data-act="toast" data-v="Preview opens in a new tab (mockup)">${I('eye','sm')} View</a></div>`:`<div class="file" style="border-style:dashed;background:var(--warn-l)"><div class="fi" style="background:var(--surface);color:var(--warn-t)">${I('alert','sm')}</div><div><b class="sm">${esc(k)}</b><div class="muted sm">Not provided</div></div><span class="ml b warn nodot">Missing</span></div>`}).join('')}</div>`,`<span class="muted sm">${i.have.length} of ${i.names.length} provided</span>`)}
+  ${card('Documents',`<div style="display:grid;gap:10px">${i.names.map(k=>{const f=s.docs&&s.docs[k]?s.docs[k]:k+'.pdf',ok=i.have.includes(k);return ok?`<div class="file row-card"><div class="fi">${extOf(f)}</div><div><b class="sm">${esc(k)}</b><div class="muted sm">${esc(f)}, uploaded ${s.date}</div></div><a class="btn sm ml" data-act="toast" data-v="Preview opens in a new tab (mockup)">${I('eye','sm')} View</a></div>`:`<div class="file row-card need warn"><div class="fi" style="background:var(--surface);color:var(--warn-t)">${I('alert','sm')}</div><div><b class="sm">${esc(k)}</b><div class="muted sm">Not provided</div></div><span class="ml b warn nodot">Missing</span></div>`}).join('')}</div>`,`<span class="muted sm">${i.have.length} of ${i.names.length} provided</span>`)}
  </div><div class="grid" style="gap:16px;align-content:start">
   ${card('Decision',`<div class="stepper" style="margin-bottom:6px">${[0,1,2].map(n=>`<i class="${n<=stepIdx?(n===2?(s.status==='Approved'?'ok':'bad'):'on'):''}"></i>`).join('')}</div><div class="sbleg" style="margin:0 0 14px">${steps.map(x=>`<span>${x}</span>`).join('')}</div>
    <div class="sm" style="margin-bottom:12px">Primary reviewer: <b>${esc(gov.co)}</b> <span class="b mute nodot">${gov.role==='gc'?'GC':'Owner'}</span></div>${S.role==='owner'&&gov.role==='gc'?`<div class="banner info" style="margin-bottom:14px">${I('shield')}<div class="sm">${esc(gov.co)} reviews its own trades. You can see everything and your decision will be recorded as an <b>Owner ${decided||(s.hist||[]).some(x=>x.role==='gc')?'override':'decision'}</b>.</div></div>`:''}
