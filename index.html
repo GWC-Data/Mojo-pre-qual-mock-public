@@ -458,7 +458,7 @@ tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: var(--
   #toast { left: var(--space-sm); right: var(--space-sm); transform: none; bottom: var(--space-md); } .kv { grid-template-columns: 5.5rem minmax(0, 1fr); }
   .inp, input, select, textarea { font-size: 1rem; }
 }
-@media (max-width: 40rem) {
+@media (max-width: 51.25rem) {
   table { min-width: 0; } thead { display: none; }
   tbody tr { display: block; padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-rule); } tbody tr:last-child { border-bottom: 0; }
   td { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: start; gap: var(--space-2xs) var(--space-md); border: 0; padding: var(--space-2xs) 0 !important; text-align: right; }
@@ -686,7 +686,7 @@ th{white-space:nowrap}
  .card>.toolbar, .card>.bd.np>.list>div { padding-inline: var(--space-md); }
  .tt th:first-child, .tt td:first-child { padding-left: var(--space-md); } .tt th:last-child, .tt td:last-child { padding-right: var(--space-md); }
 }
-@media (max-width: 40rem) {
+@media (max-width: 51.25rem) {
  .logtbl, .logtbl tbody { display: block; width: 100%; } .logtbl { table-layout: auto; } .logtbl colgroup { display: none; } .logcard { overflow: visible; }
  .logtbl tbody tr { padding: var(--space-sm) var(--space-md); } .logtbl td { padding: var(--space-3xs) 0 !important; text-align: right; } .logtbl td:first-child { display: grid; text-align: right; padding-bottom: var(--space-3xs) !important; } .logtbl td:first-child::before { display: block; }
  .logtbl td[data-label="What"], .logtbl td[data-label="Activity"] { display: block; text-align: left; } .logtbl td[data-label="What"]::before, .logtbl td[data-label="Activity"]::before { display: block; margin-bottom: var(--space-3xs); } .logtbl td[data-label="What"] .b { white-space: normal; }
@@ -696,6 +696,24 @@ th{white-space:nowrap}
 }
 @media (max-width: 40rem) {
  .fbar { grid-template-columns: minmax(0, 1fr); } .fbar-top { flex-direction: column; align-items: stretch; } .fbar-end { width: 100%; margin-left: 0; flex-wrap: wrap; justify-content: stretch; } .fbar-end>* { flex: 1 1 100%; } .fbar .search, .fsel { width: 100% !important; } .fbar-row { grid-template-columns: minmax(0, 1fr); } .fbar-count { white-space: normal; } .fclear { justify-self: start; flex: none !important; }
+}
+
+/* ---- Error / status pages (401, 403, 404, 500, 503) ---- */
+.errp { display: grid; place-items: center; min-height: min(70vh, 40rem); padding: var(--space-xl) 0; }
+.errp .eb { width: 100%; max-width: 34rem; text-align: center; display: grid; justify-items: center; gap: var(--space-sm); }
+.errp .ecode { font-size: clamp(4rem, 14vw, 7rem); font-weight: 700; line-height: 1; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--color-accent), var(--color-accent-strong)); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; opacity: .9; }
+.errp .eic { width: 4rem; height: 4rem; border-radius: 1.25rem; display: grid; place-items: center; background: var(--tint-accent); color: var(--color-accent-strong); margin-bottom: var(--space-2xs); } .errp .eic svg.i { width: 1.75rem; height: 1.75rem; }
+.errp .eic.warn { background: var(--warn-l); color: var(--warn-t); } .errp .eic.bad { background: var(--tint-bad); color: var(--color-error); }
+.errp h1 { font-size: var(--text-xl); margin: 0; } .errp p { margin: 0; color: var(--color-muted); max-width: 28rem; overflow-wrap: anywhere; }
+.errp .eact { display: flex; flex-wrap: wrap; gap: var(--space-sm); justify-content: center; margin-top: var(--space-sm); }
+.errp .emeta { margin-top: var(--space-md); padding: var(--space-xs) var(--space-sm); border: 1px dashed var(--color-edge); border-radius: var(--radius-ctl); font-size: var(--text-xs); color: var(--color-muted); display: inline-flex; gap: var(--space-xs); align-items: center; flex-wrap: wrap; justify-content: center; max-width: 100%; overflow-wrap: anywhere; } .errp .emeta code { color: var(--color-ink); }
+.errp .ehelp { font-size: var(--text-xs); color: var(--color-muted); margin-top: var(--space-xs); }
+@media (max-width: 40rem) { .errp { padding: var(--space-lg) 0; } .errp .eact { flex-direction: column; width: 100%; } .errp .eact .btn { width: 100%; justify-content: center; } }
+@media (min-width: 51.3125rem) and (max-width: 75rem) { th, td { padding-inline: var(--space-xs); } td { font-size: var(--text-sm); } .tt td .cell b { font-size: var(--text-sm); } }
+/* tablet landscape: wide tables scroll inside the card, with a pinned first column and edge shadows as the cue */
+@media (min-width: 51.3125rem) and (max-width: 75rem) {
+ .card>.bd.np th:first-child, .card>.bd.np td:first-child { position: sticky; left: 0; z-index: var(--z-base); background: var(--color-paper); }
+ .card>.bd.np { background: linear-gradient(to right, var(--color-paper) 30%, transparent) left, linear-gradient(to left, var(--color-paper) 30%, transparent) right, radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / .14), transparent) left, radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / .14), transparent) right; background-repeat: no-repeat; background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%; background-attachment: local, local, scroll, scroll; }
 }
 </style>
 </head>
@@ -1528,7 +1546,7 @@ function loginForm(){
 }
 function authScreen(kind){
  if(!F.auth)F.auth=freshAuth();
- return authShell(kind==='setpw'?setpwForm():kind==='signup'?signupForm():kind==='invite'?inviteScreen():kind==='invalid'?invalidInvite():loginForm());
+ return authShell(kind==='setpw'?setpwForm():kind==='signup'?signupForm():kind==='invite'?inviteScreen():kind==='invalid'?invalidInvite():kind==='err'?errorPage(F.errCode||404,{standalone:true}):loginForm());
 }
 
 /* ============ v3, SHELL (sidebar, topbar, search, impersonation bar) ============ */
@@ -1969,19 +1987,42 @@ function setpwForm(){
  <p class="sm muted" style="margin-top:24px;text-align:center">Need help? Contact Mojo support at support@mojo-platform.com</p>`;
 }
 
+/* ============ ERROR PAGES ============ */
+const ERRS={
+ 401:{ic:'lock',tone:'warn',t:'Your session has expired',d:'For your security you were signed out. Sign in again to pick up where you left off.'},
+ 403:{ic:'shield',tone:'warn',t:'You don’t have access to this page',d:'Your role doesn’t include permission to view this. If you think that’s a mistake, ask an admin at your company to update your access.'},
+ 404:{ic:'search',tone:'',t:'Page not found',d:'The page you’re looking for doesn’t exist, was moved, or the link is out of date.'},
+ 500:{ic:'alert',tone:'bad',t:'Something went wrong on our end',d:'We hit an unexpected error while loading this page. Your data is safe. Try again in a moment.'},
+ 503:{ic:'clock',tone:'warn',t:'We’ll be right back',d:'PreQual Pro is down for scheduled maintenance. Your work is saved and the service will return shortly.'}
+};
+function errorPage(code,o={}){
+ const c=ERRS[code]||ERRS[404],ref=o.ref||('ERR-'+Math.random().toString(36).slice(2,8).toUpperCase());
+ const SA=o.standalone,back=`<a class="btn p" data-act="auth" data-v="login" data-ctx="">${I('logout','sm')} ${code===401?'Sign in':'Back to sign in'}</a>`;
+ const prim=SA?back:code===401?`<a class="btn p" data-act="auth" data-v="login" data-ctx="">${I('logout','sm')} Sign in</a>`:code===500||code===503?`<a class="btn p" data-act="errretry">${I('hist','sm')} Try again</a>`:`<a class="btn p" data-go="dashboard">${I('home','sm')} Go to dashboard</a>`;
+ const sec=SA?'':code===401?'':code===500||code===503?`<a class="btn" data-go="dashboard">${I('home','sm')} Dashboard</a>`:`<a class="btn" data-act="errback">Go back</a>`;
+ const extra=SA&&code!==403&&code!==500?'':code===403?`<a class="btn g" data-act="toast" data-v="Access request sent to your company admin (mockup)">${I('send','sm')} Request access</a>`:code===500?`<a class="btn g" data-act="toast" data-v="Problem reported to support (mockup)">${I('flag','sm')} Report problem</a>`:'';
+ const meta=SA?(code===500?`<div class="emeta">Reference <code>${ref}</code></div>`:''):code===404&&o.path?`<div class="emeta">Requested: <code>${esc(o.path)}</code></div>`:code===403&&CUR?`<div class="emeta">Signed in as <code>${esc(CUR.email)}</code> · ${esc(ROLELBL[S.role]||S.role)}</div>`:code===500?`<div class="emeta">Reference <code>${ref}</code>${o.detail?` · <code>${esc(o.detail).slice(0,80)}</code>`:''}</div>`:'';
+ return `<div class="errp" role="alert"><div class="eb"><div class="eic ${c.tone}">${I(c.ic)}</div><div class="ecode" aria-hidden="true">${code}</div><h1>${c.t}</h1><p>${c.d}</p><div class="eact">${prim}${sec}${extra}</div>${meta}<div class="ehelp">Need help? Contact support at support@mojo-platform.com</div></div></div>`;
+}
+const ROUTE_EXTRA=['project','project-new','bulk','invite','account','notifications','submit','submission','q-builder','q-assign','q-assignments','respond','review','gc-detail','trade-detail','mojo-company','mojo-history','error'];
+P.error=c=>errorPage(+c||404);
+/* resolves a route to {r: sidebar highlight, html}; unknown routes 404, forbidden routes 403, crashes 500 */
+function pageHtml(r,arg){
+ const a=decodeURIComponent(arg||'')||undefined;
+ if(!P[r])return {r:'',html:errorPage(404,{path:location.hash||'#/'+r})};
+ if(!NAV[S.role].map(n=>n[0]).includes(r)&&!ROUTE_EXTRA.includes(r))return {r:'',html:errorPage(403)};
+ try{return {r,html:P[r](a)}}catch(err){console.error(err);return {r,html:errorPage(500,{detail:err&&err.message})}}
+}
+
 /* ============ ROUTER & RENDER ============ */
 let AUTH='login';
 function parse(){const h=(location.hash||'#/dashboard').slice(2).split('?')[0];const [r,...rest]=h.split('/');return [r||'dashboard',rest.join('/')]}
 function go(path){location.hash='#/'+path}
 function render(){
- if(AUTH){$('#root').innerHTML=authScreen(AUTH)+`<div class="demo">Auth preview <a data-act="auth" data-v="login" data-ctx="">Login</a><a data-act="auth" data-v="signup" data-ctx="">Sign up</a><a data-act="auth" data-v="invite" data-ctx="gc">Invite (GC)</a><a data-act="auth" data-v="invite" data-ctx="company">Invite (Trade)</a><a data-act="auth" data-v="invite" data-ctx="member">Invite (team)</a><a data-act="auth" data-v="invite" data-ctx="qr">Invite (QR)</a><a data-act="auth" data-v="invalid" data-ctx="">Expired</a><a data-act="auth" data-v="app">Enter app</a>${AUTHCTX.setup?'<a data-act="setpwback">← Back to Mojo admin</a>':''}</div>`;window.scrollTo(0,0);return}
+ if(AUTH){$('#root').innerHTML=authScreen(AUTH)+`<div class="demo">Auth preview <a data-act="auth" data-v="login" data-ctx="">Login</a><a data-act="auth" data-v="signup" data-ctx="">Sign up</a><a data-act="auth" data-v="invite" data-ctx="gc">Invite (GC)</a><a data-act="auth" data-v="invite" data-ctx="company">Invite (Trade)</a><a data-act="auth" data-v="invite" data-ctx="member">Invite (team)</a><a data-act="auth" data-v="invite" data-ctx="qr">Invite (QR)</a><a data-act="auth" data-v="invalid" data-ctx="">Expired</a><a data-act="auth" data-v="err" data-ctx="401">Error 401</a><a data-act="auth" data-v="err" data-ctx="403">Error 403</a><a data-act="auth" data-v="err" data-ctx="404">Error 404</a><a data-act="auth" data-v="err" data-ctx="500">Error 500</a><a data-act="auth" data-v="err" data-ctx="503">Error 503</a><a data-act="auth" data-v="app">Enter app</a>${AUTHCTX.setup?'<a data-act="setpwback">← Back to Mojo admin</a>':''}</div>`;window.scrollTo(0,0);return}
  FK=0;let [r,arg]=parse();
  const mojoMap={dashboard:'dashboard'};
- if(!P[r])r='dashboard';
- const allowed=NAV[S.role].map(n=>n[0]);
- const extra=['project','project-new','bulk','invite','account','notifications','submit','submission','q-builder','q-assign','q-assignments','respond','review','gc-detail','trade-detail','mojo-company','mojo-history'];
- if(!allowed.includes(r)&&!extra.includes(r)){r='dashboard';arg=''}
- const html=P[r](decodeURIComponent(arg||'')||undefined);
+ const pg=pageHtml(r,arg),html=pg.html;r=pg.r;
  $('#root').innerHTML=`<div class="app"><button type="button" class="skip" data-act="skipmain">Skip to content</button>${sidebar(r==='mojo-history'?'mojo-queue':r)}<div class="main">${topbar()}<main class="content" id="main" tabindex="-1">${impBanner()}${html}</main></div>${tabbarHtml(r==='mojo-history'?'mojo-queue':r)}</div>`;
  window.scrollTo(0,0);
 }
@@ -1989,7 +2030,7 @@ function toast(m){const t=document.createElement('div');t.className='tst';t.inne
 function openModal(h){$('#modal').innerHTML=`<div class="modalbg"><div class="modal">${h}</div></div>`}
 function closeModal(){$('#modal').innerHTML=''}
 const keepScroll=fn=>{const y=window.scrollY;fn();window.scrollTo(0,y)};
-function rerender(){keepScroll(()=>{document.querySelectorAll('.scrim').forEach(s=>s.remove());FK=0;const [r,arg]=parse();const html=P[P[r]?r:'dashboard'](decodeURIComponent(arg||'')||undefined);document.querySelector('.content').innerHTML=impBanner()+html;document.querySelector('.top').outerHTML=topbar();document.querySelector('.side').outerHTML=sidebar(r==='mojo-history'?'mojo-queue':P[r]?r:'dashboard')})}
+function rerender(){keepScroll(()=>{document.querySelectorAll('.scrim').forEach(s=>s.remove());FK=0;const [r,arg]=parse();const pg=pageHtml(r,arg),html=pg.html;document.querySelector('.content').innerHTML=impBanner()+html;document.querySelector('.top').outerHTML=topbar();document.querySelector('.side').outerHTML=sidebar(pg.r==='mojo-history'?'mojo-queue':pg.r)})}
 
 const ACT={
  navtoggle:()=>{S.navOpen=!S.navOpen;const s=document.querySelector('.side'),c=document.querySelector('.scrim');s&&s.classList.toggle('open',S.navOpen);c&&c.classList.toggle('show',S.navOpen)},
@@ -1999,6 +2040,8 @@ const ACT={
  expall:()=>{const all=GCS.every(g=>S.exp['g:'+g.n]);GCS.forEach(g=>S.exp['g:'+g.n]=!all);rerender()},
  filter:e=>{S.filter[e.dataset.k]=e.dataset.v;rerender()},
  step:e=>{S.step=+e.dataset.v;rerender()},
+ errretry:()=>{rerender()},
+ errback:()=>{history.length>1?history.back():go('dashboard')},
  toast:e=>toast(e.dataset.v),
  toastgo:e=>{const [m,p]=e.dataset.v.split('|');toast(m);go(p)},
  readall:()=>{S.notifs.forEach(n=>n.un=false);S.menu=null;rerender()},
@@ -2172,7 +2215,7 @@ function loadCsv(name,text){
 }
 Object.assign(ACT,{
  /* ---- auth ---- */
- auth:e=>{S.menu=null;if(e.dataset.v==='app'){enterApp(CUR||ACCOUNTS[DEMO_EMAIL.owner]);return}openAuth(e.dataset.v,e.dataset.ctx===undefined?undefined:(e.dataset.ctx||null))},
+ auth:e=>{S.menu=null;if(e.dataset.v==='err'){F.errCode=+e.dataset.ctx||404;openAuth('err');return}if(e.dataset.v==='app'){enterApp(CUR||ACCOUNTS[DEMO_EMAIL.owner]);return}openAuth(e.dataset.v,e.dataset.ctx===undefined?undefined:(e.dataset.ctx||null))},
  pickrole:e=>{const a=F.auth;a.loginRole=e.dataset.v;a.email=DEMO_EMAIL[e.dataset.v];a.pass='Demo1234!';a.err={};a.error=null;render()},
  authur:e=>{F.auth.ur=e.dataset.v;render()},
  forgot:()=>{
