@@ -1044,13 +1044,16 @@ td.ta-r { text-align: right; }
 .seg button.ico svg { width: 1.125rem; height: 1.125rem; }
 
 /* details as one line under the title, like a breadcrumb */
-.metaline { display: block; margin: calc(-1 * var(--space-xs)) 0 var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); line-height: 2; }
-.metaline > .b, .metaline .mtxt, .metaline .mi { display: inline; }
-.metaline > .b { display: inline-flex; vertical-align: middle; margin-right: var(--space-sm); }
-.metaline .mi { overflow-wrap: anywhere; } .metaline .mk { color: var(--color-muted); }
-.metaline .msep { color: var(--color-edge); margin: 0 var(--space-sm); }
-.metaline .mi.ml { display: inline-flex; vertical-align: middle; margin-left: var(--space-md); }
-.metaline .mi svg { vertical-align: -0.2em; }
+.metaline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) 0; margin: calc(-1 * var(--space-xs)) 0 var(--space-lg); font-size: var(--text-sm); color: var(--color-ink-2); line-height: 1.5; }
+.metaline .mbadge { margin-right: var(--space-md); } .metaline .mbadge .b { margin: 0; }
+.metaline .mtxt { flex: 1 1 0; min-width: 0; }
+.metaline .mtxt { display: flex; flex-wrap: wrap; align-items: center; row-gap: var(--space-2xs); min-width: 0; }
+.metaline .mi { display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: 1.75rem; }
+.metaline .mk { color: var(--color-muted); }
+.metaline .msep { color: var(--color-edge); margin: 0 var(--space-sm); line-height: 1; }
+.metaline .mptp { color: var(--color-error); font-weight: 500; } .metaline .mptp svg { stroke-width: 2.4; }
+.metaline .mi.ml { margin-left: auto; padding-left: var(--space-md); }
+@media (max-width: 51.25rem) { .metaline { display: block; } .metaline .mtxt { display: flex; flex-wrap: wrap; } .metaline .mi { white-space: nowrap; } .metaline .mi.ml { display: flex; margin: var(--space-xs) 0 0; padding: 0; width: 100%; } .metaline .msep { margin: 0 var(--space-xs); } }
 </style>
 </head>
 <body>
@@ -1087,6 +1090,7 @@ const IC={
  cards:'<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>',
  table:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/>',
  tree:'<rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/>',
+ asterisk:'<path d="M12 4v16M5.07 8l13.86 8M18.93 8L5.07 16"/>',
  grip:'<circle cx="9" cy="6" r="1.2"/><circle cx="15" cy="6" r="1.2"/><circle cx="9" cy="12" r="1.2"/><circle cx="15" cy="12" r="1.2"/><circle cx="9" cy="18" r="1.2"/><circle cx="15" cy="18" r="1.2"/>',
  upload:'<path d="M12 16V4M6 10l6-6 6 6M4 20h16"/>',
  dl:'<path d="M12 4v12M6 12l6 6 6-6M4 20h16"/>',
@@ -1424,7 +1428,7 @@ const WS={
   ORG:mkOrg({...FULL,name:'Ironbridge Industrial',trade:'General Contractor',addr:'6100 Spencer Hwy',city:'Pasadena, TX 77505',years:'11',emp:'88',lic:'GC-552031',phone:'(281) 555-0121',emr:'0.97',f_ptp:'',f_bond:'',bond_co:'',bond_single:'',bond_agg:'',bond_exp:''}),CHART:{trend:[1,2,2,4,3,5],split:[7,3,1,1]}})},
  t1:{name:'Apex Electrical',sub:'Trade, Electrical, Houston, TX',type:'trade',seed:()=>({
   PROJECTS:[mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',12,3,68,'invited'),mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',6,2,41,'invited')],
-  GCS:[],TRADES:[],
+  GCS:[],TRADES:[{n:'Apex Low Voltage',t:'Low Voltage / Systems',emr:.88,stat:'Approved',proj:['Harbor Point Tower'],ptp:true,exp:'Sep 2027',by:'Apex Electrical'},{n:'Gulf Coast Wiring',t:'Wiring',emr:1.06,stat:'Needs info',proj:['Medical Plaza Renovation'],ptp:false,exp:'Dec 2026',by:'Apex Electrical'}],
   SUBS:[mkS('s51','Apex Electrical','Harbor Point Tower','Under review',[],'Nov 03'),mkS('s5','Apex Electrical','Medical Plaza Renovation','Approved',[],'Oct 21')],
   ASSIGN:[mkA('a51','Harbor Point Site Orientation','Apex Electrical','Harbor Point Tower','Pending','Nov 18','Ironbridge Construction'),mkA('a52','Trade Safety Questionnaire','Apex Electrical','Harbor Point Tower','In progress','Nov 12','Meridian Development'),mkA('a53','Financial Review — Tier 1','Apex Electrical','Medical Plaza Renovation','Needs more info','Nov 09','Ironbridge Construction')],
   TEAM:[mkT('Priya Raman','priya.raman@apexelectrical.com','Admin','Active','Today'),mkT('Marcus Lee','marcus.l@apexelectrical.com','Admin','Active','Yesterday'),mkT('Elena Petrova','elena.p@apexelectrical.com','Contributor','Active','2 days ago'),mkT('Tom Brennan','tom.b@apexelectrical.com','Contributor','Invited','—')],
@@ -1556,7 +1560,7 @@ function gauge(score,label,big=false){
 const NAV={
  owner:[['Overview'],['dashboard','Dashboard','home'],['Projects & Partners'],['projects','Projects','folder'],['gcs','General Contractors','hard'],['trades','Trades','wrench'],['Compliance'],['questionnaires','Questionnaires','clip'],['q-assignments','Assignments','swap'],['bank','Question Bank','db'],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
  gc:[['Overview'],['dashboard','Dashboard','home'],['Projects & Partners'],['projects','Projects','folder'],['trades','Trades','wrench'],['Compliance'],['questionnaires','Questionnaires','clip'],['my-assign','Assignments','swap',2],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
- trade:[['Overview'],['dashboard','Dashboard','home'],['Work'],['projects','My Projects','folder'],['my-assign','Assignments','swap',3],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
+ trade:[['Overview'],['dashboard','Dashboard','home'],['Work'],['projects','My Projects','folder'],['trades','Trades','wrench'],['my-assign','Assignments','swap',3],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
  mojo:[['Platform'],['dashboard','Dashboard','home'],['mojo-companies','Companies','bldg'],['mojo-bank','Question Bank','db'],['mojo-queue','Review Queue','shield',3],['mojo-activity','Activity Log','list']]
 };
 /* ============ PAGES ============ */
@@ -1783,7 +1787,8 @@ P['mojo-bank']=()=>bankPage(true);
 const CONDT=['radio_yes_no','multi_select'];
 const scopeBadge=q=>q.global?`<span class="b brand nodot sc-g" title="Global question, maintained by Mojo for every company">${I('globe','sm')} Global</span>`:`<span class="b mute nodot sc-m" title="Created by your company">${I('user','sm')} My question</span>`;
 const qGrip=(id,label)=>`<button type="button" class="dnd-h" draggable="true" data-id="${id}" aria-label="${esc(label)}" title="Drag to reorder, or focus and use the arrow keys">${I('grip','sm')}</button>`;
-const qMeta=(q,o={})=>`<span>${tlabel(q.type)}</span>${o.req!=null?`<span>${o.req?'Required':'Optional'}</span>`:''}${hasCorrect(q)?`<span class="exp-a" title="Correct answer used for scoring">Correct: ${esc(expText(q))}</span>`:''}${q.mojo?`<span class="b warn nodot" title="${esc(q.mojoNote)}">${I('shield','sm')} Mojo review</span>`:''}${o.scope?scopeBadge(q):''}${q.version>1?`<span class="b mute nodot">v${q.version}</span>`:''}${(o.tags?q.tags:[]).map(t=>`<span class="b mute nodot">${esc(t)}</span>`).join('')}`;
+const reqI=`<span class="reqi" title="Required" role="img" aria-label="Required">${I('asterisk','sm')}</span>`;
+const qMeta=(q,o={})=>`<span>${tlabel(q.type)}</span>${o.req!=null?(o.req?reqI:'<span>Optional</span>'):''}${hasCorrect(q)?`<span class="exp-a" title="Correct answer used for scoring">Correct: ${esc(expText(q))}</span>`:''}${q.mojo?`<span class="b warn nodot" title="${esc(q.mojoNote)}">${I('shield','sm')} Mojo review</span>`:''}${o.scope?scopeBadge(q):''}${q.version>1?`<span class="b mute nodot">v${q.version}</span>`:''}${(o.tags?q.tags:[]).map(t=>`<span class="b mute nodot">${esc(t)}</span>`).join('')}`;
 P['q-builder']=(id)=>{
  const tpl=id&&TEMPLATES.find(x=>x.id===id);
  const key=tpl?tpl.id:'new';
@@ -1797,8 +1802,8 @@ P['q-builder']=(id)=>{
    const cd=b.conds[q.id],tg=cd&&qById(cd.questionId);
    const vals=tg&&tg.type==='multi_select'?tg.options:['yes','no'],rq=reqOf(q,{req:b.req});
    return `<div class="qitem dnd-row ${q.global?'':'mine'}" data-id="${q.id}"><div class="qi-main">${qGrip(q.id,'Reorder question '+(i+1)+': '+q.text)}<span class="qnum">${i+1}</span>
-   <div class="qi-t"><div class="qi-q">${esc(q.text)}${rq?'<span class="req" title="Required" aria-label="required">*</span>':''}</div><div class="qi-m">${scopeBadge(q)}${catBadge(q.cat)}${qMeta(q)}${cd&&tg?`<span class="b brand nodot">Only if “${esc(tg.text.slice(0,26))}${tg.text.length>26?'…':''}” = ${esc(cd.value)}</span>`:''}</div></div>
-   <div class="qi-a"><label class="reqsw" title="${rq?'Required in this questionnaire':'Optional in this questionnaire'}"><input type="checkbox" class="swi" role="switch" data-change="qbreq" data-id="${q.id}" aria-label="Required: ${esc(q.text)}" ${rq?'checked':''}><span>Required</span></label>
+   <div class="qi-t"><div class="qi-q">${esc(q.text)}${rq?reqI:''}</div><div class="qi-m">${scopeBadge(q)}${catBadge(q.cat)}${qMeta(q)}${cd&&tg?`<span class="b brand nodot">Only if “${esc(tg.text.slice(0,26))}${tg.text.length>26?'…':''}” = ${esc(cd.value)}</span>`:''}</div></div>
+   <div class="qi-a"><label class="reqsw" title="${rq?'Required in this questionnaire':'Optional in this questionnaire'}"><input type="checkbox" class="swi" role="switch" data-change="qbreq" data-id="${q.id}" aria-label="Required: ${esc(q.text)}" ${rq?'checked':''}><span class="reqsw-i">${reqI}</span></label>
    ${elig.length?`<button class="ibtn ${cd?'on':''}" data-act="qbcond" data-id="${q.id}" title="Show only if another answer matches" aria-label="Condition">${I('branch','sm')}</button>`:'<span class="ibtn" style="visibility:hidden" aria-hidden="true"></span>'}
    <span class="qi-mv"><button class="ibtn" data-act="qbup" data-id="${q.id}" ${i===0?'disabled':''} aria-label="Move up">${I('chevup','sm')}</button><button class="ibtn" data-act="qbdown" data-id="${q.id}" ${i===sel.length-1?'disabled':''} aria-label="Move down">${I('down','sm')}</button></span>
    <button class="ibtn dng" data-act="qbdel" data-id="${q.id}" title="Remove from questionnaire" aria-label="Remove question">${I('x','sm')}</button></div></div>
@@ -2118,7 +2123,7 @@ P.respond=(id)=>{
  `<div class="card" style="margin-bottom:18px"><div class="bd"><div class="row wrap" style="gap:22px"><div style="flex:1;min-width:260px"><div class="row sm" style="margin-bottom:8px"><b>Progress</b><span class="muted">${c.n-c.pend} of ${c.n} answered</span></div><div class="prog"><i style="width:${c.human/c.n*100}%;background:var(--brand)"></i><i style="width:${c.ai/c.n*100}%;background:var(--ai)"></i></div><div class="legend" style="margin-top:8px"><span><i style="background:var(--brand)"></i>Manual ${c.human}</span><span><i style="background:var(--ai)"></i>AI-suggested ${c.ai}</span><span><i style="background:var(--track)"></i>Pending ${c.pend}</span></div></div>${done?'':`<button class="btn ai" data-act="aiOpen">${I('sparkle','sm')} Complete with AI</button>`}</div></div></div>`+
  (R.skipped.length?`<div class="banner warn">${I('alert')}<div><b>${R.skipped.length} file skipped.</b> ${R.skipped.join(', ')} — file contents didn't match the file type and were ignored.</div></div>`:'')+
  (R.ran?`<div class="banner ai">${I('sparkle')}<div><b>AI suggestions added.</b> Review each one — suggested answers are marked and the mark clears the moment you edit. Your own answers were never overwritten.</div></div>`:'')+
- `<div ${done?'style="pointer-events:none;opacity:.85"':''}>`+R.answers.map((x,i)=>`<div class="q ${x.src==='ai'?'ai':''} ${R.err&&isReqAns(x)&&!x.src?'miss':''}" id="rq${x.id}"><div class="qh"><div class="qn">${i+1}</div><div style="flex:1"><div class="row"><h3 class="qt">${x.q}${isReqAns(x)?'<span class="req" title="Required" aria-label="required">*</span>':''}</h3>${!isReqAns(x)?'<span class="muted sm ml">Optional</span>':''}${x.src==='ai'?'<span class="b ai nodot ml">'+I('sparkle','sm')+' AI-suggested</span>':x.src==='human'?'<span class="b mute nodot ml">Manual</span>':''}</div><div class="muted sm">${x.cat}</div>${qInput(x)}${x.src==='ai'&&x.ai?`<div class="sm" style="margin-top:10px;color:var(--color-accent-strong)">Confidence: <b>${x.ai.c}</b>, Source: ${x.ai.s}</div>`:''}</div></div></div>`).join('')+`</div>`;
+ `<div ${done?'style="pointer-events:none;opacity:.85"':''}>`+R.answers.map((x,i)=>`<div class="q ${x.src==='ai'?'ai':''} ${R.err&&isReqAns(x)&&!x.src?'miss':''}" id="rq${x.id}"><div class="qh"><div class="qn">${i+1}</div><div style="flex:1"><div class="row"><h3 class="qt">${x.q}${isReqAns(x)?reqI:''}</h3>${!isReqAns(x)?'<span class="muted sm ml">Optional</span>':''}${x.src==='ai'?'<span class="b ai nodot ml">'+I('sparkle','sm')+' AI-suggested</span>':x.src==='human'?'<span class="b mute nodot ml">Manual</span>':''}</div><div class="muted sm">${x.cat}</div>${qInput(x)}${x.src==='ai'&&x.ai?`<div class="sm" style="margin-top:10px;color:var(--color-accent-strong)">Confidence: <b>${x.ai.c}</b>, Source: ${x.ai.s}</div>`:''}</div></div></div>`).join('')+`</div>`;
 };
 
 /* ---- review (per assignment) ---- */
@@ -3144,7 +3149,7 @@ P.project=(id)=>{
  let body='';
  if(t==='overview')body=`<div class="grid g21"><div class="grid" style="gap:16px;align-content:start">
   ${attn.length?card('Needs attention',attn.slice(0,3).map(a=>`<a class="todo" ${a.go?`data-go="${a.go}"`:''}><span class="ti" style="background:${a.bg};color:${a.c}">${I(a.ic,'sm')}</span><span style="flex:1;min-width:0"><b>${esc(a.t)}</b><small>${esc(a.s)}</small></span>${a.go?I('chev','sm'):''}</a>`).join(''),attn.length>3?`<a class="btn sm" data-act="tab" data-k="pd" data-v="assign">+${attn.length-3} more</a>`:'',true):''}
-  ${card(isT?'My questionnaires':'Pre-qualification',isT?`<div class="row sm" style="margin-bottom:8px"><b>${qsubs.length} of ${asg.length} submitted</b></div><div class="prog"><i style="width:${asg.length?Math.round(qsubs.length/asg.length*100):0}%;background:var(--brand)"></i></div>`:`<div class="row sm" style="margin-bottom:8px"><b>${st.ap} of ${totT} trades approved</b></div>${segBar(st)}`,!isT&&st.subs.length?`<a class="btn sm" data-act="tab" data-k="pd" data-v="assign">View questionnaires</a>`:(isT?`<a class="btn sm" data-go="my-assign">Open</a>`:''))}
+  ${card(isT?'My submissions':'Pre-qualification',isT?`<div class="row sm" style="margin-bottom:8px"><b>${qsubs.length} of ${asg.length} submitted</b></div><div class="prog"><i style="width:${asg.length?Math.round(qsubs.length/asg.length*100):0}%;background:var(--brand)"></i></div>`:`<div class="row sm" style="margin-bottom:8px"><b>${st.ap} of ${totT} trades approved</b></div>${segBar(st)}`,!isT&&st.subs.length?`<a class="btn sm" data-act="tab" data-k="pd" data-v="assign">View submissions</a>`:(isT?`<a class="btn sm" data-go="my-assign">Open</a>`:''))}
   ${card('Key people',ppl.length?`<div class="pgrid">${ppl.filter(x=>x.role!=='Your team').slice(0,3).map(x=>pchip(x)).join('')}</div>`:'<div class="muted sm">Nobody assigned yet.</div>',ppl.length>3?`<a class="btn sm" data-act="tab" data-k="pd" data-v="people">See all ${ppl.length}</a>`:'')}
  </div><div class="grid" style="gap:16px;align-content:start">
   ${card('Details',`${m.desc?`<p class="sm muted" style="margin-bottom:12px">${esc(m.desc)}</p>`:''}<div class="kv"><small>Type</small><div>${esc(m.type)}</div><small>Timeline</small><div>${drange(p.start,p.end)}</div><small>Schedule</small><div>${p.pct}% elapsed</div><small>Budget</small><div>${esc(m.budget)}</div></div>`,isT?'':'<button class="btn sm" data-act="editproject" data-id="'+p.id+'">'+I('edit','sm')+' Edit</button>')}
@@ -3167,7 +3172,7 @@ P.project=(id)=>{
  }
  const sum=`<div class="sumline box"><span class="sf"><small>${isT?'Status':'Health'}</small><span title="${isT?'':esc(st.h[3].join('. '))}">${isT?badge(p.status):hBadge(st.h)}</span></span><span class="sf"><small>Owner</small>${coLink(m.owner)}</span><span class="sf"><small>General contractor</small>${p.gc==='Unassigned'&&!isT?`<a class="colink" data-go="invite/gc/${p.id}">Assign</a>`:coLink(p.gc)}</span><span class="sf"><small>Timeline</small><span>${drange(p.start,p.end)}</span></span><span class="sf ml"><small>Team</small>${avStack(ppl,4)}</span></div>`;
  return head(p.name,p.addr,!isT?`<a class="btn" data-go="invite/trade/${p.id}">${I('send','sm')} Invite</a><a class="btn p" data-go="q-assign/${p.id}">Assign questionnaire</a>`:`<a class="btn p" data-go="my-assign">My questionnaires</a>`,crumb(['Projects','projects'],[p.name]))+sum+`<div class="kpis k3">${kpis.join('')}</div>`+
- tabs('pd',[['overview','Overview'],['people','People',ppl.length],['assign','Questionnaires',asg.length],['activity','Activity']])+body;
+ tabs('pd',[['overview','Overview'],['people','People',ppl.length],['assign','Submissions',asg.length],['activity','Activity']])+body;
 };
 
 /* ---- GCs & Trades lists: contacts + links ---- */
@@ -3175,8 +3180,9 @@ P.gcs=()=>head('General Contractors','','<a class="btn p" data-go="invite/gc">'+
 {
  const _tr=P.trades;
  P.trades=()=>{
-  const f=S.filter.tr||'All',q=((F.trq)||'').toLowerCase();const base=TRADES.filter(t=>(t.n+' '+t.t).toLowerCase().includes(q));const list=base.filter(t=>f==='All'||t.stat===f);
-  return head('Trades','',(S.role!=='trade'?'<a class="btn p" data-go="invite/trade">'+I('send','sm')+' Invite Trade</a>':''))+
+  const f=S.filter.tr||'All',q=((F.trq)||'').toLowerCase();const mineOnly=S.role==='trade';const base=TRADES.filter(t=>(!mineOnly||t.by===meName())&&(t.n+' '+t.t).toLowerCase().includes(q));const list=base.filter(t=>f==='All'||t.stat===f);
+  if(mineOnly&&!TRADES.some(t=>t.by===meName()))return head('Trades','','<a class="btn p" data-go="invite/trade">'+I('send','sm')+' Invite Trade</a>')+emptyState('No trades yet','Trades you invite to work with you will appear here.','invite/trade','Invite a trade');
+  return head('Trades','','<a class="btn p" data-go="invite/trade">'+I('send','sm')+' Invite Trade</a>')+
   card('',`<div class="toolbar tfbar"><div class="tfgroup">${fsel('Status','filter','tr',['All','Approved','Under review','Needs info','Flagged','Rejected'].map(c=>[c,c==='All'?'All':c,c==='All'?base.length:base.filter(t=>t.stat===c).length]),f)}</div><div class="tfend"><div class="search">${I('search','sm')}<input placeholder="Search trades" aria-label="Search trades" data-bind="trq" data-rr="focus" value="${esc(F.trq||'')}"></div>${viewSwitch('trv',F.trv||'list',[['list','List view','list'],['hier','Hierarchy view','tree']],'Trades view')}</div></div>
   ${list.length&&(F.trv||'list')==='hier'?tradeHier(list):list.length?`<table class="tt"><thead><tr><th>Trade company</th><th>Invited by</th><th>Projects</th><th>EMR</th><th>Insurance expires</th><th>Status</th><th>Actions</th></tr></thead><tbody>${list.map(t=>{const gcs=[...new Set(t.proj.map(p=>(projOf(p)||{}).gc).filter(Boolean))],kc=peopleOf(t.n)[0],qs=qOf(t.n),dd=daysTo('1 '+t.exp);return `<tr class="click" data-go="trade-detail/${encodeURIComponent(t.n)}"><td><div class="cell">${avt(t.n)}<div><b>${esc(t.n)}</b><small>${esc(t.t)}</small></div></div></td><td data-label="Invited by">${tradeBy(t)?coLink(tradeBy(t)):'<span class="muted">—</span>'}</td><td data-label="Projects">${t.proj.length?projChips(t.proj.map(n=>{const pr=projOf(n);return {id:pr?pr.id:'',name:n}}),1):'<span class="muted">Not on any project</span>'}</td><td>${emrB(t.emr)}</td><td>${expCell(t.exp,dd)}</td><td>${badge(t.stat)}</td><td><a class="btn sm ${t.proj.length?'':'p'}" data-act="invproj" data-t="trade" data-v="${esc(t.n)}" title="Invite ${esc(t.n)} to a project">${I('send','sm')} Invite</a></td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:34px;text-align:center">No trades match.</div>'}`,'',true);
  };
@@ -3310,12 +3316,12 @@ function coPage(n){
  const kp=(l,v,sub,tab)=>`<a class="kpi" data-act="tab" data-k="cd" data-v="${tab}"><small>${l}</small><b>${v}</b><span>${sub}</span></a>`;
  const ap=M.subs.filter(s=>s.status==='Approved').length;
  const kpis=gc?[kp('Projects',M.projs.length,M.projs.filter(p=>p.status==='Active').length+' active','projects'),kp('Trades',M.kids.length,M.kids.filter(x=>x&&x.stat==='Approved').length+' approved','trades'),kp('EMR',e.emr.toFixed(2),e.emr>1?'Above 1.0 threshold':'Below 1.0 threshold','compliance')]
-  :[kp('Questionnaires',M.qsub.filter(x=>x.status==='Approved').length+' / '+M.qsub.length,M.qsub.length?'approved of submitted':'None submitted','questionnaires'),kp('EMR',e.emr.toFixed(2),e.emr>1?'Above 1.0 threshold':'Below 1.0 threshold','compliance'),kp('Insurance',M.ed!==null&&M.ed<0?'Expired':M.exp,M.ed===null?'':M.ed<0?'Renewal needed':'Expires in ~'+M.ed+' days','compliance')];
+  :[kp('Submissions',M.qsub.filter(x=>x.status==='Approved').length+' / '+M.qsub.length,M.qsub.length?'approved of submitted':'None submitted','questionnaires'),kp('EMR',e.emr.toFixed(2),e.emr>1?'Above 1.0 threshold':'Below 1.0 threshold','compliance'),kp('Insurance',M.ed!==null&&M.ed<0?'Expired':M.exp,M.ed===null?'':M.ed<0?'Renewal needed':'Expires in ~'+M.ed+' days','compliance')];
  const reports=gc?[]:[...new Set(M.projs.map(p=>p.gc).filter(g=>g&&g!=='Unassigned'))];
  const kc0=M.ppl[0],loc0=e.loc||M.prof.addr.split(', ').slice(-2).join(', ');
  const mi=(l,v)=>v?`<span class="mi"><span class="mk">${l}</span> ${v}</span>`:'';
- const items=[mi('',esc(loc0)),mi('',esc(gc?'General contractor':e.t)),kc0?mi('Contact',`<a class="colink" data-act="person" data-v="${esc(kc0.n+'|'+nm)}">${esc(kc0.n)}</a>`):'',mi('',esc(M.prof.phone)),kc0&&kc0.email?mi('',`<a class="colink" data-act="mailto" data-v="${esc(kc0.n)}">${esc(kc0.email)}</a>`):'',reports.length?mi('Reports to',reports.map(g=>coLink(g)).join(', ')):'',!gc&&e.by&&TRADES.some(x=>x.n===e.by)?mi('Invited by',coLink(e.by)):'',!gc&&!M.ptp?`<span class="mi">${ptpMark(false,1)} <span class="mk">PTP program</span></span>`:''].filter(Boolean);
- const sum=`<div class="metaline">${badge(e.stat)}<span class="mtxt">${items.join('<span class="msep" aria-hidden="true">·</span>')}</span><span class="mi ml">${avStack(M.ppl,4)}</span></div>`;
+ const items=[mi('',esc(loc0)),mi('',esc(gc?'General contractor':e.t)),kc0?mi('Contact',`<a class="colink" data-act="person" data-v="${esc(kc0.n+'|'+nm)}">${esc(kc0.n)}</a>`):'',mi('',esc(M.prof.phone)),kc0&&kc0.email?mi('',`<a class="colink" data-act="mailto" data-v="${esc(kc0.n)}">${esc(kc0.email)}</a>`):'',reports.length?mi('Reports to',reports.map(g=>coLink(g)).join(', ')):'',!gc&&e.by&&TRADES.some(x=>x.n===e.by)?mi('Invited by',coLink(e.by)):'',!gc&&!M.ptp?`<span class="mi mptp" title="No PTP program on file">${I('x','sm')} No PTP program</span>`:''].filter(Boolean);
+ const sum=`<div class="metaline"><span class="mtxt"><span class="mi mbadge">${badge(e.stat)}</span>${items.join('<span class="msep" aria-hidden="true">·</span>')}</span><span class="mi ml">${avStack(M.ppl,4)}</span></div>`;
  const projRow=p=>{const st=projStats(p),sb=M.subs.find(s=>s.proj===p.name&&(gc||s.trade===nm));return `<a class="prow" data-go="project/${p.id}"><span class="pw1"><b>${esc(p.name)}</b><small>${gc?tradesByProj(p.name).length+' trades':'GC: '+esc(p.gc)}</small></span><span class="pbar"><div class="prog"><i style="width:${p.pct}%;background:var(--brand)"></i></div><small class="muted">${p.pct}% complete</small></span>${gc?hBadge(st.h):(sb?badge(sb.status):'<span class="b mute nodot">No submission</span>')}${I('chev','sm')}</a>`};
  const ins=[['General Liability',CARRIERS[hsh(nm)%5],gc?'$2M / $4M':'$1M / $2M'],['Workers Comp',CARRIERS[(hsh(nm)+1)%5],'Statutory'],['Umbrella',CARRIERS[(hsh(nm)+2)%5],gc?'$10M':'$5M']];
  const tr=[+(e.emr*1.5).toFixed(2),+(e.emr*1.2).toFixed(2),+(e.emr*.95).toFixed(2)];
@@ -3340,7 +3346,7 @@ function coPage(n){
  if(t==='questionnaires'&&!M.qall.length)body=body.replace('</div></div>',`<div class="row" style="gap:8px;justify-content:center;flex-wrap:wrap"><a class="btn p" data-act="asgco" data-v="${esc(nm)}">${I('clip','sm')} Assign questionnaire</a>${M.projs.length?'':`<a class="btn" data-act="invproj" data-t="${gc?'gc':'trade'}" data-v="${esc(nm)}">${I('send','sm')} Invite to project</a>`}</div></div></div>`);
  const kc=M.ppl[0];
  return head(nm,'',(kc?`<a class="btn" data-act="mailto" data-v="${esc(kc.n)}">${I('mail','sm')} Email ${esc(kc.n.split(' ')[0])}</a>`:'')+`<a class="btn ${M.projs.length?'':'p'}" data-act="invproj" data-t="${gc?'gc':'trade'}" data-v="${esc(nm)}">${I('send','sm')} Invite to project</a><a class="btn p" data-act="asgco" data-v="${esc(nm)}">${I('clip','sm')} Assign questionnaire</a>`,crumb([gc?'General Contractors':'Trades',gc?'gcs':'trades'],[nm]))+sum+`<div class="kpis k3">${kpis.join('')}</div>`+
- tabs('cd',[['overview','Overview'],['projects','Projects',M.projs.length],...(gc?[['trades','Trades',M.kids.length]]:[]),['people','People',M.ppl.length],['compliance','Compliance',M.attn.filter(a=>!a.go).length||null],['questionnaires','Questionnaires',M.qall.length]])+body;
+ tabs('cd',[['overview','Overview'],['projects','Projects',M.projs.length],...(gc?[['trades','Trades',M.kids.length]]:[]),['people','People',M.ppl.length],['compliance','Compliance',M.attn.filter(a=>!a.go).length||null],['questionnaires','Submissions',M.qall.length]])+body;
 }
 P['gc-detail']=n=>coPage(n);
 P['trade-detail']=n=>coPage(n);
@@ -3457,7 +3463,7 @@ function trail(r,a){
   case 'project':{const p=proj(a);if(!p)return [H,sect('projects')];return [H,sect('projects'),...tabCrumb('pd',[p.name,'project/'+p.id])]}
   case 'submit':{const p=proj(a);return p?[H,sect('projects'),[p.name,'project/'+p.id,{k:'pd',v:'overview'}],['Pre-qualification submission']]:[H,sect('projects')]}
   case 'submission':{const s=SUBS.find(x=>x.id===a),p=s&&projOf(s.proj);if(!s)return [H,sect('projects')];
-   return [H,sect('projects'),...(p?[[p.name,'project/'+p.id,{k:'pd',v:'overview'}],['Questionnaires','project/'+p.id,{k:'pd',v:'assign'}]]:[]),[s.trade]]}
+   return [H,sect('projects'),...(p?[[p.name,'project/'+p.id,{k:'pd',v:'overview'}],['Submissions','project/'+p.id,{k:'pd',v:'assign'}]]:[]),[s.trade]]}
   case 'project-new':return [H,sect('projects'),['New project']];
   case 'bulk':return [H,sect('projects'),['Bulk upload']];
   case 'gc-detail':return [H,sect('gcs'),...tabCrumb('cd',[a||'—','gc-detail/'+encodeURIComponent(a||'')])];
@@ -3619,7 +3625,7 @@ function denied(r,a){
  const role=S.role,adm='Only company admins can open that page';
  if(/^mojo-/.test(r)&&role!=='mojo')return 'That area is for Mojo staff only';
  if(r==='gc-detail'&&role!=='owner')return "You don't have access to that page";
- if(r==='trade-detail'&&!(role==='owner'||role==='gc'))return "You don't have access to that page";
+ if(r==='trade-detail'&&!(role==='owner'||role==='gc')){const t=TRADES.find(x=>x.n===decodeURIComponent(a||''));if(!(role==='trade'&&t&&t.by===meName()))return "You don't have access to that page"}
  if((r==='project-new'||r==='bulk')&&!can('project.create'))return role==='trade'?"Trades can't create projects":adm;
  if(r==='invite'&&!can('invite.any'))return adm;
  if((r==='q-builder'||r==='q-assign')&&!can('q.manage'))return role==='trade'?"Trades can't manage questionnaires":adm;
