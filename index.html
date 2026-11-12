@@ -453,7 +453,6 @@ tbody tr.click { cursor: pointer; } tbody tr.click:hover td { background: var(--
 @media (max-width: 37.5rem) {
   .g4, .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rolegrid, .rolepick { grid-template-columns: minmax(0, 1fr); } .pc-meta { grid-template-columns: 1fr; }
   .actions { margin-left: 0; width: 100%; } .actions .btn { flex: 1; } .toolbar .search { width: 100%; }
-  .crumb { flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; max-width: 100%; scrollbar-width: none; } .crumb::-webkit-scrollbar { display: none; } .crumb a, .crumb span { flex: none; }
   #toast { left: var(--space-sm); right: var(--space-sm); transform: none; bottom: var(--space-md); } .kv { grid-template-columns: 5.5rem minmax(0, 1fr); }
   .inp, input, select, textarea { font-size: 1rem; }
 }
@@ -487,18 +486,10 @@ tr:focus-visible, [role=link]:focus-visible { outline-offset: -2px; }
 .tabbar { display: none; }
 .menubtn { align-items: center; }
 
-/* ---------- icon rail: laptops and landscape tablets ---------- */
-@media (min-width: 60rem) and (max-width: 80rem) {
-  :root { --side-w: 4.5rem; }
-  .brand { justify-content: center; padding-inline: 0; } .brand .bt { display: none; }
-  .tenant { justify-content: center; margin-inline: var(--space-xs); padding: var(--space-xs); } .tenant>div:nth-child(2), .tenant>span { display: none; }
-  .tenant .menu { left: 0; right: auto; width: 17rem; }
-  .nav { padding-inline: var(--space-xs); }
-  .nav .sec { font-size: 0; height: 1px; padding: 0; margin: var(--space-sm) var(--space-xs); background: var(--color-side-rule); }
-  .nav a { justify-content: center; padding: 0; position: relative; } .nav a .nl { display: none; }
-  .nav .cnt { position: absolute; top: var(--space-2xs); right: var(--space-2xs); min-width: 1.125rem; height: 1.125rem; padding: 0; }
-  .sidefoot { display: none; }
-}
+/* ---------- desktop sidebar: stay fully labeled by default ----------
+   Auto icon-rail between 60–80rem made typical laptop / 100% browser windows look
+   “zoomed” with a collapsed nav. Full sidebar is the default from 60rem up;
+   optional collapse remains via html.rail on wide screens (≥80.0625rem). */
 /* ---------- phones: bottom bar for the main places ---------- */
 @media (max-width: 51.25rem) {
   .tabbar { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); position: fixed; inset: auto 0 0 0; z-index: var(--z-sticky-nav); background: var(--color-paper); border-top: 1px solid var(--color-rule); padding-bottom: env(safe-area-inset-bottom); }
@@ -514,7 +505,6 @@ tr:focus-visible, [role=link]:focus-visible { outline-offset: -2px; }
 @media (display-mode: standalone) { .top { padding-top: env(safe-area-inset-top); } }
 
 .tabs + .card:not(:has(>.hd)) { border-top: 0; }
-@media (min-width: 60rem) and (max-width: 80rem) { .nav .cnt { top: 0; right: 0; } }
 
 /* ================= polish layer: depth, colour and rhythm ================= */
 :root {
@@ -865,7 +855,6 @@ table.hier .hi4 { padding-left: calc(var(--space-lg) * 3); } table.hier .hi5 { p
 .pmeter .prog { height: 0.25rem; background: var(--color-side-rule); margin: 0; } .pmeter .prog i { background: var(--color-accent); }
 .pmeter.done .prog i { background: var(--color-success); }
 .pmeter:focus-visible { outline: 2px solid var(--color-side-ink); outline-offset: 2px; }
-@media (min-width: 60rem) and (max-width: 80rem) { .pmeter .pm-t small { display: none; } .pmeter .pm-t { justify-content: center; } .pmeter .pm-t b { font-size: 0.625rem; } }
 
 .nudge { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-lg); margin-bottom: var(--space-md); background: var(--color-raised); border: 1px solid var(--color-rule); border-left: 3px solid var(--color-accent); border-radius: var(--radius-card); }
 .nudge > svg { color: var(--color-accent-strong); } .nudge .nt { display: grid; flex: 1; min-width: 0; } .nudge .nt small { color: var(--color-muted); }
@@ -876,6 +865,14 @@ table.hier .hi4 { padding-left: calc(var(--space-lg) * 3); } table.hier .hi5 { p
 
 /* required and expected answers */
 .req { color: var(--color-error); font-weight: 700; margin-left: var(--space-2xs); }
+/* markup uses .reqi (SVG asterisk); keep .req for any text asterisks */
+.reqi, .reqsw .reqi, .reqsw-i .reqi, .qi-q .reqi, .qt .reqi, h3 .reqi, .row .reqi {
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--color-error) !important; margin-left: var(--space-2xs); vertical-align: -0.125em; flex: none;
+}
+.reqi svg.i, .reqi svg.i.sm, .reqsw .reqi svg.i {
+  width: 0.8125rem; height: 0.8125rem; stroke: currentColor !important; color: var(--color-error) !important; stroke-width: 2.4;
+}
 .exp-a { color: var(--color-ink-2); font-weight: 500; }
 .reqsw { display: inline-flex; align-items: center; gap: var(--space-xs); font-size: var(--text-xs); color: var(--color-muted); white-space: nowrap; cursor: pointer; flex: none; }
 .reqsw input.swi { width: 2rem; height: 1.125rem; } .reqsw input.swi::after { top: 0.125rem; left: 0.125rem; width: 0.875rem; height: 0.875rem; } .reqsw input.swi:checked::after { transform: translateX(0.875rem); }
@@ -907,22 +904,7 @@ td.ta-r { text-align: right; }
 
 .drop.over { border-color: var(--color-accent); background: var(--tint-accent); color: var(--color-ink); }
 
-/* icon rail (60-80rem): a menu button expands it into the full sidebar, on top of the page */
-@media (min-width: 60rem) and (max-width: 80rem) {
-  .menubtn { display: grid; }
-  .side { transition: width var(--dur-short) var(--ease-out); }
-  .side.open { width: 15rem; z-index: var(--z-modal); box-shadow: var(--shadow-drawer); }
-  .scrim { display: block; position: fixed; inset: 0; background: color-mix(in oklab, var(--color-ink) 52%, transparent); z-index: calc(var(--z-modal) - 1); opacity: 0; pointer-events: none; transition: opacity var(--dur-short) var(--ease-out); } .scrim.show { opacity: 1; pointer-events: auto; }
-  .side.open .brand { justify-content: flex-start; padding-inline: var(--space-md); } .side.open .brand .bt { display: inline; }
-  .side.open .tenant { justify-content: flex-start; margin-inline: var(--space-sm); padding: var(--space-xs) var(--space-sm); } .side.open .tenant>div:nth-child(2) { display: block; } .side.open .tenant>span { display: inline; }
-  .side.open .nav { padding-inline: var(--space-sm); }
-  .side.open .nav .sec { font-size: var(--text-xs); height: auto; padding: var(--space-md) var(--space-sm) var(--space-2xs); margin: 0; background: none; }
-  .side.open .nav a { justify-content: flex-start; padding: 0 var(--space-sm); } .side.open .nav a .nl { display: inline; }
-  .side.open .nav .cnt { position: static; margin-left: auto; min-width: 1.25rem; height: 1.25rem; padding: 0 var(--space-xs); }
-  .side.open .pmeter .pm-t { justify-content: space-between; } .side.open .pmeter .pm-t small { display: inline; } .side.open .pmeter .pm-t b { font-size: var(--text-xs); }
-}
-
-/* user-collapsible sidebar on wide screens: same icon rail, kept by choice */
+/* user-collapsible sidebar on wide screens only (optional; default stays full) */
 @media (min-width: 80.0625rem) {
   html.rail { --side-w: 4.5rem; }
   html.rail .brand { justify-content: center; padding-inline: 0; } html.rail .brand .bt { display: none; }
@@ -1054,6 +1036,218 @@ td.ta-r { text-align: right; }
 .metaline .mptp { color: var(--color-error); font-weight: 500; } .metaline .mptp svg { stroke-width: 2.4; }
 .metaline .mi.ml { margin-left: auto; padding-left: var(--space-md); }
 @media (max-width: 51.25rem) { .metaline { display: block; } .metaline .mtxt { display: flex; flex-wrap: wrap; } .metaline .mi { white-space: nowrap; } .metaline .mi.ml { display: flex; margin: var(--space-xs) 0 0; padding: 0; width: 100%; } .metaline .msep { margin: 0 var(--space-xs); } }
+
+/* ---- Responsive pass (layout only): phones → tablets → desktops ----
+   Breakpoints: 90 / 80 / 68.75 / 60 / 51.25 / 40 / 37.5 / 30 / 22 rem
+   Rule: stack, wrap, scroll, and shrink — do not restyle. */
+
+/* Drawer closed: no accidental hit targets under the page */
+@media (max-width: 60rem) {
+  .side:not(.open) { pointer-events: none; }
+  .side.open { pointer-events: auto; }
+}
+
+/* Phones + small tablets (≤820px): shell, tables, headers, menus */
+@media (max-width: 51.25rem) {
+  /* top bar scrolls away; search is one full-width row */
+  .top { position: static; backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--color-raised); }
+  .top .search { min-height: 2.5rem; width: 100%; max-width: 100%; flex: 1 0 100%; }
+  .top .spacer { display: none; }
+
+  /* nothing in the content column may force page-wide horizontal scroll */
+  .app, .main, .content, .card, .ph, .toolbar, .tfbar, .ftool, .fbar, .metaline,
+  .sumline, .banner, .nudge, .acct-hero, .pbar2, .scopenote, .impbar, .prv-s, .prv-a { max-width: 100%; min-width: 0; }
+  .content { overflow-x: clip; padding-bottom: calc(4.75rem + var(--space-xl) + env(safe-area-inset-bottom)); }
+
+  /* page header: title then actions, never side-by-side squeeze */
+  .ph { flex-direction: column; align-items: stretch; gap: var(--space-sm); max-width: 100%; min-width: 0; }
+  .ph > div:first-child { flex: 1 1 auto; min-width: 0; width: 100%; max-width: 100%; }
+  .crumb { width: 100%; max-width: 100%; min-width: 0; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .crumb::-webkit-scrollbar { display: none; }
+  .crumb a, .crumb span { flex: none; }
+  .ph h1, .ph p { max-width: 100%; }
+  .ph h1 { font-size: clamp(var(--text-lg), 5.2vw, var(--text-2xl)); overflow-wrap: anywhere; }
+  .ph.hero { flex-direction: column; align-items: stretch; padding: var(--space-md); }
+  .ph.hero .actions, .actions { margin-left: 0; width: 100%; justify-content: stretch; }
+  .actions .btn { flex: 1 1 auto; min-width: 0; justify-content: center; }
+  .qcell { min-width: 0; max-width: 100%; }
+  .qtop { flex-wrap: wrap; white-space: normal; }
+
+  /* card headers: title + trailing actions wrap instead of colliding */
+  .card > .hd { flex-wrap: wrap; align-items: flex-start; gap: var(--space-sm); }
+  .card > .hd h2, .card > .hd .sh, .card > .hd > .sq + h2 { flex: 1 1 12rem; min-width: 0; overflow-wrap: anywhere; }
+  .card > .hd .r { margin-left: 0; margin-inline-start: auto; flex-wrap: wrap; max-width: 100%; justify-content: flex-end; }
+  .card > .hd .r .btn { flex: 0 1 auto; min-width: 0; }
+
+  /* stacked table cards: readable wrapping, padded rows */
+  tbody tr { padding: var(--space-sm) var(--space-md); }
+  td:first-child { padding-left: 0 !important; padding-right: 0 !important; }
+  td { gap: var(--space-3xs) var(--space-sm); }
+  td::before { align-self: center; white-space: nowrap; }
+  td > * { min-width: 0; overflow-wrap: anywhere; text-align: right; }
+  td:first-child > *, td:first-child .cell { text-align: left; }
+  td:has(>.btn:only-child) { display: flex; justify-content: flex-end; padding-top: var(--space-xs) !important; }
+  td:has(>.btn:only-child) > .btn { min-width: 6rem; }
+  td .b { white-space: normal; }
+  .tt .cell b, .tt .cell small,
+  td .cell b, td .cell small { white-space: normal; overflow-wrap: anywhere; }
+  .pchips { flex-wrap: wrap; max-width: 100%; }
+  .pchips .pch, .tt .pchips .pch { max-width: 100%; white-space: normal; }
+  .tlc { width: 100%; max-width: none; }
+  .tlc .sm { white-space: normal; }
+  .card > .bd.np { overflow-x: visible; }
+  table, .tt, .logtbl { width: 100%; max-width: 100%; }
+
+  /* filter / toolbar rows use full width */
+  .toolbar, .tfbar, .ftool-row, .fbar-top, .fbar-end { width: 100%; }
+  .toolbar .search, .tfbar .search, .ftool .search, .fbar .search,
+  .search[style*="width"] { width: 100% !important; max-width: 100% !important; flex: 1 1 100% !important; }
+  .fsel, .tfsel select.sel, .tfend select.sel { max-width: 100%; }
+  .tfend { justify-content: flex-start; gap: var(--space-sm); }
+
+  /* tabs / steps / chips: horizontal scroll with no page bleed */
+  .tabs, .steps, .rng, .chiprow, .toolbar { -webkit-overflow-scrolling: touch; }
+  .tabs { mask-image: linear-gradient(to right, #000 calc(100% - 1.25rem), transparent); }
+  .tabs button { flex: none; }
+
+  /* menus + notifications fit the viewport */
+  .menu { max-width: calc(100vw - 2 * var(--space-sm)); left: auto; right: 0; }
+  .top .menu, .me .menu, .iconbtn .menu { width: auto !important; max-width: calc(100vw - 2 * var(--space-sm)) !important; }
+  .gsres { left: 0; right: 0; width: auto; }
+
+  /* auth: fill the column, keep the card readable; 2-col roles on wider phones/tablets */
+  .authr { justify-items: stretch; padding-inline: var(--space-md); width: 100%; }
+  .authbox { max-width: none; width: 100%; }
+  .rolepick, .rolegrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .demochips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* misc blocks that often overflow on phones */
+  .banner, .nudge, .impbar, .scopenote, .lock, .file, .asgrow, .prs, .todo, .prow, .cal { max-width: 100%; }
+  .banner { flex-wrap: wrap; }
+  .acct-hero { flex-direction: column; align-items: flex-start; }
+  .acct-hero .ah-f { width: 100%; gap: var(--space-md); }
+  .sumline.box { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metaline .mi { max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
+  .metaline .mi.ml { flex-wrap: wrap; }
+  .qrbox, .qrwrap { max-width: 100%; }
+  .qrwrap svg { width: min(100%, 12.5rem); height: auto; margin-inline: auto; }
+  .modal { width: 100%; max-width: 100%; }
+  .modal .mf { flex-wrap: wrap; }
+  .modal .mf .btn { flex: 1 1 auto; min-width: 0; justify-content: center; }
+  .chkrow.swrow { flex-wrap: wrap; gap: var(--space-sm); }
+  .seg { max-width: 100%; }
+  .pgrid, .pgrid2, .pcards { grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+  .gmeta { margin-left: 0; width: 100%; }
+  .trow { align-items: flex-start; }
+  details.team-co > summary.ghd { flex-wrap: wrap; padding-inline: var(--space-md); }
+  details.team-co .prs { padding-inline: var(--space-md); }
+
+  /* bottom bar: five equal tabs that never overflow */
+  .tabbar a, .tabbar button { min-width: 0; padding: var(--space-2xs) 0; font-size: 0.6875rem; line-height: 1.15; gap: 2px; }
+  .tabbar a > span:not(.cnt), .tabbar button > span:not(.cnt) { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tabbar .cnt { left: calc(50% + 0.25rem); top: var(--space-2xs); font-size: 0.625rem; min-width: 1rem; height: 1rem; }
+}
+
+/* Large phones / small tablets in portrait (≤640px) */
+@media (max-width: 40rem) {
+  .sumline.box { grid-template-columns: minmax(0, 1fr); }
+  .sumline.box .sf.ml { grid-column: auto; }
+  .card > .hd .r { width: 100%; margin-inline-start: 0; justify-content: stretch; }
+  .card > .hd .r .btn { flex: 1 1 auto; justify-content: center; }
+  .actions .btn { flex: 1 1 calc(50% - var(--space-xs)); }
+  .ph.hero .btn { width: 100%; justify-content: center; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid.g4, .grid.g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tfbar { padding-inline: var(--space-md); }
+  .ftool { padding-inline: var(--space-md); }
+  .step { padding-inline: var(--space-sm); }
+  .rng-custom { flex-wrap: wrap; max-width: 100%; }
+  .rng-custom .inp { width: 100%; max-width: 100%; }
+  .qb-find { flex-direction: column; align-items: stretch; }
+  .qb-find .search, .qb-find select { width: 100%; flex: 1 1 auto; max-width: none; }
+  .prv-s { gap: var(--space-md); }
+  .asg-facts { flex-direction: column; align-items: stretch; gap: var(--space-sm); }
+  .scorebox .sv { font-size: var(--text-lg); }
+  .file.row-card { align-items: flex-start; }
+  .file.row-card .btn { margin-left: 0; }
+  .docopts .btn { flex: 1 1 auto; justify-content: center; }
+  .ipopt { min-height: var(--hit); }
+  .pgrid, .pgrid2, .pcards { grid-template-columns: minmax(0, 1fr); }
+  /* inline-styled progress / form rows from templates — allow shrink on phones */
+  .content [style*="min-width:260px"], .content [style*="min-width: 260px"],
+  .content [style*="min-width:200px"], .content [style*="min-width: 200px"],
+  .content [style*="min-width:12rem"], .modal [style*="min-width:12rem"],
+  .content [style*="width:280px"], .content [style*="width:260px"],
+  .content [style*="max-width:760px"], .content [style*="max-width:320px"],
+  .modal [style*="width:140px"] { min-width: 0 !important; width: 100% !important; max-width: 100% !important; }
+}
+
+/* Standard phones (≤600px) — already covered above; tighten type + controls */
+@media (max-width: 37.5rem) {
+  .content { padding-inline: max(var(--space-md), env(safe-area-inset-left), env(safe-area-inset-right)); }
+  .demochips { grid-template-columns: minmax(0, 1fr); }
+  .actions .btn { flex: 1 1 100%; }
+  .seg a, .seg button { flex: 1 1 auto; justify-content: center; min-width: 0; }
+  .chip { max-width: 100%; }
+  .tl-hd { flex-wrap: wrap; }
+  .tl-badges { justify-content: flex-start; width: 100%; }
+  .legend { gap: var(--space-sm); }
+  .feat { align-items: flex-start; }
+}
+
+/* Narrow phones (≤480px) */
+@media (max-width: 30rem) {
+  .grid.g4, .grid.g3, .kpis { grid-template-columns: minmax(0, 1fr); }
+  .grid.g4 > .fig:nth-child(n+2), .grid.g3 > .fig:nth-child(n+2), .kpis > .kpi:nth-child(n+2), .kpis > .fig:nth-child(n+2) {
+    border-top: 1px solid var(--color-rule);
+  }
+  .ph h1 { font-size: var(--text-lg); }
+  .tabbar a, .tabbar button { font-size: 0.625rem; }
+  .crumb span { max-width: 12rem; }
+  .pcard .pc-k > div { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .pcard .pc-k dt { margin-bottom: var(--space-3xs); }
+  .authbox { padding: var(--space-md); border-radius: var(--radius-lg); }
+  .modal .mh, .modal .mb, .modal .mf { padding-inline: var(--space-md); }
+}
+
+/* Tiny phones (≤352px) */
+@media (max-width: 22rem) {
+  .tabbar a, .tabbar button { font-size: 0.625rem; }
+  .content { padding-inline: var(--space-sm); }
+  .actions .btn, .card > .hd .r .btn, .modal .mf .btn { font-size: var(--text-xs); padding-inline: var(--space-sm); }
+  .top { padding-inline: var(--space-sm); gap: var(--space-2xs); }
+  .iconbtn { width: var(--ctl-sm); height: var(--ctl-sm); }
+}
+
+/* Tablet landscape / small laptop: keep tables usable without breaking the design */
+@media (min-width: 51.3125rem) and (max-width: 75rem) {
+  .content { padding-inline: max(var(--space-md), env(safe-area-inset-left), env(safe-area-inset-right)); }
+  .ph { gap: var(--space-sm); flex-wrap: wrap; align-items: flex-start; }
+  .ph h1 { max-width: none; }
+  .ph > div:first-child { flex: 1 1 16rem; min-width: 0; }
+  .actions { max-width: 100%; margin-left: 0; }
+  .tfbar .search, .ftool .search { flex: 1 1 12rem; width: auto; max-width: 100%; }
+  .card > .bd.np { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .g21, .g12 { grid-template-columns: minmax(0, 1fr); }
+  .qb-grid { grid-template-columns: minmax(0, 1fr); }
+  .qb-left { position: static; }
+}
+
+/* Mid desktop (full sidebar restored): keep content from feeling oversized */
+@media (min-width: 60rem) and (max-width: 80rem) {
+  :root { --gutter: 24px; }
+  .content { padding-inline: var(--gutter); }
+  .search { width: min(16rem, 100%); }
+  .menubtn { display: none; }
+}
+
+/* Safe areas for notched devices — phones / drawers only, do not shrink desktop gutters */
+@media (max-width: 60rem) {
+  @supports (padding: max(0px)) {
+    .tabbar { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    .top { padding-left: max(var(--space-md), env(safe-area-inset-left)); padding-right: max(var(--space-md), env(safe-area-inset-right)); }
+  }
+}
 </style>
 </head>
 <body>
@@ -1949,7 +2143,7 @@ function topbar(){
  <div class="search" style="position:relative">${I('search','sm')}<input data-gsearch="1" autocomplete="off" aria-label="Search" role="combobox" aria-controls="gsres" aria-autocomplete="list" placeholder="Search or jump to…"><kbd class="kbd" aria-hidden="true">${/Mac/.test(navigator.platform)?'⌘K':'Ctrl K'}</kbd><div class="gsres" id="gsres" role="listbox" aria-label="Search results"></div></div>
  <div class="spacer"></div>
  <div class="wspill" title="Current workspace">${I('bldg','sm')}<span>${esc(w.name)}</span>${S.role!=='mojo'?`<span class="b ${w.ur==='admin'?'brand':'mute'} nodot">${w.ur==='admin'?'Admin':'Contributor'}</span>`:''}</div>
- ${themeBtn()}<div class="iconbtn" data-act="menu" data-v="notif" aria-label="Notifications" aria-haspopup="true">${I('bell')}${unread?'<span class="dot"></span>':''}${S.menu==='notif'?`<div class="menu" style="width:380px;right:-10px;top:calc(100% + 10px);padding:0"><div class="row" style="padding:14px 16px;border-bottom:1px solid var(--border)"><b>Notifications</b><a class="ml sm" data-act="readall">Mark all read</a></div>${S.notifs.length?S.notifs.slice(0,4).map((n,i)=>`<div class="it" style="align-items:flex-start;${n.un?'background:var(--unread)':''}" data-act="notifgo" data-i="${i}"><span style="color:var(--brand);margin-top:2px">${I('bell','sm')}</span><div><div style="font-size:13px">${n.t}</div><small class="muted">${n.time}</small></div></div>`).join(''):'<div class="muted sm" style="padding:20px;text-align:center">You are all caught up.</div>'}<div style="padding:10px;text-align:center;border-top:1px solid var(--border)"><a class="sm fw" data-go="notifications">View all notifications</a></div></div>`:''}</div>
+ ${themeBtn()}<div class="iconbtn" data-act="menu" data-v="notif" aria-label="Notifications" aria-haspopup="true">${I('bell')}${unread?'<span class="dot"></span>':''}${S.menu==='notif'?`<div class="menu notif-menu" style="width:min(380px, calc(100vw - 1.5rem));right:-10px;top:calc(100% + 10px);padding:0"><div class="row" style="padding:14px 16px;border-bottom:1px solid var(--border)"><b>Notifications</b><a class="ml sm" data-act="readall">Mark all read</a></div>${S.notifs.length?S.notifs.slice(0,4).map((n,i)=>`<div class="it" style="align-items:flex-start;${n.un?'background:var(--unread)':''}" data-act="notifgo" data-i="${i}"><span style="color:var(--brand);margin-top:2px">${I('bell','sm')}</span><div><div style="font-size:13px">${n.t}</div><small class="muted">${n.time}</small></div></div>`).join(''):'<div class="muted sm" style="padding:20px;text-align:center">You are all caught up.</div>'}<div style="padding:10px;text-align:center;border-top:1px solid var(--border)"><a class="sm fw" data-go="notifications">View all notifications</a></div></div>`:''}</div>
  <div class="me" data-act="menu" data-v="me" aria-label="Account menu" aria-haspopup="true"><div class="av">${ini(u)}</div><div><b>${esc(u)}</b><small>${ROLELBL[S.role]}</small></div>${I('down','sm')}${S.menu==='me'?`<div class="menu"><div class="h">Signed in as</div><div style="padding:0 11px 8px" class="sm muted">${esc(CUR.email)}</div><hr><a data-go="account">${I('user','sm')} My Account</a><a data-go="notifications">${I('bell','sm')} Notifications</a><hr><a data-act="auth" data-v="login" data-ctx="">${I('logout','sm')} Sign out</a></div>`:''}</div></header>`;
 }
 function impBanner(){return S.imp?`<div class="impbar">${I('eye')}<div style="flex:1"><b>Impersonating ${esc(S.imp.company)} admin.</b> <span class="sm">Every action you take is attributed to that admin's real account, not Mojo.</span></div><a class="btn sm" data-act="impexit">Exit impersonation</a></div>`:''}
@@ -2915,7 +3109,8 @@ document.addEventListener('input',ev=>{
 });
 window.addEventListener('hashchange',()=>{if(!AUTH)render()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();if(S.navOpen)ACT.navtoggle()}});
-try{if(localStorage.getItem('rail')==='1')document.documentElement.classList.add('rail')}catch(_){}
+/* Default to a full labeled sidebar for client demos; collapse only via the menu control on wide screens */
+try{localStorage.removeItem('rail');document.documentElement.classList.remove('rail')}catch(_){}
 window.matchMedia('(min-width:80.01rem)').addEventListener('change',e=>{if(e.matches&&S.navOpen)ACT.navtoggle()});
 /* ============ v4, CONNECTED EXPERIENCE ============
    People directory, project teams, health signals, deadlines, clickable companies/people,
