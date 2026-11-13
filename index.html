@@ -991,6 +991,8 @@ td.ta-r { text-align: right; }
 .ftool-l, .ftool-r, .tfgroup { display: flex; align-items: center; gap: var(--space-sm) var(--space-lg); flex-wrap: wrap; }
 .ftool-count { font-size: var(--text-xs); color: var(--color-muted); }
 .ftool .search, .tfbar .search { width: 16rem; max-width: 100%; flex: 0 1 16rem; }
+.ftool-row .ftool-l { gap: var(--space-sm) var(--space-md); } .ftool .rng-custom { gap: var(--space-xs); } .ftool .rng-custom .inp { width: 9.5rem; min-width: 0; } .ftool-row .ftool-r .search { width: 11rem; flex-basis: 11rem; } .ftool .rng-custom .inp { width: 9rem; }
+@media (max-width: 40rem) { .ftool .rng-custom .inp { width: 100%; } }
 .tfsel { display: inline-flex; align-items: center; gap: var(--space-xs); white-space: nowrap; }
 .tfsel > span { line-height: 1; }
 .tfsel select.sel, .ftool .search, .tfbar .search, .tfbar select.sel, .ftool .fclear { height: var(--ctl); min-height: var(--ctl); }
@@ -1343,7 +1345,8 @@ let TRADES=[
  {n:'Prime Roofing Co',t:'Roofing',emr:1.04,stat:'Flagged',proj:['Medical Plaza Renovation'],ptp:false,exp:'Jan 2027'},
  {n:'Coastal Fire Protection',t:'Fire Protection',emr:.84,stat:'Needs info',proj:['Harbor Point Tower'],ptp:true,exp:'Oct 2026'},
  {n:'Katy Crane Services',t:'Crane and Rigging',emr:.99,stat:'Needs info',proj:['Harbor Point Tower'],ptp:true,exp:'Jan 2027',by:'Titan Steel Erectors'},
- {n:'Lone Star Rebar',t:'Rebar',emr:.91,stat:'Under review',proj:['Eastgate Distribution Center'],ptp:true,exp:'Mar 2027',by:'Gulf Coast Concrete'}
+ {n:'Lone Star Rebar',t:'Rebar',emr:.91,stat:'Under review',proj:['Eastgate Distribution Center'],ptp:true,exp:'Mar 2027',by:'Gulf Coast Concrete'},
+ {n:'Apex Low Voltage',t:'Low Voltage / Systems',emr:.88,stat:'Approved',proj:['Harbor Point Tower'],ptp:true,exp:'Sep 2027',by:'Apex Electrical'}
 ];
 let SUBS=[
  {id:'s7',trade:'Ironbridge Construction',proj:'Harbor Point Tower',status:'Submitted',flags:[],date:'Nov 04'},
@@ -1394,6 +1397,7 @@ const MOJO_COS=[
  {n:'Titan Steel Erectors',t:'trade',loc:'Pasadena, TX',users:5,proj:2,sub:'Active',since:'Apr 2026'},
  {n:'Prime Roofing Co',t:'trade',loc:'Katy, TX',users:2,proj:1,sub:'None',since:'May 2026'}
 ];
+const MOJO_TEAMS={};
 const QUEUE=[
  {id:'m1',co:'Titan Steel Erectors',q:'What was your EMR for each of the last 3 years?',a:'2023: 0.96, 2024: 0.94, 2025: 0.95',ai:true,age:'3h',proj:'Harbor Point Tower'},
  {id:'m2',co:'Bayou Mechanical',q:'Number of OSHA recordable incidents (last 3 years)',a:'7',ai:false,age:'1d',proj:'Harbor Point Tower'},
@@ -1553,7 +1557,7 @@ const INVS=[
  {email:'tom.b@company.com',company:'',role:'member',projects:[],date:'Nov 01, 2026',status:'Pending'},
  {email:'info@primeroofing.com',company:'Prime Roofing Co',role:'trade',projects:['Medical Plaza Renovation'],date:'Sep 30, 2026',status:'Expired'}
 ];
-const INV_TYPES={owner:['gc','trade','member'],gc:['trade','member'],trade:['trade','member'],mojo:['member']};
+const INV_TYPES={owner:['gc','trade','member'],gc:['trade','gc','member'],trade:['trade','member'],mojo:['member']};
 const INVMETA={
  gc:{h:'Invite a General Contractor',ic:'hard',sub:'Send an email invite or generate a QR code to share in person',lbl:'General Contractor'},
  trade:{h:'Invite a Trade Subcontractor',ic:'wrench',sub:'Send an email invite or generate a QR code to share in person',lbl:'Trade'},
@@ -1602,9 +1606,9 @@ const WS={
   NOTIFS:[mkN('Titan Steel Erectors submitted a pre-qualification for Westside Clinic Expansion','1 hour ago',true,'submission/s21'),mkN('Coastal Fire Protection was asked for more information','Oct 27',false,'submission/s23')],
   ORG:mkOrg({name:'Meridian Healthcare Realty',phone:'(214) 555-0166',addr:'2200 Ross Avenue, Floor 14',city:'Dallas',state:'TX',zip:'75201',web:'https://meridianhealthrealty.com'}),CHART:{trend:[2,3,4,3,6,7],split:[6,3,1,0]}})},
  g1:{name:'Ironbridge Construction',sub:'General Contractor, Houston, TX',type:'gc',seed:()=>({
-  PROJECTS:[mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',4,3,68,'invited'),mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',3,2,41,'invited'),mkP('p31','Ironbridge Yard Expansion','9100 Navigation Blvd, Houston, TX','Mar 02, 2026','Aug 14, 2026','Active','Ironbridge Construction',2,0,90,'managed')],
-  GCS:[],
-  TRADES:[mkTr('Apex Electrical','Electrical',.78,'Approved',['Harbor Point Tower','Medical Plaza Renovation'],true,'Aug 2027'),mkTr('Bayou Mechanical','HVAC / Mechanical',1.18,'Flagged',['Harbor Point Tower'],true,'Nov 2026'),mkTr('Titan Steel Erectors','Structural Steel',.95,'Under review',['Harbor Point Tower'],true,'Feb 2027'),mkTr('Prime Roofing Co','Roofing',1.04,'Flagged',['Medical Plaza Renovation'],false,'Jan 2027'),mkTr('Coastal Fire Protection','Fire Protection',.84,'Needs info',['Harbor Point Tower'],true,'Oct 2026')],
+  PROJECTS:[{...mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',4,3,68,'invited'),partners:['Summit Builders Group']},mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',3,2,41,'invited'),mkP('p31','Ironbridge Yard Expansion','9100 Navigation Blvd, Houston, TX','Mar 02, 2026','Aug 14, 2026','Active','Ironbridge Construction',2,0,90,'managed')],
+  GCS:[{...mkG('Summit Builders Group','Dallas, TX',1,.91,'Compliant','Mar 2027'),by:'Ironbridge Construction',projs:['Harbor Point Tower']},{...mkG('Lonestar General','Austin, TX',0,1.12,'Flagged','Dec 2026'),by:'Ironbridge Construction',projs:[]}],
+  TRADES:[mkTr('Apex Electrical','Electrical',.78,'Approved',['Harbor Point Tower','Medical Plaza Renovation'],true,'Aug 2027'),mkTr('Bayou Mechanical','HVAC / Mechanical',1.18,'Flagged',['Harbor Point Tower'],true,'Nov 2026'),mkTr('Titan Steel Erectors','Structural Steel',.95,'Under review',['Harbor Point Tower'],true,'Feb 2027'),mkTr('Prime Roofing Co','Roofing',1.04,'Flagged',['Medical Plaza Renovation'],false,'Jan 2027'),mkTr('Coastal Fire Protection','Fire Protection',.84,'Needs info',['Harbor Point Tower'],true,'Oct 2026'),{...mkTr('Apex Low Voltage','Low Voltage / Systems',.88,'Approved',['Harbor Point Tower'],true,'Sep 2027'),by:'Apex Electrical'}],
   SUBS:[mkS('s1','Titan Steel Erectors','Harbor Point Tower','Under review',[],'Nov 03'),mkS('s2','Bayou Mechanical','Harbor Point Tower','Submitted',['High EMR 1.18'],'Nov 02'),mkS('s3','Prime Roofing Co','Medical Plaza Renovation','Submitted',['No PTP program'],'Oct 30'),mkS('s4','Coastal Fire Protection','Harbor Point Tower','Needs info',[],'Oct 28'),mkS('s5','Apex Electrical','Medical Plaza Renovation','Approved',[],'Oct 21')],
   ASSIGN:[mkA('a31','GC Pre-Qualification','Ironbridge Construction','Harbor Point Tower','Pending','Nov 14','Meridian Development'),mkA('a32','Financial Review — Tier 1','Ironbridge Construction','Medical Plaza Renovation','In progress','Nov 22','Meridian Development'),mkA('a33','Trade Safety Questionnaire','Titan Steel Erectors','Harbor Point Tower','Submitted','Nov 12','Ironbridge Construction'),mkA('a34','Trade Safety Questionnaire','Prime Roofing Co','Medical Plaza Renovation','Needs more info','Nov 09','Ironbridge Construction')],
   TEAM:[mkT('Daniel Ortiz','daniel.ortiz@ironbridge.com','Admin','Active','Today'),mkT('Mei Chen','mei.c@ironbridge.com','Admin','Active','Yesterday'),mkT('Luis Romero','luis.r@ironbridge.com','Contributor','Active','2 days ago')],
@@ -1621,10 +1625,10 @@ const WS={
   NOTIFS:[mkN('Bayou Mechanical submitted a pre-qualification for Pasadena Refinery Turnaround','2 days ago',true,'submission/s41')],
   ORG:mkOrg({...FULL,name:'Ironbridge Industrial',trade:'General Contractor',addr:'6100 Spencer Hwy',city:'Pasadena, TX 77505',years:'11',emp:'88',lic:'GC-552031',phone:'(281) 555-0121',emr:'0.97',f_ptp:'',f_bond:'',bond_co:'',bond_single:'',bond_agg:'',bond_exp:''}),CHART:{trend:[1,2,2,4,3,5],split:[7,3,1,1]}})},
  t1:{name:'Apex Electrical',sub:'Trade, Electrical, Houston, TX',type:'trade',seed:()=>({
-  PROJECTS:[mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',12,3,68,'invited'),mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',6,2,41,'invited')],
-  GCS:[],TRADES:[{n:'Apex Low Voltage',t:'Low Voltage / Systems',emr:.88,stat:'Approved',proj:['Harbor Point Tower'],ptp:true,exp:'Sep 2027',by:'Apex Electrical'},{n:'Gulf Coast Wiring',t:'Wiring',emr:1.06,stat:'Needs info',proj:['Medical Plaza Renovation'],ptp:false,exp:'Dec 2026',by:'Apex Electrical'}],
-  SUBS:[mkS('s51','Apex Electrical','Harbor Point Tower','Under review',[],'Nov 03'),mkS('s5','Apex Electrical','Medical Plaza Renovation','Approved',[],'Oct 21')],
-  ASSIGN:[mkA('a51','Harbor Point Site Orientation','Apex Electrical','Harbor Point Tower','Pending','Nov 18','Ironbridge Construction'),mkA('a52','Trade Safety Questionnaire','Apex Electrical','Harbor Point Tower','In progress','Nov 12','Meridian Development'),mkA('a53','Financial Review — Tier 1','Apex Electrical','Medical Plaza Renovation','Needs more info','Nov 09','Ironbridge Construction')],
+  PROJECTS:[mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',12,3,68,'invited'),mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',6,2,41,'invited'),mkP('p11','Apex Warehouse Retrofit','2201 Gulf Fwy, Houston, TX','Sep 14, 2026','Mar 12, 2027','Active','Apex Electrical',2,1,35,'managed')],
+  GCS:[],TRADES:[{n:'Apex Low Voltage',t:'Low Voltage / Systems',emr:.88,stat:'Approved',proj:['Harbor Point Tower','Apex Warehouse Retrofit'],ptp:true,exp:'Sep 2027',by:'Apex Electrical'},{n:'Gulf Coast Wiring',t:'Wiring',emr:1.06,stat:'Needs info',proj:['Medical Plaza Renovation','Apex Warehouse Retrofit'],ptp:false,exp:'Dec 2026',by:'Apex Electrical'}],
+  SUBS:[mkS('s51','Apex Electrical','Harbor Point Tower','Under review',[],'Nov 03'),mkS('s5','Apex Electrical','Medical Plaza Renovation','Approved',[],'Oct 21'),mkS('s52','Apex Low Voltage','Apex Warehouse Retrofit','Submitted',[],'Nov 04'),mkS('s53','Gulf Coast Wiring','Apex Warehouse Retrofit','Needs info',['No PTP program'],'Nov 02')],
+  ASSIGN:[mkA('a54','Subcontractor Site Safety Check','Apex Low Voltage','Apex Warehouse Retrofit','Submitted','Nov 10','Apex Electrical'),mkA('a55','Subcontractor Site Safety Check','Gulf Coast Wiring','Apex Warehouse Retrofit','In progress','Nov 20','Apex Electrical'),mkA('a51','Harbor Point Site Orientation','Apex Electrical','Harbor Point Tower','Pending','Nov 18','Ironbridge Construction'),mkA('a52','Trade Safety Questionnaire','Apex Electrical','Harbor Point Tower','In progress','Nov 12','Meridian Development'),mkA('a53','Financial Review — Tier 1','Apex Electrical','Medical Plaza Renovation','Needs more info','Nov 09','Ironbridge Construction')],
   TEAM:[mkT('Priya Raman','priya.raman@apexelectrical.com','Admin','Active','Today'),mkT('Marcus Lee','marcus.l@apexelectrical.com','Admin','Active','Yesterday'),mkT('Elena Petrova','elena.p@apexelectrical.com','Contributor','Active','2 days ago'),mkT('Tom Brennan','tom.b@apexelectrical.com','Contributor','Invited','—')],
   DOCS:[...cp(BASE.DOCS),mkD('Workers Comp Certificate.pdf','COI','Organization, Insurance','Nov 19, 2026','208 KB','PDF')],
   NOTIFS:[mkN('Ironbridge Construction assigned you "Harbor Point Site Orientation"','2 hours ago',true,'my-assign'),mkN('Your submission for Medical Plaza Renovation was approved','Oct 21',false,'projects'),mkN('Your Workers Comp certificate expires in 14 days','Today',true,'docs')],
@@ -1643,8 +1647,9 @@ const WS={
 /* question bank + template + invitation ownership */
 BANKQ.forEach(q=>{if(!q.global)q.ws='o1'});
 TEMPLATES[2].ws='o1';TEMPLATES[3].ws='o1';
+TEMPLATES.push(Object.assign(T('t5','Subcontractor Site Safety Check',['q104','q107','q113'],false,2,'Nov 09','Short safety check Apex Electrical sends to the trades it brings onto its own projects.'),{ws:'t1'}));
 INVS.forEach(i=>i.ws='o1');
-INVS.push({ws:'g1',email:'bids@baycityelectric.com',company:'Bay City Electric',role:'trade',projects:['Harbor Point Tower'],date:'Oct 26, 2026',status:'Pending'},{ws:'g1',email:'estimator@gulfsteel.com',company:'Gulf Steel Fab',role:'trade',projects:[],date:'Oct 15, 2026',status:'Accepted'},{ws:'t1',email:'owen.p@apexelectrical.com',company:'',role:'member',projects:[],date:'Oct 18, 2026',status:'Accepted'});
+INVS.push({ws:'g1',email:'rachel.k@summitbuilders.com',company:'Summit Builders Group',role:'gc',projects:['Harbor Point Tower'],date:'Oct 09, 2026',status:'Accepted'},{ws:'g1',email:'bids@lonestargeneral.com',company:'Lonestar General',role:'gc',projects:[],date:'Nov 03, 2026',status:'Accepted'},{ws:'g1',email:'estimating@gulfshoregc.com',company:'Gulfshore Contractors',role:'gc',projects:[],date:'Nov 08, 2026',status:'Pending'},{ws:'g1',email:'bids@baycityelectric.com',company:'Bay City Electric',role:'trade',projects:['Harbor Point Tower'],date:'Oct 26, 2026',status:'Pending'},{ws:'g1',email:'estimator@gulfsteel.com',company:'Gulf Steel Fab',role:'trade',projects:[],date:'Oct 15, 2026',status:'Accepted'},{ws:'t1',email:'owen.p@apexelectrical.com',company:'',role:'member',projects:[],date:'Oct 18, 2026',status:'Accepted'});
 INVITES.member.ws='o1';
 
 /* accounts */
@@ -1713,7 +1718,8 @@ const fsel=(label,mode,key,opts,cur)=>`<label class="tfsel"><span>${label}</span
 const viewSwitch=(path,cur,opts,label)=>`<div class="seg" role="group" aria-label="${label}">${opts.map(o=>`<button type="button" class="${cur===o[0]?'on':''} ${o[2]?'ico':''}" aria-pressed="${cur===o[0]}" ${o[2]?`title="${o[1]}" aria-label="${o[1]}"`:''} data-act="fset" data-path="${path}" data-v="${o[0]}">${o[2]?I(o[2]):o[1]}</button>`).join('')}</div>`;
 const projChips=(arr,max=2)=>{if(!arr.length)return '';const sh=arr.slice(0,max),mo=arr.length-sh.length;return `<span class="pchips">${sh.map(x=>x.id?`<a class="b mute nodot pch" title="${esc(x.name)}" data-go="project/${x.id}">${esc(x.name)}</a>`:`<span class="b mute nodot pch" title="${esc(x.name)}">${esc(x.name)}</span>`).join('')}${mo>0?`<span class="muted sm" title="${esc(arr.slice(2).map(x=>x.name).join(', '))}">+${mo}</span>`:''}</span>`};
 const expCell=(txt,dd)=>dd!==null&&dd<=60?`<span class="exp ${dd<0?'bad':'warn'}" title="${dd<0?'Expired':'Expires soon'}">${I('alert','sm')}${esc(txt)}</span>`:`<span>${esc(txt)}</span>`;
-const emrB=e=>e>1?`<span class="b warn nodot">${e.toFixed(2)}</span>`:`<span class="num">${e.toFixed(2)}</span>`;
+const emrT=e=>e==null?'—':Number(e).toFixed(2);
+const emrB=e=>e==null?'<span class="muted" title="Not provided yet">—</span>':e>1?`<span class="b warn nodot">${e.toFixed(2)}</span>`:`<span class="num">${e.toFixed(2)}</span>`;
 const ptpMark=(ok,txt)=>ok?`<span class="ptpm ok" title="PTP program in place">${I('check','sm')}${txt?'In place':'<span class="visually-hidden">In place</span>'}</span>`:`<span class="ptpm bad" title="No PTP program">${I('x','sm')}${txt?'None':'<span class="visually-hidden">None</span>'}</span>`;
 const isAdmin=()=>S.userRole==='admin';
 let FK=0;
@@ -1752,10 +1758,10 @@ function gauge(score,label,big=false){
 
 /* ============ NAV ============ */
 const NAV={
- owner:[['Overview'],['dashboard','Dashboard','home'],['Projects & Partners'],['projects','Projects','folder'],['gcs','General Contractors','hard'],['trades','Trades','wrench'],['Compliance'],['questionnaires','Questionnaires','clip'],['q-assignments','Assignments','swap'],['bank','Question Bank','db'],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
- gc:[['Overview'],['dashboard','Dashboard','home'],['Projects & Partners'],['projects','Projects','folder'],['trades','Trades','wrench'],['Compliance'],['questionnaires','Questionnaires','clip'],['my-assign','Assignments','swap',2],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
- trade:[['Overview'],['dashboard','Dashboard','home'],['Work'],['projects','My Projects','folder'],['trades','Trades','wrench'],['my-assign','Assignments','swap',3],['docs','Document Library','file'],['activity','Activity','list'],['Company'],['team','My Team','users'],['invite','Invite','send'],['org','Organization','bldg']],
- mojo:[['Platform'],['dashboard','Dashboard','home'],['mojo-companies','Companies','bldg'],['mojo-bank','Question Bank','db'],['mojo-queue','Review Queue','shield',3],['mojo-activity','Activity Log','list']]
+ owner:[['dashboard','Home','home'],['Workspace'],['q-assignments','Assignments','swap'],['projects','Projects','folder'],['invite','Invitations','send'],['Forms & Documentation'],['questionnaires','Questionnaires','clip'],['bank','Question Bank','db'],['docs','Document Library','file'],['Organization'],['org','Company','bldg'],['team','People','users'],['gcs','General Contractors','hard'],['trades','Trades','wrench'],['activity','Activity','list']],
+ gc:[['dashboard','Home','home'],['Workspace'],['my-assign','Assignments','swap',2],['projects','Projects','folder'],['invite','Invitations','send'],['Forms & Documentation'],['questionnaires','Questionnaires','clip'],['bank','Question Bank','db'],['docs','Document Library','file'],['Organization'],['org','Company','bldg'],['team','People','users'],['gcs','General Contractors','hard'],['trades','Trades','wrench'],['activity','Activity','list']],
+ trade:[['dashboard','Home','home'],['Workspace'],['my-assign','Assignments','swap',3],['projects','Projects','folder'],['invite','Invitations','send'],['Forms & Documentation'],['questionnaires','Questionnaires','clip'],['bank','Question Bank','db'],['docs','Document Library','file'],['Organization'],['org','Company','bldg'],['team','People','users'],['trades','Trades','wrench'],['activity','Activity','list']],
+ mojo:[['dashboard','Home','home'],['Workspace'],['mojo-companies','Companies','bldg'],['mojo-queue','Review Queue','shield',3],['Forms & Documentation'],['mojo-bank','Question Bank','db'],['Organization'],['mojo-activity','Activity Log','list']]
 };
 /* ============ PAGES ============ */
 const P={};
@@ -1789,11 +1795,11 @@ const treeProj=(p)=>{const tl=tradesByProj(p.name);return `<div class="pnode"><d
 const gcTree=(g)=>{const ps=projsOfGC(g.n);return `<div class="gnode"><div class="gq"><b class="sm">Questionnaires assigned to ${g.n}</b><div class="tq" style="margin-top:6px">${qChips(g.n)}</div></div>${ps.length?ps.map(treeProj).join(''):'<div class="muted sm" style="padding:10px 4px">No projects assigned yet.</div>'}</div>`};
 /* ---- Partners ---- */
 P.gcs=()=>head('General Contractors','','<a class="btn p" data-go="invite/gc">'+I('send','sm')+' Invite GC</a>')+card('',`<table><thead><tr><th>General Contractor</th><th>Location</th><th>Projects</th><th>Trades</th><th>Questionnaires</th><th>EMR</th><th>Insurance expires</th><th>Status</th><th></th></tr></thead><tbody>${GCS.map(g=>{const nt=new Set(projsOfGC(g.n).flatMap(p=>tradesByProj(p.name).map(t=>t.n))).size;const qs=qOf(g.n);return `<tr class="click" data-go="gc-detail/${g.n}"><td><div class="cell">${avt(g.n)}<b>${g.n}</b></div></td><td class="muted">${g.loc}</td><td>${g.proj}</td><td>${nt}</td><td>${qCell(qs)}</td><td>${emrB(g.emr)}</td><td class="muted">${g.ins}</td><td>${badge(g.stat)}</td><td>${I('chev','sm')}</td></tr>`}).join('')}</tbody></table>`,'',true);
-P['gc-detail']=(n)=>{const g=GCS.find(x=>x.n===decodeURIComponent(n))||GCS[0];if(!g)return emptyState('No general contractors yet','Invite a GC to get started.','invite/gc','Invite GC');return head(g.n,g.loc+', General Contractor',badge(g.stat),crumb(['General Contractors','gcs'],[g.n]))+`<div class="grid g4">${stat('EMR',g.emr.toFixed(2),g.emr>1?'Above 1.0 threshold':'Below industry avg','gauge',g.emr>1?'var(--color-error)':'var(--color-success)','gcs')+stat('Projects',g.proj,'With your company','folder','var(--color-accent)','projects')+stat('Insurance','Valid','Expires '+g.ins,'shield','var(--color-success)','gcs')+stat('Employees','142','Founded 2004','users','var(--color-info)','gcs')}</div>
+P['gc-detail']=(n)=>{const g=GCS.find(x=>x.n===decodeURIComponent(n))||GCS[0];if(!g)return emptyState('No general contractors yet','Invite a GC to get started.','invite/gc','Invite GC');return head(g.n,g.loc+', General Contractor',badge(g.stat),crumb(['General Contractors','gcs'],[g.n]))+`<div class="grid g4">${stat('EMR',emrT(g.emr),g.emr>1?'Above 1.0 threshold':'Below industry avg','gauge',g.emr>1?'var(--color-error)':'var(--color-success)','gcs')+stat('Projects',g.proj,'With your company','folder','var(--color-accent)','projects')+stat('Insurance','Valid','Expires '+g.ins,'shield','var(--color-success)','gcs')+stat('Employees','142','Founded 2004','users','var(--color-info)','gcs')}</div>
  <div class="grid g2 mt">${card('Insurance',`<div class="list">${[['General Liability','Zurich, $2M / $4M','Jun 2027'],['Workers Comp','Hartford, Statutory','Jun 2027'],['Umbrella','Chubb, $10M','Jun 2027']].map(r=>`<div><b>${r[0]}</b><span class="muted sm">${r[1]}</span><span class="ml muted sm">Exp ${r[2]}</span></div>`).join('')}</div>`,'',true)}${card('Safety record',bars([['2023 TRIR',1.2,'var(--brand)'],['2024 TRIR',.9,'var(--brand)'],['2025 TRIR',.7,'var(--brand)']],2)+`<div class="row mt"><span class="b ok nodot">PTP program in place</span><span class="b mute nodot">DART 0.4</span></div>`)}</div><div class="mt">${card('Assigned questionnaires',qOf(g.n).length?`<table><thead><tr><th>Questionnaire</th><th>Project</th><th>Due</th><th>Status</th></tr></thead><tbody>${qOf(g.n).map(a=>`<tr class="click" data-go="review/${a.id}"><td><b>${a.q}</b></td><td class="muted">${a.proj}</td><td class="muted">${a.due}</td><td>${badge(a.status)}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:16px">None assigned.</div>','<a class="btn sm" data-go="q-assign">Assign</a>',true)}</div><div class="mt">${card('Projects & trades under '+g.n,`<div>${projsOfGC(g.n).map(treeProj).join('')||'<div class="muted">No projects assigned yet.</div>'}</div>`)}</div>`};
 P['trade-detail']=(n)=>{const t=TRADES.find(x=>x.n===decodeURIComponent(n))||TRADES[0];if(!t)return emptyState('No trades yet','Invite a trade to get started.','invite/trade','Invite Trade');
  const gcs=[...new Set(t.proj.map(p=>(PROJECTS.find(x=>x.name===p)||{}).gc).filter(Boolean))];const qs=qOf(t.n);const subs=SUBS.filter(x=>x.trade===t.n);
- return head(t.n,t.t+', Trade contractor',badge(t.stat),crumb(['Trades','trades'],[t.n]))+`<div class="grid g4">${stat('EMR',t.emr.toFixed(2),t.emr>1?'Above 1.0 threshold':'Below industry avg','gauge',t.emr>1?'var(--color-error)':'var(--color-success)','trades')+stat('Projects',t.proj.length,'Active with you','folder','var(--color-accent)','projects')+stat('PTP program',t.ptp?'In place':'None',t.ptp?'Documented':'Required for approval','shield',t.ptp?'var(--color-success)':'var(--color-error)','trades')+stat('COI expires',t.exp,'Certificate of insurance','file','var(--color-info)','docs')}</div>
+ return head(t.n,t.t+', Trade contractor',badge(t.stat),crumb(['Trades','trades'],[t.n]))+`<div class="grid g4">${stat('EMR',emrT(t.emr),t.emr>1?'Above 1.0 threshold':'Below industry avg','gauge',t.emr>1?'var(--color-error)':'var(--color-success)','trades')+stat('Projects',t.proj.length,'Active with you','folder','var(--color-accent)','projects')+stat('PTP program',t.ptp?'In place':'None',t.ptp?'Documented':'Required for approval','shield',t.ptp?'var(--color-success)':'var(--color-error)','trades')+stat('COI expires',t.exp,'Certificate of insurance','file','var(--color-info)','docs')}</div>
  <div class="grid g2 mt">${card('Reports to',gcs.length?`<div class="list">${gcs.map(g=>`<div class="click" data-go="gc-detail/${g}">${avt(g)}<b>${g}</b><span class="ml muted sm">General Contractor</span>${I('chev','sm')}</div>`).join('')}</div>`:'<div class="muted">Not assigned to a GC.</div>')}${card('Documents on file',`<div style="display:grid;gap:8px">${['Certificate of Insurance','Safety Manual','Loss Runs'].map(d=>`<div class="file"><div class="fi">PDF</div><b class="sm">${d}</b><span class="ml b ok nodot">On file</span></div>`).join('')}</div>`)}</div>
  ${subs.length?'<div class="mt">'+card('Submissions',`<table><thead><tr><th>Project</th><th>Risk flags</th><th>Submitted</th><th>Status</th></tr></thead><tbody>${subs.map(x=>`<tr class="click" data-go="submission/${x.id}"><td>${x.proj}</td><td>${x.flags.length?x.flags.map(f=>`<span class="b bad nodot">${f}</span>`).join(' '):'<span class="muted">—</span>'}</td><td class="muted">${dnorm(x.date)}</td><td>${badge(x.status)}</td></tr>`).join('')}</tbody></table>`,'',true)+'</div>':''}
  <div class="mt">${card('Assigned questionnaires',qs.length?`<table><thead><tr><th>Questionnaire</th><th>Project</th><th>Due</th><th>Status</th></tr></thead><tbody>${qs.map(a=>`<tr class="click" data-go="review/${a.id}"><td><b>${a.q}</b></td><td class="muted">${a.proj}</td><td class="muted">${a.due}</td><td>${badge(a.status)}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:16px">None assigned.</div>','<a class="btn sm" data-go="q-assign">Assign questionnaire</a>',true)}</div>
@@ -1927,7 +1933,7 @@ P.invite=(arg)=>{
  const qrTab=`<div class="card"><div class="bd"><div class="form1">${fields}</div>${v.qr?`<div class="qrbox"><div class="qrwrap">${qrSvg(v.qr.url,200)}</div><b>${meta.h}</b><small class="muted">Scan with a phone camera to create an account and join, valid for 7 days</small><div class="muted sm" style="word-break:break-all;max-width:320px">${v.qr.url}</div><div class="row wrap" style="justify-content:center"><a class="btn" data-act="invcopy">${I(v.copied?'check':'copy','sm')} ${v.copied?'Copied!':'Copy link'}</a><a class="btn" data-act="qrpng">${I('dl','sm')} PNG</a><a class="btn" data-act="qrsvg">${I('dl','sm')} SVG</a><a class="btn" data-act="qrprint">${I('file','sm')} Print</a><a class="btn" data-act="invnewqr">${I('qr','sm')} New QR code</a></div></div>`
  :`<div class="qrempty">${I('qr')}<p>Generate a QR code to share in person.<br>The recipient scans it, then enters their own email to complete sign-up.</p><a class="btn p" data-act="invqr">${I('qr','sm')} Generate QR code</a></div>`}</div></div>`;
  const recent=visI().filter(i=>i.role===role&&(!proj||i.projects.includes(proj.name)));
- const bc=proj?crumb(['Projects','projects'],[proj.name,'project/'+proj.id],['Invite']):role==='gc'?crumb(['General Contractors','gcs'],['Invite']):role==='trade'?crumb(['Trades','trades'],['Invite']):crumb(['My Team','team'],['Invite']);
+ const bc=proj?crumb(['Projects','projects'],[proj.name,'project/'+proj.id],['Invite']):role==='gc'?crumb(['General Contractors','gcs'],['Invite']):role==='trade'?crumb(['Trades','trades'],['Invite']):crumb(['People','team'],['Invite']);
  const ib=s=>`<span class="b ${s==='Accepted'?'ok':s==='Pending'?'warn':'bad'}">${s}</span>`;
  return head(meta.h,'','',bc)+
  `<div class="seg" style="margin-bottom:18px">${allowed.map(t=>`<a class="${t===role?'on':''}" data-go="invite/${t}${pid&&t!=='member'?'/'+pid:''}">${I(INVMETA[t].ic,'sm')} ${INVMETA[t].lbl}</a>`).join('')}</div>
@@ -2020,7 +2026,7 @@ P['q-assign']=(pid)=>{
  const key=proj?proj.id:'';
  if(!F.as||F.as._key!==key)F.as={_key:key,qid:'',scope:'project_all',project:proj?proj.id:'',companies:[],tie:false,due:'',err:''};
  const a=F.as;
- const eco=(S.role==='gc'?[]:GCS.map(g=>({n:g.n,t:'GC'}))).concat(TRADES.map(t=>({n:t.n,t:'Trade'})));
+ const eco=GCS.map(g=>({n:g.n,t:'GC'})).concat(TRADES.map(t=>({n:t.n,t:'Trade'})));
  const needProj=proj||a.scope==='project_all'||a.tie;
  const can=a.qid&&(proj?true:a.scope==='project_all'?a.project:(a.companies.length&&(!a.tie||a.project)));
  return head('Assign questionnaire','','',proj?crumb(['Projects','projects'],[proj.name,'project/'+proj.id],['Assign']):crumb(['Questionnaires','questionnaires'],['Assign']))+
@@ -2030,7 +2036,7 @@ P['q-assign']=(pid)=>{
  ${!proj&&needProj?`<div class="fld"><label>Project ${a.scope==='project_all'?'*':''}</label>${bsel('as.project',[['','Select a project…'],...PROJECTS.map(p=>[p.id,p.name])],{rr:1})}</div>`:''}
  ${!proj&&a.scope==='company'?`<div class="fld"><label>Companies *</label><div class="picker">${eco.map(c=>`<label class="chkrow"><input type="checkbox" data-act="ftoggle" data-path="as.companies" data-v="${esc(c.n)}" ${a.companies.includes(c.n)?'checked':''}>${c.n}<span class="b mute nodot ml">${c.t}</span></label>`).join('')}</div></div>${bchk('as.tie','Tie to a specific project',0,'Otherwise applies across all your projects with them',1)}`:''}
  <div class="fld"><label>Due date <span class="muted fw">(optional)</span></label>${bin('as.due','',{type:'date'})}</div></div>
- ${a.err?`<p class="ferr" style="margin-top:12px">${a.err}</p>`:''}<div class="row mt"><a class="btn p" data-act="assignsave" ${can?'':'disabled'}>${I('send','sm')} Assign</a><a class="btn" data-go="questionnaires">Cancel</a></div>`)+`</div>`;
+ ${a.err?`<p class="ferr" style="margin-top:12px">${a.err}</p>`:''}<div class="row mt"><a class="btn p" data-act="qassignsave" ${can?'':'disabled'}>${I('send','sm')} Assign</a><a class="btn" data-go="questionnaires">Cancel</a></div>`)+`</div>`;
 };
 
 /* ============ CREATE PROJECT ============ */
@@ -2051,7 +2057,7 @@ const expSoon=()=>DOCS.filter(d=>{const n=daysTo(d.exp);return n!==null&&n<=90})
 const myAssign=()=>ASSIGN.filter(a=>a.co===meName());
 const toReview=()=>ASSIGN.filter(a=>a.co!==meName());
 const OPEN_ST=['Pending','In progress','Needs more info'];
-const navCnt=k=>k==='projects'&&S.role!=='trade'?SUBS.filter(s=>['Submitted','Under review'].includes(s.status)).length:k==='q-assignments'&&S.role!=='trade'?ASSIGN.filter(a=>a.status==='Submitted'&&a.co!==meName()).length:k==='my-assign'?myAssign().filter(a=>OPEN_ST.includes(a.status)).length+(S.role==='gc'?ASSIGN.filter(a=>a.status==='Submitted'&&a.co!==meName()).length:0):k==='mojo-queue'?QUEUE.filter(q=>!q.done).length:0;
+const navCnt=k=>k==='projects'?SUBS.filter(s=>['Submitted','Under review'].includes(s.status)).length:k==='q-assignments'?ASSIGN.filter(a=>a.status==='Submitted'&&a.co!==meName()).length:k==='my-assign'?myAssign().filter(a=>OPEN_ST.includes(a.status)).length+(S.role==='gc'||S.role==='trade'?ASSIGN.filter(a=>a.status==='Submitted'&&a.co!==meName()).length:0):k==='mojo-queue'?QUEUE.filter(q=>!q.done).length:0;
 const fmtSize=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
 const extOf=n=>{const e=(n.split('.').pop()||'').toUpperCase();return /^DOC/.test(e)?'DOC':e.slice(0,3)};
 const shortDate=()=>new Date().toLocaleDateString('en-US',{month:'short',day:'2-digit'});
@@ -2085,24 +2091,60 @@ function switchWS(i){
  go('dashboard');render();
  toast(`Switched to ${w.name} — you are ${w.ur==='admin'?'an Admin':'a Contributor'} here`);
 }
+/* A trade's own projects stay private to it. Once a trade brings another trade onto someone else's
+   project, that project's GC and owner see the trade too (but never the trade's private projects). */
+function shareTrade(tr,proj,by){
+ Object.keys(WS).forEach(k=>{
+  const w=WS[k];if(w.type==='trade'||w.type==='mojo')return;
+  const d=wsData(k),p=d.PROJECTS.find(x=>x.name===proj);if(!p)return;
+  let t=d.TRADES.find(x=>x.n===tr.n);
+  if(!t){t={n:tr.n,t:tr.t,emr:tr.emr,stat:tr.stat,proj:[],ptp:tr.ptp,exp:tr.exp,by};d.TRADES.push(t)}
+  if(!t.proj.includes(proj)){t.proj.push(proj);p.trades=(p.trades||0)+1}
+ });
+}
+/* An accepted invite puts the company in the inviter's list straight away. Profile completion is optional,
+   so figures it hasn't provided yet show as a dash. */
+function joinNetwork(inv,name){
+ if(!inv||inv.member||!inv.ws||!WS[inv.ws]||(inv.base!=='gc'&&inv.base!=='trade'))return;
+ const w=WS[inv.ws],d=wsData(inv.ws),projs=(inv.projects||[]).filter(n=>d.PROJECTS.some(p=>p.name===n));
+ if(inv.base==='gc'){
+  let g=d.GCS.find(x=>x.n===name);
+  if(!g){g={n:name,loc:'—',proj:0,emr:null,stat:'Pending',ins:'—',by:w.name,projs:[]};d.GCS.push(g)}
+  projs.forEach(n=>{const p=d.PROJECTS.find(x=>x.name===n);if(w.type==='owner'&&(p.gc==='Unassigned'||!p.gc))p.gc=name;else if(p.gc!==name){(p.partners=p.partners||[]).includes(name)||p.partners.push(name);g.projs.includes(n)||g.projs.push(n)}});
+  g.proj=d.PROJECTS.filter(p=>p.gc===name||(p.partners||[]).includes(name)).length;
+ }else{
+  let t=d.TRADES.find(x=>x.n===name);
+  if(!t){t={n:name,t:'Trade',emr:null,stat:'Pending',proj:[],ptp:false,exp:'—',by:w.name};d.TRADES.push(t)}
+  projs.forEach(n=>{const p=d.PROJECTS.find(x=>x.name===n);if(!t.proj.includes(n)){t.proj.push(n);p.trades=(p.trades||0)+1}if(w.type==='trade'&&p.kind==='invited')shareTrade(t,n,w.name)});
+ }
+}
+/* a company Mojo manages may not have a workspace until its first invited person signs in */
+function ensureWs(inv){
+ if(inv.ws&&WS[inv.ws])return inv.ws;
+ const key=inv.ws||('ws'+Date.now());inv.ws=key;
+ const co=MOJO_COS.find(c=>c.n===inv.company);
+ WS[key]={name:inv.company,sub:`${typeLbl(inv.base)}, ${co?co.loc:'Workspace'}`,type:inv.base,seed:()=>{const d=blankData(inv.company,'','',[]);d.TEAM=(co&&MOJO_TEAMS[co.n])||[];d.NOTIFS=[];return d}};
+ return key;
+}
 function createAccount(a,inv){
  const email=a.email.trim().toLowerCase();
  if(ACCOUNTS[email])return 'User already registered';
  const role=inv?inv.base:a.role;let ms;
- if(inv&&inv.member){ms=[{ws:inv.ws,ur:'contributor'}];const d=wsData(inv.ws);d.TEAM.push(mkT(a.name.trim(),email,'Contributor','Active','Just now'))}
+ if(inv&&inv.member){const ensured=ensureWs(inv);ms=[{ws:inv.ws,ur:inv.userRole==='admin'?'admin':'contributor'}];const d=wsData(inv.ws);const pend=d.TEAM.findIndex(x=>(x.e||'').toLowerCase()===email);if(pend>=0)d.TEAM.splice(pend,1);d.TEAM.push({...mkT(a.name.trim(),email,inv.userRole==='admin'?'Admin':'Contributor','Active','Just now'),...(inv.title?{title:inv.title}:{})})}
  else{
   const key='ws'+Date.now(),company=(a.company||'My Company').trim();
-  const proj=inv?BASE.PROJECTS.filter(p=>inv.projects.includes(p.name)).map(p=>({...cp(p),kind:'invited'})):[];
+  const srcP=inv&&inv.ws&&WS[inv.ws]?wsData(inv.ws).PROJECTS:BASE.PROJECTS;const proj=inv?srcP.filter(p=>inv.projects.includes(p.name)).map(p=>({...cp(p),kind:'invited'})):[];
   WS[key]={name:company,sub:`${typeLbl(role)}, New workspace`,type:role,seed:()=>blankData(company,a.name.trim(),email,proj)};
   ms=[{ws:key,ur:'admin'}];
+  joinNetwork(inv,company);
  }
  ACCOUNTS[email]={email,role,name:a.name.trim(),phone:'',title:'',pass:a.pass,notif:{assign:true,review:true,invite:true,expire:true},memberships:ms};
  return null;
 }
 function acceptInviteForExisting(acct,inv){
  let tenant=0,msg='Invitation accepted';
- if(inv.member){let i=acct.memberships.findIndex(m=>m.ws===inv.ws);if(i<0){acct.memberships.push({ws:inv.ws,ur:'contributor'});i=acct.memberships.length-1;wsData(inv.ws).TEAM.push(mkT(acct.name,acct.email,'Contributor','Active','Just now'))}tenant=i;msg='You joined '+inv.company+' as a Contributor'}
- else if(acct.role===inv.base){const d=wsData(acct.memberships[0].ws);BASE.PROJECTS.filter(p=>inv.projects.includes(p.name)&&!d.PROJECTS.find(x=>x.name===p.name)).forEach(p=>d.PROJECTS.push({...cp(p),kind:'invited'}));msg='Invitation accepted — projects added to your workspace'}
+ if(inv.member){ensureWs(inv);let i=acct.memberships.findIndex(m=>m.ws===inv.ws);if(i<0){const adm=inv.userRole==='admin';acct.memberships.push({ws:inv.ws,ur:adm?'admin':'contributor'});i=acct.memberships.length-1;const T0=wsData(inv.ws).TEAM,pend=T0.findIndex(x=>(x.e||'').toLowerCase()===acct.email.toLowerCase());if(pend>=0)T0.splice(pend,1);T0.push({...mkT(acct.name,acct.email,adm?'Admin':'Contributor','Active','Just now'),...(inv.title?{title:inv.title}:{})})}tenant=i;msg='You joined '+inv.company+' as '+(inv.userRole==='admin'?'an Admin':'a Contributor')}
+ else if(acct.role===inv.base){const d=wsData(acct.memberships[0].ws);(inv.ws&&WS[inv.ws]?wsData(inv.ws).PROJECTS:BASE.PROJECTS).filter(p=>inv.projects.includes(p.name)&&!d.PROJECTS.find(x=>x.name===p.name)).forEach(p=>d.PROJECTS.push({...cp(p),kind:'invited'}));joinNetwork(inv,WS[acct.memberships[0].ws].name);msg='Invitation accepted — projects added to your workspace'}
  return {tenant,msg};
 }
 function loginForm(){
@@ -2153,9 +2195,9 @@ function gsearch(q){
  if(S.role==='mojo')MOJO_COS.filter(c=>m(c.n)||m(c.loc)).forEach(c=>out.push(['Company',c.n,c.t.toUpperCase()+', '+c.loc,'mojo-company/'+encodeURIComponent(c.n),'bldg']));
  else{
   PROJECTS.filter(p=>m(p.name)||m(p.addr)).forEach(p=>out.push(['Project',p.name,p.addr,'project/'+p.id,'folder']));
-  if(S.role==='owner')GCS.filter(g=>m(g.n)).forEach(g=>out.push(['General Contractor',g.n,g.loc,'gc-detail/'+encodeURIComponent(g.n),'hard']));
-  if(S.role!=='trade')TRADES.filter(t=>m(t.n)||m(t.t)).forEach(t=>out.push(['Trade',t.n,t.t,'trades','wrench']));
-  if(S.role!=='trade')visT().filter(t=>m(t.n)).forEach(t=>out.push(['Questionnaire',t.n,t.qs+' questions','q-builder/'+t.id,'clip']));
+  if(S.role==='owner'||S.role==='gc')GCS.filter(g=>m(g.n)).forEach(g=>out.push(['General Contractor',g.n,g.loc,'gc-detail/'+encodeURIComponent(g.n),'hard']));
+  TRADES.filter(t=>m(t.n)||m(t.t)).forEach(t=>out.push(['Trade',t.n,t.t,'trades','wrench']));
+  visT().filter(t=>m(t.n)).forEach(t=>out.push(['Questionnaire',t.n,t.qs+' questions','q-builder/'+t.id,'clip']));
   DOCS.filter(d=>m(d.n)||m(d.t)).forEach(d=>out.push(['Document',d.n,d.t,'docs','file']));
  }
  if(!out.length)return `<div class="gsempty">No results for “${esc(q)}”</div>`;
@@ -2176,11 +2218,11 @@ P.dashboard=()=>{
  const waiting=ASSIGN.filter(x=>OPEN_ST.includes(x.status)&&x.co!==me).length;
   const cards=own?[stat('To review',pend.length,'','clip','','projects'),stat('Waiting on companies',waiting,'','list','','q-assignments'),stat('Compliant partners',`${appr} / ${TRADES.length}`,'','shield','','trades')]
    :gc?[stat('To review',pend.length,'','clip','','projects'),stat('Assigned to me',open,'','list','','my-assign'),stat('Trades needing attention',needs,'','wrench','','trades')]
-   :[stat('Open assignments',open,'','list','','my-assign'),stat('Approved',mine.filter(x=>x.status==='Approved').length,'','shield','','my-assign'),stat('Expiring documents',exp.length,'','alert','','docs')];
+   :[stat('Open assignments',open,'','list','','my-assign'),stat('To review',pend.length+rev,'','clip','','q-assignments'),stat('Expiring documents',exp.length,'','alert','','docs')];
 const tl=['May','Jun','Jul','Aug','Sep','Oct'],sp=CHART.split;
   const attn=S.role==='trade'?mySubs:SUBS;
  return head(`Welcome back, ${CUR.name.split(' ')[0]}`,'',
-  own||gc?`<button class="btn" data-go="project-new">${I('plus','sm')} New Project</button><button class="btn p" data-go="invite">${I('send','sm')} Invite ${own?'GC':'Trade'}</button>`:`<button class="btn" data-go="org">${I('bldg','sm')} Organization Profile</button><button class="btn p" data-go="invite/trade">${I('send','sm')} Invite subcontractor</button>`)+
+  own||gc?`<button class="btn" data-go="project-new">${I('plus','sm')} New Project</button><button class="btn p" data-go="invite">${I('send','sm')} Invite ${own?'GC':'Trade'}</button>`:`<button class="btn" data-go="org">${I('bldg','sm')} Organization Profile</button><button class="btn" data-go="project-new">${I('plus','sm')} New Project</button><button class="btn p" data-go="invite/trade">${I('send','sm')} Invite subcontractor</button>`)+
  
  (orgPct()<100&&!empty?`<div class="nudge">${I('bldg')}<div class="nt"><b>Your profile is ${orgPct()}% complete</b><small>It takes about five minutes. Answers you give in questionnaires can fill most of it for you.</small></div><a class="btn sm p" data-go="org">Continue profile</a></div>`:'')+
  (empty?`<div class="card" style="margin-bottom:18px"><div class="hd"><h2 class="sh">Get started with PreQual Pro</h2></div><div class="bd"><div class="grid g3">${[['bldg','Complete your Organization profile','Add company info, insurance and safety records.','org','Open profile'],own||gc?['folder','Create your first project','Add a project, or import many from a CSV.','project-new','Create project']:['file','Upload compliance documents','Add your COI and safety manual to the library.','docs','Upload'],own||gc?['send','Invite contractors','Bring GCs and trades into your network.','invite','Invite']:['users','Invite your team','Add colleagues as admins or contributors.','invite/member','Invite']].map(s=>`<div style="border:1px solid var(--border);border-radius:12px;padding:16px"><span class="sq" style="background:var(--brand-l);color:var(--brand)">${I(s[0],'sm')}</span><b style="display:block;margin-top:10px">${s[1]}</b><p class="muted sm" style="margin:4px 0 12px">${s[2]}</p><a class="btn sm p" data-go="${s[3]}">${s[4]}</a></div>`).join('')}</div></div></div>`:'')+
@@ -2199,7 +2241,7 @@ const tl=['May','Jun','Jul','Aug','Sep','Oct'],sp=CHART.split;
 P.projects=()=>{
  const f=F.pj||(F.pj={q:'',st:'All'}),t=curTab('proj','all');
  if(S.role==='trade'){
-  return head('My Projects','')+(PROJECTS.length?`<div class="grid g2">${PROJECTS.map(p=>{const s=SUBS.find(x=>x.trade===meName()&&x.proj===p.name);return card('',`<div class="row" style="align-items:flex-start">${avt(p.name)}<div><b style="font-size:15px">${p.name}</b><div class="muted sm">${I('map','sm')} ${p.addr}</div></div><span class="ml">${badge(p.status)}</span></div><div class="grid g3 mt" style="gap:12px"><div><small class="muted">GC</small><div class="fw sm">${p.gc}</div></div><div><small class="muted">Start</small><div class="fw sm">${p.start}</div></div><div><small class="muted">End</small><div class="fw sm">${p.end}</div></div></div><hr style="border:0;border-top:1px solid var(--border);margin:16px 0"><div class="row"><div class="sm muted">Pre-qual status</div>${badge(s?s.status:'Pending')}<a class="btn sm p ml" data-go="submit/${p.id}">${s&&s.status!=='Draft'&&s.status!=='Needs info'?'View submission':s?'Continue':'Start submission'}</a></div>`)}).join('')}</div>`:emptyState('No projects yet','When an Owner or GC invites you to a project it will appear here.',''));
+  return head('Projects','')+(PROJECTS.length?`<div class="grid g2">${PROJECTS.map(p=>{const s=SUBS.find(x=>x.trade===meName()&&x.proj===p.name);return card('',`<div class="row" style="align-items:flex-start">${avt(p.name)}<div><b style="font-size:15px">${p.name}</b><div class="muted sm">${I('map','sm')} ${p.addr}</div></div><span class="ml">${badge(p.status)}</span></div><div class="grid g3 mt" style="gap:12px"><div><small class="muted">GC</small><div class="fw sm">${p.gc}</div></div><div><small class="muted">Start</small><div class="fw sm">${p.start}</div></div><div><small class="muted">End</small><div class="fw sm">${p.end}</div></div></div><hr style="border:0;border-top:1px solid var(--border);margin:16px 0"><div class="row"><div class="sm muted">Pre-qual status</div>${badge(s?s.status:'Pending')}<a class="btn sm p ml" data-go="submit/${p.id}">${s&&s.status!=='Draft'&&s.status!=='Needs info'?'View submission':s?'Continue':'Start submission'}</a></div>`)}).join('')}</div>`:emptyState('No projects yet','When an Owner or GC invites you to a project it will appear here.',''));
  }
  const list=PROJECTS.filter(p=>(S.role!=='gc'||t==='all'||p.kind===t)&&(f.st==='All'||p.status===f.st)&&(p.name+' '+p.addr+' '+p.gc).toLowerCase().includes((f.q||'').toLowerCase()));
  return head('Projects','',`<button class="btn" data-go="bulk">${I('upload','sm')} Bulk Upload</button><button class="btn p" data-go="project-new">${I('plus','sm')} New Project</button>`)+
@@ -2266,7 +2308,7 @@ P.submit=(pid)=>{
  const missing=req.filter(d=>!docs[d[0]]);
  const gl=daysTo(ORG.gl_exp),wc=daysTo(ORG.wc_exp);
  const chk=[['Insurance valid (GL & Workers\' Comp)',gl!==null&&gl>0&&wc!==null&&wc>0],['PTP program on file',ORG.ptp==='Yes'&&!!String(ORG.ptpDesc).trim()],['Required documents uploaded',!missing.length]];
- return head('Project documents','',badge(mine?mine.status:'Draft'),crumb([S.role==='trade'?'My Projects':'Projects','projects'],[p.name,'project/'+p.id],['Submission']))+
+ return head('Project documents','',badge(mine?mine.status:'Draft'),crumb(['Projects','projects'],[p.name,'project/'+p.id],['Submission']))+
  (locked?`<div class="banner info">${I('check')}<div><b>Submitted ${dnorm(mine.date)}.</b> Your submission is <b>${mine.status}</b>. ${mine.status==='Approved'?'No further action needed.':'You will be notified when the reviewer decides.'}</div></div>`:'')+
  (mine&&mine.status==='Needs info'?`<div class="banner warn">${I('msg')}<div><b>The reviewer asked for more information.</b> Update the documents below and resubmit.${mine.hist&&mine.hist.length?` Last note: “${esc(mine.hist[mine.hist.length-1].note||'—')}”`:''}</div></div>`:'')+
  (sd.err?`<div class="banner bad">${I('alert')}<div>${sd.err}</div></div>`:'')+
@@ -2342,7 +2384,7 @@ P.review=(id)=>{
 /* ============ v3, TEAM / ORGANIZATION / ACCOUNT ============ */
 P.team=()=>{
  const admins=TEAM.filter(m=>m.r==='Admin'&&m.st==='Active').length;
- return head('My Team','',isAdmin()?'<a class="btn p" data-go="invite/member">'+I('plus','sm')+' Invite member</a>':'')+
+ return head('People','',isAdmin()?'<a class="btn p" data-go="invite/member">'+I('plus','sm')+' Invite member</a>':'')+
  (!isAdmin()?`<div class="banner info">${I('lock')}<div>You're a <b>Contributor</b> in ${esc(meName())}. Only company admins can invite members or change roles.</div></div>`:'')+
  card('',TEAM.length?`<table><thead><tr><th>Member</th><th>Role</th><th>Status</th><th>Last active</th><th></th></tr></thead><tbody>${TEAM.map(m=>{const self=CUR&&m.e===CUR.email;return `<tr><td><div class="cell"><div class="av" style="background:${pcol(m.n)}">${ini(m.n)}</div><div><b>${esc(m.n)}${self?' <span class="b mute nodot">You</span>':''}</b><small>${esc(m.e)}</small></div></div></td><td>${isAdmin()&&!self?`<select class="inp" style="width:140px;padding:5px 8px" data-change="teamrole" data-v="${esc(m.e)}"><option ${m.r==='Admin'?'selected':''}>Admin</option><option ${m.r!=='Admin'?'selected':''}>Contributor</option></select>`:badge(m.r)}</td><td>${m.st==='Active'?'<span class="b ok">Active</span>':'<span class="b warn">Invited</span>'}</td><td class="muted">${m.last}</td><td>${isAdmin()&&!self?(m.st==='Invited'?`<a class="btn sm g" data-act="toast" data-v="Invitation re-sent to ${esc(m.e)}">Resend</a>`:'')+`<a class="btn sm g" data-act="rmember" data-v="${esc(m.e)}">Remove</a>`:''}</td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:34px;text-align:center">No team members yet.</div>','',true);
 };
@@ -2379,14 +2421,14 @@ P.org=()=>{
  const ban=d?`<div class="banner info">${I('lock')}<div><b>View only.</b> Only a company admin can edit the Organization profile. You can still browse every step.</div></div>`:'';
  const unsaved=dirty&&!d?`<div class="banner warn">${I('alert')}<div style="flex:1"><b>You have unsaved changes.</b></div><a class="btn sm" data-act="orgdiscard">Discard</a><a class="btn sm p" data-act="orgsave">Save changes</a></div>`:'';
  const acts=d?'':`${dirty?'<a class="btn" data-act="orgdiscard">Discard</a>':''}<a class="btn p" data-act="orgsave">${I('check','sm')} Save ${S.role==='owner'||S.role==='mojo'?'changes':'profile'}</a>`;
- if(S.role==='owner'||S.role==='mojo')return head('Organization','',acts)+ban+unsaved+card('Company information',`<div class="form">${ofd('Company name','name',{dis:d})}${ofd('Phone','phone',{dis:d})}${ofd('Address','addr',{dis:d})}${ofd('City','city',{dis:d})}${ofd('State','state',{dis:d})}${ofd('ZIP','zip',{dis:d})}${ofd('Website','web',{dis:d,full:1})}${ofile('Company logo','logo','Logo',d)}</div>`)+`<div class="mt">${orgDocs()}</div>`;
+ if(S.role==='owner'||S.role==='mojo')return head('Company','',acts)+ban+unsaved+card('Company information',`<div class="form">${ofd('Company name','name',{dis:d})}${ofd('Phone','phone',{dis:d})}${ofd('Address','addr',{dis:d})}${ofd('City','city',{dis:d})}${ofd('State','state',{dis:d})}${ofd('ZIP','zip',{dis:d})}${ofd('Website','web',{dis:d,full:1})}${ofile('Company logo','logo','Logo',d)}</div>`)+`<div class="mt">${orgDocs()}</div>`;
  const s=S.step;let body='';
  if(s===1)body=`<div class="form">${ofd('Company name','name',{dis:d})}${ofd('Trade type','trade',{dis:d})}${ofd('Address','addr',{dis:d})}${ofd('City / State / ZIP','city',{dis:d})}${ofd('Years in business','years',{dis:d})}${ofd('Employees','emp',{dis:d})}${ofd('License #','lic',{dis:d})}${ofd('Phone','phone',{dis:d})}</div>`;
  if(s===2)body=`<div class="form">${[['General Liability','gl'],['Workers\' Comp','wc']].map(x=>`<div class="full"><b>${x[0]}</b></div>${ofd('Carrier',x[1]+'_carrier',{dis:d})}${ofd('Policy #',x[1]+'_policy',{dis:d})}${ofd('Limits',x[1]+'_limits',{dis:d})}${ofd('Expiry',x[1]+'_exp',{dis:d,type:'date',hint:expHint(w[x[1]+'_exp'])})}`).join('')}<div class="full"><b>Umbrella <span class="muted fw">(optional)</span></b></div>${ofd('Carrier','umb_carrier',{dis:d})}${ofd('Limits','umb_limits',{dis:d})}${ofile('Certificate of Insurance (COI)','f_coi','COI',d)}</div>`;
  if(s===3)body=`<div class="form">${ofd('EMR','emr',{dis:d,hint:+w.emr>1?'<span style="color:var(--bad);font-weight:600">Above 1.0 — submissions will be flagged</span>':''})}${ofd('TRIR','trir',{dis:d})}${ofd('DART rate','dart',{dis:d})}${ofd('OSHA recordables (last 5 yrs)','rec',{dis:d})}${ofd('Hours worked (last 3 yrs)','hours',{dis:d,full:1})}${ofile('Safety Manual / OSHA logs','f_safety','Safety Manual',d)}</div>`;
  if(s===4)body=`<div class="form"><div class="fld full"><label>Do you have a Pre-Task Planning program?</label><div class="row">${['Yes','No'].map(x=>`<button class="opt ${w.ptp===x?'on':''}" ${d?'disabled':`data-act="fset" data-path="orgf.ptp" data-v="${x}"`}>${x}</button>`).join('')}</div>${w.ptp==='No'?'<small style="color:var(--color-warn)">Submissions without a PTP program are auto-flagged for reviewers.</small>':''}</div>${w.ptp==='Yes'?ofd('Describe your PTP program','ptpDesc',{ta:1,full:1,dis:d})+ofile('PTP Program Plan','f_ptp','PTP Plan',d):''}</div>`;
  if(s===5)body=`<div class="form">${ofd('Bonding company','bond_co',{dis:d})}${ofd('Single project limit','bond_single',{dis:d})}${ofd('Aggregate limit','bond_agg',{dis:d})}${ofd('Bond expiry','bond_exp',{dis:d,type:'date',hint:expHint(w.bond_exp)})}${ofile('Bonding Document','f_bond','Bond',d)}</div>`;
- return head('Organization','',acts)+ban+unsaved+
+ return head('Company','',acts)+ban+unsaved+
  `<div class="card" style="margin-bottom:18px"><div class="bd row wrap" style="gap:18px"><div class="ring" style="--p:${pct};width:64px;height:64px"><span style="width:50px;height:50px;font-size:14px">${pct}%</span></div><div style="flex:1;min-width:200px"><b>Profile completeness</b><div class="muted sm">${pct>=80?'Great — your profile is ready for submissions.':'Complete more fields so reviewers can approve you faster.'}</div></div>${w.ptp==='No'||+w.emr>1?`<span class="b bad">${w.ptp==='No'?'No PTP program':'High EMR'} — submissions will be flagged</span>`:''}</div></div>`+
  `<div class="steps">${ORGSTEPS.map((x,i)=>`<div class="step ${s===i+1?'on':s>i+1?'done':''}" data-act="step" data-v="${i+1}">${x}${ORGSTEP_KEYS[i+1].some(k=>F.orgerr&&F.orgerr[k])?' <span style="color:var(--bad)">●</span>':''}</div>`).join('')}</div>`+(s===6?orgDocs():card(ORGSTEPS[s-1],body))+
  `<div class="row mt"><button class="btn" data-act="step" data-v="${Math.max(1,s-1)}" ${s===1?'disabled':''}>← Back</button><button class="btn p ml" data-act="step" data-v="${Math.min(6,s+1)}" ${s===6?'disabled':''}>Next</button></div>`;
@@ -2455,10 +2497,13 @@ const dayLabel=d=>{
  const f=new Date(d+'T00:00').toLocaleDateString('en-US',o);
  return d===dAgo(0)?'Today, '+f:d===dAgo(1)?'Yesterday, '+f:f;
 };
+/* custom range: the pickers get their own tidy row above the other filters; otherwise it is just one dropdown among them */
+const rangeTop=k=>getR(k).p==='custom'?`<div class="ftool-row"><div class="ftool-l">${rangeBar(k)}</div></div>`:'';
+const rangeIn=k=>getR(k).p==='custom'?'':rangeBar(k);
 function rangeBar(k){
  const r=getR(k),bad=r.p==='custom'&&r.from&&r.to&&r.from>r.to;
- return `<div class="rng" role="group" aria-label="Time range">${RANGES.map(x=>`<button class="${r.p===x[0]?'on':''}" data-act="fset" data-path="${k}.p" data-v="${x[0]}">${x[0]==='custom'?I('cal','sm'):''}${x[1]}</button>`).join('')}</div>`
- +(r.p==='custom'?`<div class="rng-custom">From ${bin(k+'.from','',{type:'date',rr:1}).replace('class="inp ','class="inp '+(bad?'err ':''))} to ${bin(k+'.to','',{type:'date',rr:1})}</div>${bad?`<span class="rng-err">${I('alert','sm')} End date is before the start date</span>`:''}`:'');
+ return fsel('Time range','fset',k+'.p',RANGES,r.p)
+ +(r.p==='custom'?`<div class="rng-custom" style="border:0;padding:0;background:none">From ${bin(k+'.from','',{type:'date',rr:1}).replace('class="inp ','class="inp '+(bad?'err ':''))} to ${bin(k+'.to','',{type:'date',rr:1})}</div>${bad?`<span class="rng-err">${I('alert','sm')} End date is before the start date</span>`:''}`:'');
 }
 const emptyFiltered=(what,k)=>`<div class="empty2"><span class="ico">${I('search')}</span><b>No ${what} match these filters</b><span class="sm">Try a different time range or clear your filters.</span><a class="btn" data-act="mclear" data-k="${k}">Clear filters</a></div>`;
 const chipBtn=(on,act,k,v,label,n)=>`<button class="chip ${on?'on':''}" data-act="${act}" data-k="${k}" data-v="${v}">${label}${n==null?'':`<span class="cn">${n}</span>`}</button>`;
@@ -2491,8 +2536,8 @@ P['mojo-history']=()=>{
  const cos=[['All','All companies'],...uniq(REVIEW_HISTORY.map(x=>x.co)).map(x=>[x,x])];
  const dirty=f!=='All'||ai!=='Any'||co!=='All'||qs||r.p!=='l30';
  return head('Review History','',`<a class="btn" data-go="mojo-queue">${I('shield','sm')} Back to queue</a>`,crumb(['Review Queue','mojo-queue'],['History']))+
- `<div class="card"><div class="ftool">${rangeBar(rk)}
-  <div class="ftool-row"><div class="ftool-l">${fsel('Company','fset','mhc',cos.map(c=>[c[0],c[1]]),F.mhc||'All')}${fsel('Decision','filter','mh',['All','Approved','Rejected'].map(c=>[c,c==='All'?'All':c,cnt(c)]),f)}${fsel('Source','filter','mhai',[['Any','Any'],['AI-suggested','AI-suggested'],['Human-entered','Human-entered']],ai)}</div>
+ `<div class="card"><div class="ftool">${rangeTop(rk)}
+  <div class="ftool-row"><div class="ftool-l">${rangeIn(rk)}${fsel('Company','fset','mhc',cos.map(c=>[c[0],c[1]]),F.mhc||'All')}${fsel('Decision','filter','mh',['All','Approved','Rejected'].map(c=>[c,c==='All'?'All':c,cnt(c)]),f)}${fsel('Source','filter','mhai',[['Any','Any'],['AI-suggested','AI-suggested'],['Human-entered','Human-entered']],ai)}</div>
   <div class="ftool-r"><div class="search">${I('search','sm')}<input placeholder="Search reviews" aria-label="Search reviews" data-bind="mhq" data-rr="focus" value="${esc(F.mhq||'')}"></div>${dirty?`<button class="fclear" data-act="mclear" data-k="mh">${I('x','sm')} Clear</button>`:''}</div></div>
   <div class="ftool-count">Showing <b>${list.length}</b> of ${REVIEW_HISTORY.length}, ${rangeSummary(r)}</div></div>${timeline(list)}</div>`;
 };
@@ -2512,8 +2557,8 @@ P['mojo-activity']=()=>{
  const row=x=>{const m=meta[x.cat]||['mute','list'];return `<tr><td class="tm" data-label="When"><div>${shortD(x.t.slice(0,10))}</div><div class="sub">${x.t.slice(11)}</div></td><td data-label="Category"><span class="b cat ${m[0]} nodot">${I(m[1],'sm')}${x.cat}</span></td><td data-label="Activity"><div class="msg">${esc(x.msg)}</div>${x.co==='—'?'':`<div class="sub"><span class="mini sqr" style="background:${col(x.co)}">${ini(x.co)}</span>${esc(x.co)}</div>`}</td><td><div class="who"><span class="mini" style="background:${pcol(x.actor)}">${ini(x.actor)}</span><span class="t">${esc(x.actor)}</span></div></td></tr>`};
  const body=list.map(row).join('');
  return head('Activity Log','',`<a class="btn" data-act="exportlog">${I('dl','sm')} Export CSV</a>`)+
- `<div class="card"><div class="ftool">${rangeBar(rk)}
-  <div class="ftool-row"><div class="ftool-l">${fsel('User','fset','maa',actors.map(c=>[c[0],c[1]]),F.maa||'All')}${fsel('Category','filter','ma',cats.map(c=>[c,c==='All'?'All':c,cnt(c)]),f)}</div>
+ `<div class="card"><div class="ftool">${rangeTop(rk)}
+  <div class="ftool-row"><div class="ftool-l">${rangeIn(rk)}${fsel('User','fset','maa',actors.map(c=>[c[0],c[1]]),F.maa||'All')}${fsel('Category','filter','ma',cats.map(c=>[c,c==='All'?'All':c,cnt(c)]),f)}</div>
   <div class="ftool-r"><div class="search">${I('search','sm')}<input placeholder="Search activity" aria-label="Search activity" data-bind="maq" data-rr="focus" value="${esc(F.maq||'')}"></div>${dirty?`<button class="fclear" data-act="mclear" data-k="ma">${I('x','sm')} Clear</button>`:''}</div></div>
   <div class="ftool-count">Showing <b>${list.length}</b> of ${ACTIVITY.length}, ${rangeSummary(r)}</div></div>
   ${list.length?`<div class="logcard"><table class="logtbl"><colgroup><col class="c-date"><col class="c-cat"><col><col class="c-by"></colgroup><thead><tr><th>When</th><th>Category</th><th>Activity</th><th>Performed by</th></tr></thead><tbody>${body}</tbody></table></div>`:emptyFiltered('activity entries','ma')}</div>`;
@@ -2717,7 +2762,7 @@ Object.assign(ACT,{
   F.qb=null;toast('Questionnaire saved');go('questionnaires?tab=tpl');
  },
  /* assign */
- assignsave:()=>{
+ qassignsave:()=>{
   const a=F.as,t=TEMPLATES.find(x=>x.id===a.qid);if(!t)return;
   const proj=PROJECTS.find(p=>p.id===(a.project||''));
   const due=a.due?fmtD(a.due).replace(/, \d{4}$/,''):'—';
@@ -2733,7 +2778,7 @@ Object.assign(ACT,{
   if(!(n.name||'').trim())n.err.name='Project name is required';
   if(n.start&&n.end&&n.end<n.start)n.err.end='End date must be after the start date';
   if(Object.keys(n.err).length){rerender();return}
-  PROJECTS.unshift({id:'p'+Date.now(),name:n.name.trim(),addr:n.addr||'—',start:fmtD(n.start),end:fmtD(n.end),status:'Planning',gc:S.role==='gc'?meName():'Unassigned',trades:0,pend:0,pct:0,kind:'managed'});
+  PROJECTS.unshift({id:'p'+Date.now(),name:n.name.trim(),addr:n.addr||'—',start:fmtD(n.start),end:fmtD(n.end),status:'Planning',gc:S.role!=='owner'?meName():'Unassigned',trades:0,pend:0,pct:0,kind:'managed'});
   F.np=null;toast('Project created');go('projects');
  },
  editproject:e=>{
@@ -2781,7 +2826,7 @@ Object.assign(ACT,{
  /* team */
  tradeview:e=>{
   const t=TRADES.find(x=>x.n===e.dataset.v);
-  openModal(`<div class="mh">${avt(t.n)}<div><h2 class="sh">${t.n}</h2><div class="muted sm">${t.t}</div></div><span class="ml">${badge(t.stat)}</span><a class="btn g sm" data-act="closeModal">${I('x')}</a></div><div class="mb"><div class="grid g3" style="gap:12px">${[['EMR',t.emr.toFixed(2)],['PTP program',t.ptp?'Yes':'None'],['COI expires',t.exp]].map(x=>`<div style="background:var(--surface2);padding:12px;border-radius:10px"><small class="muted">${x[0]}</small><div class="fw" style="font-size:17px">${x[1]}</div></div>`).join('')}</div><div class="mt"><b class="sm">Projects</b><div class="row wrap" style="margin-top:8px;gap:8px">${t.proj.map(p=>`<span class="b brand nodot">${p}</span>`).join('')}</div></div><div class="mt"><b class="sm">Documents on file</b><div style="display:grid;gap:8px;margin-top:8px">${['Certificate of Insurance','Safety Manual','Loss Runs'].map(d=>`<div class="file"><div class="fi">PDF</div><b class="sm">${d}</b><span class="ml b ok nodot">On file</span></div>`).join('')}</div></div></div><div class="mf"><a class="btn" data-act="closeModal">Close</a><a class="btn p" data-act="goclose" data-v="q-assign">Assign questionnaire</a></div>`);
+  openModal(`<div class="mh">${avt(t.n)}<div><h2 class="sh">${t.n}</h2><div class="muted sm">${t.t}</div></div><span class="ml">${badge(t.stat)}</span><a class="btn g sm" data-act="closeModal">${I('x')}</a></div><div class="mb"><div class="grid g3" style="gap:12px">${[['EMR',emrT(t.emr)],['PTP program',t.ptp?'Yes':'None'],['COI expires',t.exp]].map(x=>`<div style="background:var(--surface2);padding:12px;border-radius:10px"><small class="muted">${x[0]}</small><div class="fw" style="font-size:17px">${x[1]}</div></div>`).join('')}</div><div class="mt"><b class="sm">Projects</b><div class="row wrap" style="margin-top:8px;gap:8px">${t.proj.map(p=>`<span class="b brand nodot">${p}</span>`).join('')}</div></div><div class="mt"><b class="sm">Documents on file</b><div style="display:grid;gap:8px;margin-top:8px">${['Certificate of Insurance','Safety Manual','Loss Runs'].map(d=>`<div class="file"><div class="fi">PDF</div><b class="sm">${d}</b><span class="ml b ok nodot">On file</span></div>`).join('')}</div></div></div><div class="mf"><a class="btn" data-act="closeModal">Close</a><a class="btn p" data-act="goclose" data-v="q-assign">Assign questionnaire</a></div>`);
  },
  /* documents */
  upload:()=>{
@@ -2927,7 +2972,7 @@ Object.assign(ACT,{
  csvclear:()=>{F.bulk=null;rerender()},
  csvimport:()=>{
   const ok=(F.bulk&&F.bulk.rows||[]).filter(r=>!r.errs.length);if(!ok.length)return;
-  ok.forEach((r,i)=>PROJECTS.unshift({id:'p'+Date.now()+i,name:r.name,addr:r.addr||'—',start:fmtD(r.start),end:fmtD(r.end),status:'Planning',gc:S.role==='gc'?meName():'Unassigned',trades:0,pend:0,pct:0,kind:'managed'}));
+  ok.forEach((r,i)=>PROJECTS.unshift({id:'p'+Date.now()+i,name:r.name,addr:r.addr||'—',start:fmtD(r.start),end:fmtD(r.end),status:'Planning',gc:S.role!=='owner'?meName():'Unassigned',trades:0,pend:0,pct:0,kind:'managed'}));
   F.bulk=null;toast(ok.length+' project'+(ok.length>1?'s':'')+' imported');go('projects');
  },
  addTrade:e=>{
@@ -2942,8 +2987,8 @@ Object.assign(ACT,{
   const t=e.dataset.t,n=e.dataset.v,open=PROJECTS.filter(p=>p.status!=='Completed');
   if(!open.length){openModal(`<div class="mh"><h2 class="sh">Invite ${esc(n)} to a project</h2><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div><div class="mb"><p class="muted">You don’t have an open project yet. Create one first, then invite ${esc(n)} to it.</p></div><div class="mf"><a class="btn" data-act="closeModal">Cancel</a><a class="btn p" data-act="goclose" data-v="project-new">Create a project</a></div>`);return}
   if(t==='gc'){
-   const avail=open.filter(p=>p.gc!==n);F.ip={t,n,sel:null};
-   openModal(`<div class="mh"><h2 class="sh">Invite ${esc(n)} to a project</h2><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div><div class="mb">${avail.length?`<p class="muted sm" style="margin:0 0 12px">Choose the project ${esc(n)} will manage as General Contractor.</p><div style="display:grid;gap:8px">${avail.map(p=>`<button type="button" class="opt ipopt" style="text-align:left;justify-content:flex-start" data-act="ipsel" data-v="${p.id}"><span style="display:grid"><b class="sm">${esc(p.name)}</b><small class="muted">${esc(p.addr)} · ${p.gc==='Unassigned'?'No GC yet':'Current GC: '+esc(p.gc)+' (will be replaced)'}</small></span></button>`).join('')}</div>`:`<p class="muted">${esc(n)} is already the GC on every open project.</p>`}</div>${avail.length?`<div class="mf"><a class="btn" data-act="closeModal">Cancel</a><a class="btn p" data-act="invprojsave">Assign as GC</a></div>`:''}`);
+   const lead=S.role==='owner',avail=open.filter(p=>p.gc!==n&&(lead||!(p.partners||[]).includes(n)));F.ip={t,n,sel:null};
+   openModal(`<div class="mh"><h2 class="sh">Invite ${esc(n)} to a project</h2><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div><div class="mb">${avail.length?`<p class="muted sm" style="margin:0 0 12px">${lead?'Choose the project '+esc(n)+' will manage as General Contractor.':'Choose the project '+esc(n)+' will join as a partner General Contractor. You stay the coordinating GC.'}</p><div style="display:grid;gap:8px">${avail.map(p=>`<button type="button" class="opt ipopt" style="text-align:left;justify-content:flex-start" data-act="ipsel" data-v="${p.id}"><span style="display:grid"><b class="sm">${esc(p.name)}</b><small class="muted">${esc(p.addr)} · ${!lead?'Coordinating GC: '+esc(p.gc):p.gc==='Unassigned'?'No GC yet':'Current GC: '+esc(p.gc)+' (will be replaced)'}</small></span></button>`).join('')}</div>`:`<p class="muted">${esc(n)} is already the GC on every open project.</p>`}</div>${avail.length?`<div class="mf"><a class="btn" data-act="closeModal">Cancel</a><a class="btn p" data-act="invprojsave">${lead?'Assign as GC':'Add as partner GC'}</a></div>`:''}`);
   }else{
    const tr=TRADES.find(x=>x.n===n);if(!tr)return;
    const avail=open.filter(p=>!tr.proj.includes(p.name));F.ip={t,n,sel:{}};
@@ -2956,18 +3001,20 @@ Object.assign(ACT,{
   const ip=F.ip;if(!ip)return;const log=m=>{const l=WS_ACT[curKey()]||(WS_ACT[curKey()]=[]);l.unshift({t:nowStamp(),cat:'Invitation',actor:CUR.name,msg:m,go:'projects'})};
   if(ip.t==='gc'){
    const p=PROJECTS.find(x=>x.id===ip.sel);if(!p){toast('Select a project');return}
-   p.gc=ip.n;closeModal();log('Invited '+ip.n+' to '+p.name+' as General Contractor');rerender();toast(ip.n+' invited to '+p.name);
+   if(S.role==='owner'){p.gc=ip.n;closeModal();log('Invited '+ip.n+' to '+p.name+' as General Contractor')}
+   else{(p.partners=p.partners||[]).includes(ip.n)||p.partners.push(ip.n);const g=GCS.find(x=>x.n===ip.n);if(g){g.projs=g.projs||[];g.projs.includes(p.name)||g.projs.push(p.name);g.proj=gcProjs(g).length}closeModal();log('Invited '+ip.n+' to '+p.name+' as partner General Contractor')}
+   rerender();toast(ip.n+' invited to '+p.name);
   }else{
    const ids=Object.keys(ip.sel).filter(k=>ip.sel[k]),tr=TRADES.find(x=>x.n===ip.n);
    if(!ids.length){toast('Select at least one project');return}
-   ids.forEach(id=>{const p=PROJECTS.find(x=>x.id===id);if(p&&!tr.proj.includes(p.name)){tr.proj.push(p.name);p.trades+=1}});
+   ids.forEach(id=>{const p=PROJECTS.find(x=>x.id===id);if(p&&!tr.proj.includes(p.name)){tr.proj.push(p.name);p.trades+=1;if(p.kind==='invited'&&S.role==='trade')shareTrade(tr,p.name,meName())}});
    closeModal();log('Invited '+ip.n+' to '+ids.map(id=>(PROJECTS.find(x=>x.id===id)||{}).name).join(', '));rerender();toast(ip.n+' added to '+ids.length+' project'+(ids.length>1?'s':''));
   }
  },
  addtradesave:()=>{
   const p=PROJECTS.find(x=>x.id===F.at.pid),idx=Object.keys(F.at.sel).filter(k=>F.at.sel[k]).map(Number);
   if(!idx.length){toast('Select at least one trade');return}
-  idx.forEach(i=>TRADES[i].proj.push(p.name));p.trades+=idx.length;closeModal();rerender();toast(idx.length+' trade'+(idx.length>1?'s':'')+' added to the project');
+  idx.forEach(i=>{TRADES[i].proj.push(p.name);if(p.kind==='invited'&&S.role==='trade')shareTrade(TRADES[i],p.name,meName())});p.trades+=idx.length;closeModal();rerender();toast(idx.length+' trade'+(idx.length>1?'s':'')+' added to the project');
  },
  projqr:e=>{const id=e.dataset.id;F.inv={_key:'trade/'+id,tab:'qr',email:'',company:'',userRole:'contributor',projects:[id],sent:null,qr:null,copied:false,err:{}};go('invite/trade/'+id)},
  /* ---- submissions ---- */
@@ -3162,13 +3209,13 @@ const findPerson=(n,co)=>{
  for(const c in DIR){r=DIR[c].find(x=>x.n===n);if(r)return r}
  const m=TEAM.find(x=>x.n===n);return m?{n:m.n,title:m.r,email:m.e,phone:'',co:meName()}:{n,title:'',email:'',phone:'',co:co||''};
 };
-const pmeta=p=>PM[p.name]||{owner:S.role==='owner'?meName():'—',type:'Project',budget:'—',ownerRep:'',reviewer:'',gcPM:'',gcSafety:'',desc:p.desc||''};
+const pmeta=p=>PM[p.name]||{owner:S.role==='owner'||p.kind==='managed'?meName():'—',type:'Project',budget:'—',ownerRep:'',reviewer:'',gcPM:'',gcSafety:'',desc:p.desc||''};
 function projPeople(p){
  const m=pmeta(p),out=[],add=(n,co,role)=>{if(!n||!co||co==='—'||out.some(x=>x.n===n&&x.co===co))return;out.push({...findPerson(n,co),role,co})};
  let rep=m.ownerRep,rev=m.reviewer;
  if(!rep&&S.role==='owner'&&TEAM[0])rep=TEAM[0].n;
  add(rep,m.owner,'Owner representative');add(rev,m.owner,'Pre-qual reviewer');
- if(p.gc&&p.gc!=='Unassigned'){let pm=m.gcPM,sf=m.gcSafety;if(!pm&&S.role==='gc'&&TEAM[0])pm=TEAM[0].n;add(pm,p.gc,'GC project manager');add(sf,p.gc,'GC safety lead')}
+ if(p.gc&&p.gc!=='Unassigned'){let pm=m.gcPM,sf=m.gcSafety;if(!pm&&(S.role==='gc'||S.role==='trade')&&p.gc===meName()&&TEAM[0])pm=TEAM[0].n;add(pm,p.gc,'GC project manager');add(sf,p.gc,'GC safety lead')}
  TRADES.filter(t=>t.proj.includes(p.name)).forEach(t=>{const pc=(DIR[t.n]||[])[0];if(pc)add(pc.n,t.n,'Trade lead')});
  if(S.role==='trade'){const me=meName();TEAM.filter(x=>x.st==='Active').forEach((x,i)=>{if(i===0||(hsh(p.name)+i)%2===0)add(x.n,me,'Your team')})}
  return out;
@@ -3246,7 +3293,7 @@ ACT.person=e=>{
 ACT.cocard=e=>{
  const n=e.dataset.v,pr=coProjects(n),ppl=peopleOf(n),t=TRADES.find(x=>x.n===n),g=GCS.find(x=>x.n===n);
  openModal(`<div class="mh"><div class="sq" style="background:${col(n)};width:44px;height:44px">${ini(n)}</div><div><h2 class="sh">${esc(n)}</h2><div style="margin-top:3px">${typeBadge(n)} ${t?badge(t.stat):g?badge(g.stat):''}</div></div><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div>
- <div class="mb">${t||g?`<div class="grid g3" style="gap:10px;margin-bottom:18px">${[['EMR',(t||g).emr.toFixed(2)],[t?'Specialty':'Location',t?t.t:g.loc],[t?'COI expires':'Insurance exp.',t?t.exp:g.ins]].map(k=>`<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><small class="muted">${k[0]}</small><div class="fw">${esc(k[1])}</div></div>`).join('')}</div>`:''}
+ <div class="mb">${t||g?`<div class="grid g3" style="gap:10px;margin-bottom:18px">${[['EMR',emrT((t||g).emr)],[t?'Specialty':'Location',t?t.t:g.loc],[t?'COI expires':'Insurance exp.',t?t.exp:g.ins]].map(k=>`<div style="background:var(--surface2);border-radius:10px;padding:10px 12px"><small class="muted">${k[0]}</small><div class="fw">${esc(k[1])}</div></div>`).join('')}</div>`:''}
  <h3 class="sh" style="margin:0 0 8px;font-size:13px">People${ppl.length?' ('+ppl.length+')':''}</h3>${ppl.length?`<div class="pgrid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))">${ppl.map(x=>pchip({...x,co:n},x.title)).join('')}</div>`:'<div class="muted sm">No contacts on file.</div>'}
  <h3 class="sh" style="margin:20px 0 8px;font-size:13px">Projects${pr.length?' ('+pr.length+')':''}</h3>${pr.length?`<div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">${pr.map(p=>`<a class="prow" data-act="goclose" data-v="project/${p.id}"><span class="pw1"><b>${esc(p.name)}</b><small>${esc(p.addr)}</small></span>${badge(p.status)}${I('chev','sm')}</a>`).join('')}</div>`:'<div class="muted sm">No shared projects in this workspace.</div>'}</div>
  <div class="mf"><a class="btn" data-act="closeModal">Close</a>${coRoute(n)?`<a class="btn p" data-act="goclose" data-v="${coRoute(n)}">Open full profile ${I('chev','sm')}</a>`:''}</div>`);
@@ -3288,8 +3335,10 @@ const tlCell=p=>{const a=new Date(p.start),b=new Date(p.end),n=Date.now();if(isN
 /* ---- PROJECTS list ---- */
 P.projects=()=>{
  const f=F.pj||(F.pj={});f.q=f.q||'';f.st=f.st||'All';f.v=f.v||'table';f.sort=f.sort||'name';f.h=f.h||'All';
- const t=curTab('proj','all'),isT=S.role==='trade';
- const base=PROJECTS.filter(p=>S.role!=='gc'||t==='all'||p.kind===t);
+ const t=curTab('proj','all'),mgd=PROJECTS.some(p=>p.kind==='managed'),hyb=S.role==='gc'||(S.role==='trade'&&mgd),isT=S.role==='trade'&&(!mgd||t==='invited');
+ const projTabs=()=>tabs('proj',[['all','All projects',PROJECTS.length],['managed','Projects I manage',PROJECTS.filter(p=>p.kind==='managed').length],['invited',S.role==='trade'?'Invited by others':'Invited by owners',PROJECTS.filter(p=>p.kind==='invited').length]]);
+ const projActs=can('project.create')?`<button class="btn" data-go="bulk">${I('upload','sm')} Bulk Upload</button><button class="btn p" data-go="project-new">${I('plus','sm')} New Project</button>`:'';
+ const base=PROJECTS.filter(p=>!hyb||t==='all'||p.kind===t);
  const SS=new Map(base.map(p=>[p.id,projStats(p)]));
  const sorters={name:(a,b)=>a.name.localeCompare(b.name),progress:(a,b)=>b.pct-a.pct,pending:(a,b)=>(b.pend||0)-(a.pend||0),end:(a,b)=>dueD(a.end)-dueD(b.end)};
  const list=base.filter(p=>(f.st==='All'||p.status===f.st)&&(f.h==='All'||SS.get(p.id).h[0]===f.h)&&(p.name+' '+p.addr+' '+p.gc+' '+pmeta(p).owner).toLowerCase().includes(f.q.toLowerCase())).sort(sorters[f.sort]);
@@ -3300,14 +3349,14 @@ P.projects=()=>{
  const kp=(l,v,sub,h,on)=>`<a class="kpi ${on?'on':''}" ${h?`data-act="fset" data-path="pj.h" data-v="${h}"`:''}><small>${l}</small><b>${v}</b><span>${sub}</span></a>`;
  if(isT){
   const my=base.map(p=>SUBS.find(s=>s.trade===meName()&&s.proj===p.name)),open=ASSIGN.filter(a=>a.co===meName()&&OPEN_ST.includes(a.status));
-  return head('My Projects','')+
+  return head('Projects','',projActs)+(mgd?projTabs():'')+
   `<div class="kpis">${kp('Projects',base.length,base.filter(p=>p.status==='Active').length+' active')}${kp('Approved',my.filter(s=>s&&s.status==='Approved').length,my.filter(s=>s&&['Submitted','Under review'].includes(s.status)).length+' under review')}${kp('Open assignments',open.length,open.filter(a=>dleft(a.due)<0).length+' overdue')}</div>`+
-  (base.length?card('',`<table><thead><tr><th>Project</th><th>Coordinating GC</th><th>Timeline</th><th>My submission</th><th>Next due</th><th>Status</th></tr></thead><tbody>${base.map(p=>{const sb=SUBS.find(x=>x.trade===meName()&&x.proj===p.name),oa=ASSIGN.filter(a=>a.co===meName()&&a.proj===p.name&&OPEN_ST.includes(a.status)).sort((x,y)=>dleft(x.due)-dleft(y.due)),n=oa[0];return `<tr class="click" data-go="project/${p.id}"><td><div class="cell">${avt(p.name)}<div><b>${esc(p.name)}</b><small>${esc(p.addr)}</small></div></div></td><td>${esc(p.gc)}</td><td>${tlCell(p)}</td><td>${sb?badge(sb.status):'<span class="muted">Not started</span>'}</td><td>${n?`<span class="due ${dueCls(dleft(n.due))}">${relDay(dleft(n.due))}</span><div class="muted sm" style="margin-top:2px">${esc(n.q)}</div>`:'<span class="muted">Nothing due</span>'}</td><td>${badge(p.status)}</td></tr>`}).join('')}</tbody></table>`,'',true):emptyState('No projects yet','When an Owner or GC invites you to a project it will appear here.',''));
+  (base.length?card('',`<table><thead><tr><th>Project</th><th>Coordinating GC</th><th>Timeline</th><th>My submission</th><th>Next due</th><th>Status</th></tr></thead><tbody>${base.map(p=>{const sb=SUBS.find(x=>x.trade===meName()&&x.proj===p.name),oa=ASSIGN.filter(a=>a.co===meName()&&a.proj===p.name&&OPEN_ST.includes(a.status)).sort((x,y)=>dleft(x.due)-dleft(y.due)),n=oa[0];return `<tr class="click" data-go="project/${p.id}"><td><div class="cell">${avt(p.name)}<div><b>${esc(p.name)}</b><small>${esc(p.addr)}</small></div></div></td><td>${esc(p.gc)}</td><td>${tlCell(p)}</td><td>${sb?badge(sb.status):'<span class="muted">Not started</span>'}</td><td>${n?`<span class="due ${dueCls(dleft(n.due))}">${relDay(dleft(n.due))}</span><div class="muted sm" style="margin-top:2px">${esc(n.q)}</div>`:'<span class="muted">Nothing due</span>'}</td><td>${badge(p.status)}</td></tr>`}).join('')}</tbody></table>`,'',true):emptyState('No projects yet','When an Owner or GC invites you to a project it will appear here. You can also create your own.',can('project.create')?'project-new':'',can('project.create')?'Create project':''));
  }
  const tableV=list.length?card('',`<table><thead><tr><th>Project</th><th>Owner, GC</th><th>Timeline</th><th>Pre-qualification</th><th>Health</th><th>Status</th></tr></thead><tbody>${list.map(p=>{const st=SS.get(p.id),nd=nextDue(p),m=pmeta(p);return `<tr class="click" data-go="project/${p.id}"><td><div class="cell">${avt(p.name)}<div><b>${esc(p.name)}</b><small>${esc(p.addr)}</small></div></div></td><td><div class="sm">${coLink(m.owner)}</div><div class="sm muted">${coLink(p.gc)}</div></td><td>${tlCell(p)}</td><td><div class="tlc"><div class="sm">${st.subs.length?st.ap+' of '+st.subs.length+' approved':'No submissions'}</div><div class="prog" role="img" aria-label="${st.subs.length?Math.round(st.ap/st.subs.length*100):0} percent approved"><i style="width:${st.subs.length?Math.round(st.ap/st.subs.length*100):0}%;background:var(--brand)"></i></div></div></td><td>${hBadge(st.h)}</td><td>${badge(p.status)}</td></tr>`}).join('')}</tbody></table>`,'',true):'';
  const cardsV=`<div class="pcards">${list.map(p=>{const st=SS.get(p.id),nd=nextDue(p),m=pmeta(p),tot=st.subs.length;return `<article class="pcard click" tabindex="0" role="link" data-go="project/${p.id}" aria-label="${esc(p.name)}"><div class="pc-h">${avt(p.name)}<div class="pc-n"><b title="${esc(p.name)}">${esc(p.name)}</b><small title="${esc(p.addr)}">${esc(p.addr)}</small></div></div><dl class="pc-k"><div><dt>Owner</dt><dd>${coLink(m.owner)}</dd></div><div><dt>GC</dt><dd>${coLink(p.gc)}</dd></div><div><dt>Health</dt><dd>${hBadge(st.h)}</dd></div></dl><div class="pc-p"><div class="row sm"><span>Pre-qualification</span><span class="muted ml">${tot?st.ap+' of '+tot+' approved':'No submissions'}</span></div><div class="prog"><i style="width:${tot?Math.round(st.ap/tot*100):0}%;background:var(--brand)"></i></div></div><div class="pc-f"><span class="nm" title="${esc(nd.txt)}">${esc(nd.txt)}</span><span class="due ${dueCls(nd.n)}">${relDay(nd.n)}</span></div></article>`}).join('')}</div>`;
  return head('Projects','',`<button class="btn" data-go="bulk">${I('upload','sm')} Bulk Upload</button><button class="btn p" data-go="project-new">${I('plus','sm')} New Project</button>`)+
- (S.role==='gc'?tabs('proj',[['all','All projects',PROJECTS.length],['managed','Projects I manage',PROJECTS.filter(p=>p.kind==='managed').length],['invited','Invited by owners',PROJECTS.filter(p=>p.kind==='invited').length]]):'')+
+ (hyb?projTabs():'')+
  (!PROJECTS.length?emptyState('No projects yet','Create your first project or import many at once from a CSV.','project-new','Create project'):
  `<div class="card" style="margin-bottom:16px"><div class="toolbar tfbar">
   <div class="search">${I('search','sm')}<input placeholder="Search name, address, company" aria-label="Search projects" data-bind="pj.q" data-rr="focus" value="${esc(f.q)}"></div>
@@ -3322,7 +3371,7 @@ P.project=(id)=>{
  const p=PROJECTS.find(x=>x.id===id);
  if(!p)return emptyState('Project not found','It may belong to another workspace.','projects','Back to projects');
  let t=curTab('pd','overview');if(t==='team'||t==='members')t='people';if(t==='subs')t='assign';
- const m=pmeta(p),st=projStats(p),ppl=projPeople(p),isT=S.role==='trade',me=meName();
+ const m=pmeta(p),st=projStats(p),ppl=projPeople(p),isT=S.role==='trade'&&p.kind!=='managed',me=meName();
  const mine=isT?SUBS.find(s=>s.trade===me&&s.proj===p.name):null;
  const asg=isT?st.asg.filter(a=>a.co===me):st.asg,openA=asg.filter(a=>OPEN_ST.includes(a.status));
  const subsV=st.subs.filter(s=>!isT||s.trade===me),totT=Math.max(p.trades,st.subs.length);
@@ -3341,6 +3390,7 @@ P.project=(id)=>{
  const dl=openA.map(a=>({d:a.due,t:a.q,s:isT?'From '+a.by:a.co,go:asgGo(a)})).concat([{d:p.end,t:'Project completion',s:'',go:''}]).filter(x=>dueD(x.d)).sort((a,b)=>dueD(a.d)-dueD(b.d)).slice(0,3);
  const calRow=x=>{const d=dueD(x.d),n=dleft(x.d);return `<div class="cal" ${x.go?`data-go="${x.go}"`:''}><div class="dt"><small>${d.toLocaleDateString('en-US',{month:'short'})}</small><b>${d.getDate()}</b></div><div class="tx"><b>${esc(x.t)}</b>${x.s?`<small>${esc(x.s)}</small>`:''}</div><span class="due ${dueCls(n)}">${relDay(n)}</span></div>`};
  const stepper=()=>{const o=['Draft','Submitted','Under review','Approved'],cur=mine?o.indexOf(mine.status==='Needs info'?'Under review':mine.status):-1;return `<div class="stepper">${o.map((s,i)=>`<i class="${mine&&mine.status==='Needs info'&&i===cur?'bad':i<=cur?(mine.status==='Approved'?'ok':'on'):''}"></i>`).join('')}</div><div class="sbleg">${o.map(s=>`<span>${s}</span>`).join('')}</div>`};
+ const asgT=isT?st.asg.filter(a=>a.co===me||a.by===me):asg,showCo=!isT||asgT.some(a=>a.co!==me);
  let body='';
  if(t==='overview')body=`<div class="grid g21"><div class="grid" style="gap:16px;align-content:start">
   ${attn.length?card('Needs attention',attn.slice(0,3).map(a=>`<a class="todo" ${a.go?`data-go="${a.go}"`:''}><span class="ti" style="background:${a.bg};color:${a.c}">${I(a.ic,'sm')}</span><span style="flex:1;min-width:0"><b>${esc(a.t)}</b><small>${esc(a.s)}</small></span>${a.go?I('chev','sm'):''}</a>`).join(''),attn.length>3?`<a class="btn sm" data-act="tab" data-k="pd" data-v="assign">+${attn.length-3} more</a>`:'',true):''}
@@ -3357,7 +3407,7 @@ P.project=(id)=>{
   (groups.length?groups.map((g,gi)=>`<details class="card team-co" ${gi<3?'open':''}><summary class="ghd">${avt(g.co)}<div class="gtx"><b>${coLink(g.co)}</b><span class="muted sm">${g.co===me?'Your company':coType(g.co)} · ${g.l.length} ${g.l.length===1?'person':'people'}</span></div>${canRemoveFromProject(p,g.co)?`<a class="lnk rm" role="button" tabindex="0" data-act="projremove" data-id="${p.id}" data-v="${esc(g.co)}">Remove</a>`:''}<span class="gch">${I('down','sm')}</span></summary>${g.l.map(x=>`<div class="prs"><a data-act="person" data-v="${esc(x.n+'|'+x.co)}" style="cursor:pointer">${pav(x.n,34)}</a><div class="who"><b>${esc(x.n)}</b><small>${esc(x.title||'')}</small></div><span class="muted sm">${esc(x.role)}</span><a class="btn sm g" data-act="mailto" data-v="${esc(x.n)}" title="Email ${esc(x.n)}" aria-label="Email ${esc(x.n)}">${I('mail','sm')}</a></div>`).join('')}</details>`).join(''):emptyState('Nobody assigned yet','Invite a GC or trade to build the project team.','invite/trade/'+p.id,'Invite'))+
   (more?`<p class="muted sm" style="text-align:center">${p.trades-nk} more trade(s) on this project aren't in your network yet.</p>`:'');
  }
- if(t==='assign')body=asg.length?card('',`<table><thead><tr><th>Questionnaire</th>${isT?'':'<th>Company</th>'}<th>Due</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody>${asg.slice().sort((x,y)=>(OPEN_ST.includes(y.status)-OPEN_ST.includes(x.status))||0).map(a=>{const go=asgGo(a),mine=a.co===me,act=a.status==='Submitted'&&!mine&&can('review.decide');return `<tr class="click" ${go?`data-go="${go}"`:`data-act="asgmanage" data-id="${a.id}"`}><td data-label="Questionnaire"><b>${esc(a.q)}</b><div class="muted sm">from ${esc(a.by)}</div></td>${isT?'':`<td data-label="Company">${coLink(a.co)}</td>`}<td data-label="Due">${OPEN_ST.includes(a.status)?dueChip(a.due):`<span class="muted">${dnorm(a.due)}</span>`}</td><td data-label="Submitted">${SUBMITTED_ST.includes(a.status)?dnorm(a.subAt||a.due):'<span class="muted">—</span>'}</td><td data-label="Status">${badge(a.status)}</td><td class="ta-r"><a class="btn sm ${act?'p':''}">${act?'Review':SUBMITTED_ST.includes(a.status)?'View':'Open'}</a></td></tr>`}).join('')}</tbody></table>`,!isT?'<a class="btn sm p" data-go="q-assign/'+p.id+'">'+I('plus','sm')+' Assign</a>':'',true):emptyState('No questionnaires on this project','Assign a questionnaire to a company working here.',isT?'':'q-assign/'+p.id,'Assign questionnaire');
+ if(t==='assign')body=asgT.length?card('',`<table><thead><tr><th>Questionnaire</th>${showCo?'<th>Company</th>':''}<th>Due</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody>${asgT.slice().sort((x,y)=>(OPEN_ST.includes(y.status)-OPEN_ST.includes(x.status))||0).map(a=>{const go=asgGo(a),mine=a.co===me,act=a.status==='Submitted'&&!mine&&can('review.decide');return `<tr class="click" ${go?`data-go="${go}"`:`data-act="asgmanage" data-id="${a.id}"`}><td data-label="Questionnaire"><b>${esc(a.q)}</b><div class="muted sm">from ${esc(a.by)}</div></td>${showCo?`<td data-label="Company">${coLink(a.co)}</td>`:''}<td data-label="Due">${OPEN_ST.includes(a.status)?dueChip(a.due):`<span class="muted">${dnorm(a.due)}</span>`}</td><td data-label="Submitted">${SUBMITTED_ST.includes(a.status)?dnorm(a.subAt||a.due):'<span class="muted">—</span>'}</td><td data-label="Status">${badge(a.status)}</td><td class="ta-r"><a class="btn sm ${act?'p':''}">${act?'Review':SUBMITTED_ST.includes(a.status)?'View':'Open'}</a></td></tr>`}).join('')}</tbody></table>`,!isT?'<a class="btn sm p" data-go="q-assign/'+p.id+'">'+I('plus','sm')+' Assign</a>':'',true):emptyState('No questionnaires on this project','Assign a questionnaire to a company working here.',isT?'':'q-assign/'+p.id,'Assign questionnaire');
  if(t==='activity'){
   const ev=[];st.subs.forEach(s=>{if(isT&&s.trade!==me)return;ev.push({d:s.date,ic:statusIc(s.status),t:`<b>${esc(s.trade)}</b> — ${s.status.toLowerCase()}`,go:'submission/'+s.id});(s.hist||[]).forEach(h=>ev.push({d:h.at,ic:statusIc(h.status),t:`<b>${esc(h.by)}</b> set ${esc(s.trade)} to ${h.status.toLowerCase()}`,go:'submission/'+s.id}))});
   asg.forEach(a=>ev.push({d:a.due,ic:statusIc(a.status),t:`<b>${esc(a.q)}</b>, ${esc(a.co)} — ${a.status.toLowerCase()}`,go:asgGo(a)}));
@@ -3365,13 +3415,29 @@ P.project=(id)=>{
   ev.sort((a,b)=>(dueD(b.d)||0)-(dueD(a.d)||0));
   body=card('',`<div class="tl">${ev.slice(0,10).map(e=>`<div ${e.go?`data-go="${e.go}" style="cursor:pointer"`:''}><div class="sm"><span style="color:${e.ic[1]}">${I(e.ic[0],'sm')}</span> ${e.t}</div><small class="muted">${dnorm(e.d)}</small></div>`).join('')}</div>`);
  }
- const sum=`<div class="sumline box"><span class="sf"><small>${isT?'Status':'Health'}</small><span title="${isT?'':esc(st.h[3].join('. '))}">${isT?badge(p.status):hBadge(st.h)}</span></span><span class="sf"><small>Owner</small>${coLink(m.owner)}</span><span class="sf"><small>General contractor</small>${p.gc==='Unassigned'&&!isT?`<a class="colink" data-go="invite/gc/${p.id}">Assign</a>`:coLink(p.gc)}</span><span class="sf"><small>Timeline</small><span>${drange(p.start,p.end)}</span></span><span class="sf ml"><small>Team</small>${avStack(ppl,4)}</span></div>`;
- return head(p.name,p.addr,!isT?`<a class="btn" data-go="invite/trade/${p.id}">${I('send','sm')} Invite</a><a class="btn p" data-go="q-assign/${p.id}">Assign questionnaire</a>`:`<a class="btn p" data-go="my-assign">My questionnaires</a>`,crumb(['Projects','projects'],[p.name]))+sum+`<div class="kpis k3">${kpis.join('')}</div>`+
+ const sum=`<div class="sumline box"><span class="sf"><small>${isT?'Status':'Health'}</small><span title="${isT?'':esc(st.h[3].join('. '))}">${isT?badge(p.status):hBadge(st.h)}</span></span><span class="sf"><small>Owner</small>${coLink(m.owner)}</span><span class="sf"><small>General contractor</small>${p.gc==='Unassigned'&&!isT?`<a class="colink" data-go="invite/gc/${p.id}">Assign</a>`:coLink(p.gc)}</span>${(p.partners||[]).length?`<span class="sf"><small>Partner GC${p.partners.length>1?'s':''}</small><span>${p.partners.map(g=>coLink(g)).join(', ')}</span></span>`:''}<span class="sf"><small>Timeline</small><span>${drange(p.start,p.end)}</span></span><span class="sf ml"><small>Team</small>${avStack(ppl,4)}</span></div>`;
+ return head(p.name,p.addr,!isT?`<a class="btn" data-go="invite/trade/${p.id}">${I('send','sm')} Invite</a><a class="btn p" data-go="q-assign/${p.id}">Assign questionnaire</a>`:(S.role==='trade'&&can('q.manage')?`<a class="btn" data-go="invite/trade/${p.id}">${I('send','sm')} Invite</a><a class="btn" data-go="q-assign/${p.id}">Assign questionnaire</a>`:'')+`<a class="btn p" data-go="my-assign">My questionnaires</a>`,crumb(['Projects','projects'],[p.name]))+sum+`<div class="kpis k3">${kpis.join('')}</div>`+
  tabs('pd',[['overview','Overview'],['people','People',ppl.length],['assign','Submissions',asg.length],['activity','Activity']])+body;
 };
 
 /* ---- GCs & Trades lists: contacts + links ---- */
-P.gcs=()=>head('General Contractors','','<a class="btn p" data-go="invite/gc">'+I('send','sm')+' Invite GC</a>')+card('',`<table><thead><tr><th>General Contractor</th><th>Projects</th><th>EMR</th><th>Insurance expires</th><th>Status</th><th>Actions</th></tr></thead><tbody>${GCS.map(g=>{const ps=projsOfGC(g.n),nt=new Set(ps.flatMap(p=>tradesByProj(p.name).map(t=>t.n))).size,qs=qOf(g.n),kc=peopleOf(g.n)[0];return `<tr class="click" data-go="gc-detail/${encodeURIComponent(g.n)}"><td><div class="cell">${avt(g.n)}<div><b>${esc(g.n)}</b><small>${esc(g.loc)}</small></div></div></td><td>${ps.length?projChips(ps):'<span class="muted">None yet</span>'}</td><td>${emrB(g.emr)}</td><td class="muted">${g.ins}</td><td>${badge(g.stat)}</td><td><a class="btn sm ${ps.length?'':'p'}" data-act="invproj" data-t="gc" data-v="${esc(g.n)}">${I('send','sm')} Invite to project</a></td></tr>`}).join('')}</tbody></table>`,'',true);
+/* every project a GC works on: leads it, or was added to it as a partner GC */
+const gcProjs=g=>{const m=new Map();projsOfGC(g.n).forEach(p=>m.set(p.id,p));(g.projs||[]).forEach(n=>{const p=projOf(n);if(p)m.set(p.id,p)});PROJECTS.forEach(p=>{if((p.partners||[]).includes(g.n))m.set(p.id,p)});return [...m.values()]};
+const gcInviter=g=>!g.by||g.by===meName()?'<span class="muted">You</span>':coLink(g.by);
+function gcHier(list){
+ const trRow=t=>`<tr class="hr3 click" data-go="trade-detail/${encodeURIComponent(t.n)}"><td data-label="Trade"><div class="cell hi3">${avt(t.n)}<div><b>${esc(t.n)}</b><small>${esc(t.t)}</small></div></div></td><td data-label="EMR">${emrB(t.emr)}</td><td data-label="Questionnaires">${qOf(t.n).length?qOf(t.n).length+' assigned':'<span class="muted">None</span>'}</td><td data-label="Status">${badge(t.stat)}</td></tr>`;
+ return `<table class="tt hier"><thead><tr><th>Company</th><th>EMR</th><th>Questionnaires</th><th>Status</th></tr></thead><tbody>${list.map(g=>{const ps=gcProjs(g);return `<tr class="hr1 click" data-go="gc-detail/${encodeURIComponent(g.n)}"><td><div class="cell">${avt(g.n)}<div><b>${esc(g.n)}</b><small>General contractor, ${esc(g.loc)}</small></div></div></td><td>${emrB(g.emr)}</td><td>${qOf(g.n).length?qOf(g.n).length+' assigned':'<span class="muted">None</span>'}</td><td>${badge(g.stat)}</td></tr>`+(ps.length?ps.map(pr=>{const ts=tradesByProj(pr.name);return `<tr class="hr2"><td colspan="4"><div class="cell hi2">${I('folder','sm')}<b>${esc(pr.name)}</b><small>${ts.length} trade${ts.length===1?'':'s'}${pr.gc!==g.n?' · partner GC':''}</small></div></td></tr>`+ts.map(trRow).join('')}).join(''):`<tr class="hr2"><td colspan="4"><div class="cell hi2 muted">No projects yet</div></td></tr>`)}).join('')}</tbody></table>`;
+}
+P.gcs=()=>{
+ const f=S.filter.gc||'All',q=(F.gcq||'').toLowerCase(),me=meName();
+ const head0=head('General Contractors','','<a class="btn p" data-go="invite/gc">'+I('send','sm')+' Invite GC</a>');
+ const pend=visI().filter(i=>i.role==='gc'&&invEff(i)==='Pending');
+ const pendCard=pend.length?card('Pending invitations',`<table><thead><tr><th>Company</th><th>Recipient</th><th>Sent</th><th>Status</th></tr></thead><tbody>${pend.map(i=>`<tr class="click" data-go="invite/gc"><td><b>${esc(i.company||'—')}</b></td><td class="muted">${esc(i.email)}</td><td class="muted">${dnorm(i.date)}</td><td>${invBadge('Pending')}</td></tr>`).join('')}</tbody></table>`,'<a class="btn sm" data-go="invite/gc">Manage invitations</a>',true).replace('class="card"','class="card mt"'):'';
+ if(!GCS.length)return head0+emptyState('No general contractors yet','General contractors you invite to work with you will appear here.','invite/gc','Invite GC')+pendCard;
+ const base=GCS.filter(g=>(g.n+' '+g.loc).toLowerCase().includes(q)),list=base.filter(g=>f==='All'||g.stat===f);
+ return head0+card('',`<div class="toolbar tfbar"><div class="tfgroup">${fsel('Status','filter','gc',['All','Compliant','Under review','Needs info','Flagged'].map(c=>[c,c==='All'?'All':c,c==='All'?base.length:base.filter(g=>g.stat===c).length]),f)}</div><div class="tfend"><div class="search">${I('search','sm')}<input placeholder="Search general contractors" aria-label="Search general contractors" data-bind="gcq" data-rr="focus" value="${esc(F.gcq||'')}"></div>${viewSwitch('gcv',F.gcv||'list',[['list','List view','list'],['hier','Hierarchy view','tree']],'General contractors view')}</div></div>
+ ${list.length&&(F.gcv||'list')==='hier'?gcHier(list):list.length?`<table><thead><tr><th>General Contractor</th><th>Invited by</th><th>Projects</th><th>EMR</th><th>Insurance expires</th><th>Status</th><th>Actions</th></tr></thead><tbody>${list.map(g=>{const ps=gcProjs(g);return `<tr class="click" data-go="gc-detail/${encodeURIComponent(g.n)}"><td><div class="cell">${avt(g.n)}<div><b>${esc(g.n)}</b><small>${esc(g.loc)}</small></div></div></td><td data-label="Invited by">${gcInviter(g)}</td><td data-label="Projects">${ps.length?projChips(ps):'<span class="muted">None yet</span>'}</td><td>${emrB(g.emr)}</td><td class="muted">${g.ins}</td><td>${badge(g.stat)}</td><td><a class="btn sm ${ps.length?'':'p'}" data-act="invproj" data-t="gc" data-v="${esc(g.n)}">${I('send','sm')} Invite to project</a></td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:34px;text-align:center">No general contractors match.</div>'}`,'',true)+pendCard;
+};
 {
  const _tr=P.trades;
  P.trades=()=>{
@@ -3392,16 +3458,20 @@ P.gcs=()=>head('General Contractors','','<a class="btn p" data-go="invite/gc">'+
  const _dash=P.dashboard;
  P.dashboard=()=>{
   const h=_dash();if(S.role==='mojo')return h;
-  const own=S.role==='owner',isT=S.role==='trade',me=meName();
+  const own=S.role==='owner',isT=S.role==='trade'&&!PROJECTS.some(p=>p.kind==='managed'),me=meName();
   const tasks=[],T=(ic,c,bg,t,s,go,tag)=>tasks.push({ic,c,bg,t,s,go,tag});
-  if(isT){
-   ASSIGN.filter(a=>a.co===me&&OPEN_ST.includes(a.status)).sort((a,b)=>dueD(a.due)-dueD(b.due)).forEach(a=>T('list',dleft(a.due)<0?'var(--bad)':'var(--warn-t)',dleft(a.due)<0?'var(--bad-l)':'var(--warn-l)',a.q,a.proj+', from '+a.by,'respond/'+a.id,dueChip(a.due)));
-   expSoon().forEach(d=>{const gone=daysTo(d.exp)<0;T('alert',gone?'var(--bad)':'var(--warn-t)',gone?'var(--bad-l)':'var(--warn-l)','Renew '+d.n,'Expires '+d.exp,'docs',dueChip(d.exp))});
-  }else{
+  const revTasks=()=>{
    const fl1=s=>s.flags[0]+(s.flags.length>1?' +'+(s.flags.length-1)+' more':'');
     SUBS.filter(s=>s.flags.length&&['Submitted','Under review'].includes(s.status)).forEach(s=>T('flag','var(--bad)','var(--bad-l)','Review '+s.trade,s.proj+' · '+fl1(s),'submission/'+s.id,'<span class="b bad nodot">Flagged</span>'));
     SUBS.filter(s=>!s.flags.length&&['Submitted','Under review'].includes(s.status)).forEach(s=>T('clip','var(--color-ink-2)','var(--color-paper-3)','Review '+s.trade,s.proj+' · '+(s.status==='Under review'?'under review since ':'submitted ')+dnorm(s.date),'submission/'+s.id,''));
     ASSIGN.filter(a=>a.status==='Submitted'&&a.co!==me).forEach(a=>T('check','var(--color-ink-2)','var(--color-paper-3)','Review answers from '+a.co,a.q+' · '+a.proj,'review/'+a.id,''));
+  };
+  const myTasks=()=>ASSIGN.filter(a=>a.co===me&&OPEN_ST.includes(a.status)).sort((a,b)=>dueD(a.due)-dueD(b.due)).forEach(a=>T('list',dleft(a.due)<0?'var(--bad)':'var(--warn-t)',dleft(a.due)<0?'var(--bad-l)':'var(--warn-l)',a.q,a.proj+', from '+a.by,'respond/'+a.id,dueChip(a.due)));
+  if(S.role==='trade'){
+   revTasks();myTasks();
+   expSoon().forEach(d=>{const gone=daysTo(d.exp)<0;T('alert',gone?'var(--bad)':'var(--warn-t)',gone?'var(--bad-l)':'var(--warn-l)','Renew '+d.n,'Expires '+d.exp,'docs',dueChip(d.exp))});
+  }else{
+   revTasks();
 if(!own)ASSIGN.filter(a=>a.co===me&&OPEN_ST.includes(a.status)).forEach(a=>T('list','var(--warn-t)','var(--warn-l)','Complete '+a.q,a.proj+', from '+a.by,'respond/'+a.id,dueChip(a.due)));
    PROJECTS.filter(p=>p.gc==='Unassigned'&&p.status!=='Completed').forEach(p=>T('hard','var(--warn-t)','var(--warn-l)','Assign a general contractor','' + p.name,'invite/gc/'+p.id,''));
   }
@@ -3434,10 +3504,10 @@ function gsearch(q){
   Object.keys(DIR).forEach(co=>DIR[co].filter(x=>m(x.n)||m(x.email)).forEach(x=>out.push(['Person',x.n,x.title+', '+co,'act:'+x.n+'|'+co,'user'])));
  }else{
   PROJECTS.filter(p=>m(p.name)||m(p.addr)||m(p.gc)).forEach(p=>out.push(['Project',p.name,p.addr,'go:project/'+p.id,'folder']));
-  if(S.role==='owner')GCS.filter(g=>m(g.n)).forEach(g=>out.push(['General Contractor',g.n,g.loc,'go:gc-detail/'+encodeURIComponent(g.n),'hard']));
-  if(S.role!=='trade')TRADES.filter(t=>m(t.n)||m(t.t)).forEach(t=>out.push(['Trade',t.n,t.t,'go:trade-detail/'+encodeURIComponent(t.n),'wrench']));
+  if(S.role==='owner'||S.role==='gc')GCS.filter(g=>m(g.n)).forEach(g=>out.push(['General Contractor',g.n,g.loc,'go:gc-detail/'+encodeURIComponent(g.n),'hard']));
+  TRADES.filter(t=>m(t.n)||m(t.t)).forEach(t=>out.push(['Trade',t.n,t.t,'go:trade-detail/'+encodeURIComponent(t.n),'wrench']));
   const seen=new Set();PROJECTS.forEach(pr=>projPeople(pr).forEach(x=>{const k=x.n+'|'+x.co;if(seen.has(k))return;seen.add(k);if(m(x.n)||m(x.title)||m(x.email)||m(x.co))out.push(['Person',x.n,(x.title||x.role)+', '+x.co,'act:'+k,'user'])}));
-  if(S.role!=='trade')visT().filter(t=>m(t.n)).forEach(t=>out.push(['Questionnaire',t.n,t.qs+' questions','go:q-builder/'+t.id,'clip']));
+  visT().filter(t=>m(t.n)).forEach(t=>out.push(['Questionnaire',t.n,t.qs+' questions','go:q-builder/'+t.id,'clip']));
   ASSIGN.filter(a=>m(a.q)||m(a.co)).forEach(a=>{const g=asgGo(a);out.push(['Assignment',a.q,a.co+', '+a.proj+', '+a.status,g?'go:'+g:'go:'+(S.role==='trade'?'my-assign':'q-assignments'),'list'])});
   SUBS.filter(s=>m(s.trade)||m(s.proj)).forEach(s=>out.push(['Submission',s.trade+' — '+s.proj,s.status+', '+dnorm(s.date),'go:submission/'+s.id,'clip']));
   DOCS.filter(d=>m(d.n)||m(d.t)).forEach(d=>out.push(['Document',d.n,d.t,'go:docs','file']));
@@ -3463,7 +3533,7 @@ const CARRIERS=['Zurich','Hartford','Chubb','Travelers','Liberty Mutual'];
 function coProfile(name,kind,e){
  if(CUR&&name===meName())return {addr:[ORG.addr,[ORG.city,ORG.state,ORG.zip].filter(Boolean).join(' ')].filter(Boolean).join(', ')||'—',phone:ORG.phone||'—',web:ORG.web||'—',trade:ORG.trade||'—',years:ORG.years||'—',emp:ORG.emp||'—',lic:ORG.lic||'—',trir:ORG.trir||'—',dart:ORG.dart||'—',rec:ORG.rec||'—',hours:ORG.hours||'—',ptpDesc:ORG.ptpDesc||'',bondCo:ORG.bond_co||'—',bondSingle:ORG.bond_single||'—',bondAgg:ORG.bond_agg||'—',bondExp:ORG.bond_exp?fmtD(ORG.bond_exp):'—'};
  const h=hsh(name),gc=kind==='gc',st=['Main St','Industrial Blvd','Gulf Fwy','Bayou Dr','Katy Fwy'][h%5];
- return {addr:`${1000+h%8000} ${st}, ${e.loc||((typeof MOJO_COS!=='undefined'&&MOJO_COS.find(c=>c.n===name))||{}).loc||'Houston, TX'}`,phone:`(713) 555-0${String(100+h%900).slice(-3)}`,web:name.toLowerCase().replace(/[^a-z0-9]+/g,'')+'.com',trade:gc?'General contractor':e.t,years:8+h%30,emp:gc?60+h%120:8+h%55,lic:'TX-'+(10000+h%89999),trir:(e.emr*1.2).toFixed(2),dart:(e.emr*.5).toFixed(1),rec:h%4,hours:(90000+(h%90000)).toLocaleString('en-US'),ptpDesc:'Daily pre-task planning card completed by every crew before shift start, covering hazards, controls and permits. Reviewed weekly by the safety lead.',bondCo:CARRIERS[(h+3)%5],bondSingle:gc?'$25M':'$5M',bondAgg:gc?'$75M':'$15M',bondExp:'Mar 2027'}}
+ return {addr:`${1000+h%8000} ${st}, ${e.loc||((typeof MOJO_COS!=='undefined'&&MOJO_COS.find(c=>c.n===name))||{}).loc||'Houston, TX'}`,phone:`(713) 555-0${String(100+h%900).slice(-3)}`,web:name.toLowerCase().replace(/[^a-z0-9]+/g,'')+'.com',trade:gc?'General contractor':e.t,years:8+h%30,emp:gc?60+h%120:8+h%55,lic:'TX-'+(10000+h%89999),trir:e.emr==null?'—':(e.emr*1.2).toFixed(2),dart:e.emr==null?'—':(e.emr*.5).toFixed(1),rec:h%4,hours:(90000+(h%90000)).toLocaleString('en-US'),ptpDesc:'Daily pre-task planning card completed by every crew before shift start, covering hazards, controls and permits. Reviewed weekly by the safety lead.',bondCo:CARRIERS[(h+3)%5],bondSingle:gc?'$25M':'$5M',bondAgg:gc?'$75M':'$15M',bondExp:'Mar 2027'}}
 const profEnt=n=>GCS.find(x=>x.n===n)||TRADES.find(x=>x.n===n);
 function profReview(M){
  const e=M.e,log=(e.plog||[]),last=log[log.length-1],can_=can('review.decide')&&M.name!==meName();
@@ -3478,7 +3548,7 @@ function coModel(name){
  const g=GCS.find(x=>x.n===name),t=TRADES.find(x=>x.n===name);
  if(!g&&!t)return null;
  const kind=g?'gc':'trade',e=g||t;
- const projs=kind==='gc'?projsOfGC(name):t.proj.map(projOf).filter(Boolean);
+ const projs=kind==='gc'?gcProjs(e):t.proj.map(projOf).filter(Boolean);
  const subs=SUBS.filter(s=>kind==='trade'?s.trade===name:projs.some(p=>p.name===s.proj));
  const qs=ASSIGN.filter(a=>a.co===name),exp=kind==='gc'?e.ins:t.exp,ed=dleft('1 '+exp);
  const kids=kind==='gc'?[...new Set(projs.flatMap(p=>tradesByProj(p.name).map(x=>x.n)))].map(n=>TRADES.find(x=>x.n===n)):[];
@@ -3510,16 +3580,16 @@ function coPage(n){
  let t=curTab('cd','overview');if(t==='submissions')t='questionnaires';if(!keys.includes(t))t='overview';
  const kp=(l,v,sub,tab)=>`<a class="kpi" data-act="tab" data-k="cd" data-v="${tab}"><small>${l}</small><b>${v}</b><span>${sub}</span></a>`;
  const ap=M.subs.filter(s=>s.status==='Approved').length;
- const kpis=gc?[kp('Projects',M.projs.length,M.projs.filter(p=>p.status==='Active').length+' active','projects'),kp('Trades',M.kids.length,M.kids.filter(x=>x&&x.stat==='Approved').length+' approved','trades'),kp('EMR',e.emr.toFixed(2),e.emr>1?'Above 1.0 threshold':'Below 1.0 threshold','compliance')]
-  :[kp('Submissions',M.qsub.filter(x=>x.status==='Approved').length+' / '+M.qsub.length,M.qsub.length?'approved of submitted':'None submitted','questionnaires'),kp('EMR',e.emr.toFixed(2),e.emr>1?'Above 1.0 threshold':'Below 1.0 threshold','compliance'),kp('Insurance',M.ed!==null&&M.ed<0?'Expired':M.exp,M.ed===null?'':M.ed<0?'Renewal needed':'Expires in ~'+M.ed+' days','compliance')];
+ const kpis=gc?[kp('Projects',M.projs.length,M.projs.filter(p=>p.status==='Active').length+' active','projects'),kp('Trades',M.kids.length,M.kids.filter(x=>x&&x.stat==='Approved').length+' approved','trades'),kp('EMR',emrT(e.emr),e.emr>1?'Above 1.0 threshold':'Below 1.0 threshold','compliance')]
+  :[kp('Submissions',M.qsub.filter(x=>x.status==='Approved').length+' / '+M.qsub.length,M.qsub.length?'approved of submitted':'None submitted','questionnaires'),kp('EMR',emrT(e.emr),e.emr>1?'Above 1.0 threshold':'Below 1.0 threshold','compliance'),kp('Insurance',M.ed!==null&&M.ed<0?'Expired':M.exp,M.ed===null?'':M.ed<0?'Renewal needed':'Expires in ~'+M.ed+' days','compliance')];
  const reports=gc?[]:[...new Set(M.projs.map(p=>p.gc).filter(g=>g&&g!=='Unassigned'))];
  const kc0=M.ppl[0],loc0=e.loc||M.prof.addr.split(', ').slice(-2).join(', ');
  const mi=(l,v)=>v?`<span class="mi"><span class="mk">${l}</span> ${v}</span>`:'';
- const items=[mi('',esc(loc0)),mi('',esc(gc?'General contractor':e.t)),kc0?mi('Contact',`<a class="colink" data-act="person" data-v="${esc(kc0.n+'|'+nm)}">${esc(kc0.n)}</a>`):'',mi('',esc(M.prof.phone)),kc0&&kc0.email?mi('',`<a class="colink" data-act="mailto" data-v="${esc(kc0.n)}">${esc(kc0.email)}</a>`):'',reports.length?mi('Reports to',reports.map(g=>coLink(g)).join(', ')):'',!gc&&e.by&&TRADES.some(x=>x.n===e.by)?mi('Invited by',coLink(e.by)):'',!gc&&!M.ptp?`<span class="mi mptp" title="No PTP program on file">${I('x','sm')} No PTP program</span>`:''].filter(Boolean);
+ const items=[mi('',esc(loc0)),mi('',esc(gc?'General contractor':e.t)),kc0?mi('Contact',`<a class="colink" data-act="person" data-v="${esc(kc0.n+'|'+nm)}">${esc(kc0.n)}</a>`):'',mi('',esc(M.prof.phone)),kc0&&kc0.email?mi('',`<a class="colink" data-act="mailto" data-v="${esc(kc0.n)}">${esc(kc0.email)}</a>`):'',reports.length?mi('Reports to',reports.map(g=>coLink(g)).join(', ')):'',!gc&&e.by&&TRADES.some(x=>x.n===e.by)?mi('Invited by',coLink(e.by)):'',gc&&e.by?mi('Invited by',e.by===meName()?'You':coLink(e.by)):'',!gc&&!M.ptp?`<span class="mi mptp" title="No PTP program on file">${I('x','sm')} No PTP program</span>`:''].filter(Boolean);
  const sum=`<div class="metaline"><span class="mtxt"><span class="mi mbadge">${badge(e.stat)}</span>${items.join('<span class="msep" aria-hidden="true">·</span>')}</span><span class="mi ml">${avStack(M.ppl,4)}</span></div>`;
  const projRow=p=>{const st=projStats(p),sb=M.subs.find(s=>s.proj===p.name&&(gc||s.trade===nm));return `<a class="prow" data-go="project/${p.id}"><span class="pw1"><b>${esc(p.name)}</b><small>${gc?tradesByProj(p.name).length+' trades':'GC: '+esc(p.gc)}</small></span><span class="pbar"><div class="prog"><i style="width:${p.pct}%;background:var(--brand)"></i></div><small class="muted">${p.pct}% complete</small></span>${gc?hBadge(st.h):(sb?badge(sb.status):'<span class="b mute nodot">No submission</span>')}${I('chev','sm')}</a>`};
  const ins=[['General Liability',CARRIERS[hsh(nm)%5],gc?'$2M / $4M':'$1M / $2M'],['Workers Comp',CARRIERS[(hsh(nm)+1)%5],'Statutory'],['Umbrella',CARRIERS[(hsh(nm)+2)%5],gc?'$10M':'$5M']];
- const tr=[+(e.emr*1.5).toFixed(2),+(e.emr*1.2).toFixed(2),+(e.emr*.95).toFixed(2)];
+ const em0=e.emr==null?0:e.emr,tr=[+(em0*1.5).toFixed(2),+(em0*1.2).toFixed(2),+(em0*.95).toFixed(2)];
  const docs=[['Certificate of Insurance',M.ed!==null&&M.ed<0?'bad':M.ed!==null&&M.ed<=90?'warn':'mute',M.ed!==null&&M.ed<0?'Expired':M.ed!==null&&M.ed<=90?'Expiring':'On file'],['Safety Manual','mute','On file'],['Loss Runs','mute','On file'],['W-9','mute','On file'],['PTP Program Plan',M.ptp?'mute':'warn',M.ptp?'On file':'Missing']];
  let body='';
  if(t==='overview')body=`<div class="grid g21"><div class="grid" style="gap:16px;align-content:start">
@@ -3588,9 +3658,9 @@ P['mojo-company']=(n)=>{
  const c=MOJO_COS.find(x=>x.n===decodeURIComponent(n))||MOJO_COS[0],isO=c.t==='owner',M=mojoCo(c.n);
  const keys=['overview','profile','projects','network','team','activity'];
  let t=curTab('mc3','overview');if(!keys.includes(t))t='overview';
- const pp=DIR[c.n]||[],act=ACTIVITY.concat(COACT).filter(a=>a.co===c.n).sort((x,y)=>y.t.localeCompare(x.t)),rv=REVIEW_HISTORY.filter(r=>r.co===c.n),q=QUEUE.filter(x=>x.co===c.n&&!x.done);
+ const pp=coPeople(c),act=ACTIVITY.concat(COACT).filter(a=>a.co===c.n).sort((x,y)=>y.t.localeCompare(x.t)),rv=REVIEW_HISTORY.filter(r=>r.co===c.n),q=QUEUE.filter(x=>x.co===c.n&&!x.done);
  const slug=c.n.toLowerCase().replace(/[^a-z]/g,'');
- const team=(pp.length?pp.map((x,i)=>({n:x.n,e:x.email,r:i<2?'Admin':'Contributor',title:x.title})):[['Primary Admin','admin@'+slug+'.com','Admin'],['Operations Lead','ops@'+slug+'.com','Admin'],['Site Coordinator','site@'+slug+'.com','Contributor']].map(m=>({n:m[0],e:m[1],r:m[2],title:''}))).slice(0,Math.max(1,Math.min(4,c.users)));
+ const team=coTeam(c);syncUsers(c);
  const nProj=M.projects.length||c.proj,active=M.projects.filter(x=>x.p.status==='Active').length;
  const netLbl=isO?'GCs & Trades':c.t==='gc'?'Trades & Owners':'GCs & Owners';
  const kp=(l,v,sub,tab)=>`<a class="kpi" data-act="tab" data-k="mc3" data-v="${tab}"><small>${l}</small><b>${v}</b><span>${sub}</span></a>`;
@@ -3603,14 +3673,14 @@ P['mojo-company']=(n)=>{
   ${card('Key people',pp.length?`<div class="pgrid">${pp.slice(0,3).map(x=>pchip({...x,co:c.n},x.title)).join('')}</div>`:'<div class="muted sm">No contacts on file.</div>',team.length?`<a class="btn sm" data-act="tab" data-k="mc3" data-v="team">Team</a>`:'')}
  </div><div class="grid" style="gap:16px;align-content:start">
   ${card('Contact',(()=>{const pr=mojoProfile(c);return `<div class="kv" style="grid-template-columns:90px 1fr"><small>Primary</small><div>${pr.pn?esc(pr.pn.n):'—'}</div><small>Email</small><div>${pr.pn?esc(pr.pn.email):'—'}</div><small>Phone</small><div>${esc(pr.info[1][1]||'—')}</div><small>Address</small><div>${esc(pr.info[0][1]||'—')}</div></div>`})(),`<a class="btn sm" data-act="tab" data-k="mc3" data-v="profile">Full profile</a>`)}
-  ${card('Account',`<div class="kv"><small>Type</small><div>${typeLbl(c.t)}</div><small>Location</small><div>${esc(c.loc)}</div><small>Plan</small><div>${badge(c.sub)}</div><small>Users</small><div>${c.users}</div><small>Projects</small><div>${nProj}${active?', '+active+' active':''}</div>${M.own&&M.own.emr!==undefined?`<small>EMR</small><div>${emrB(M.own.emr)}</div>`:''}<small>Connected</small><div>${M.network.length} compan${M.network.length===1?'y':'ies'}</div></div>`)}
+  ${card('Account',`<div class="kv"><small>Type</small><div>${typeLbl(c.t)}</div><small>Location</small><div>${esc(c.loc)}</div><small>Plan</small><div>${badge(c.sub)}</div><small>Users</small><div>${team.length}</div><small>Projects</small><div>${nProj}${active?', '+active+' active':''}</div>${M.own&&M.own.emr!==undefined?`<small>EMR</small><div>${emrB(M.own.emr)}</div>`:''}<small>Connected</small><div>${M.network.length} compan${M.network.length===1?'y':'ies'}</div></div>`)}
   ${card('Recent activity',act.length?`<div class="tl">${act.slice(0,3).map(a=>`<div><div class="sm">${esc(a.msg)}</div><small class="muted">${esc(a.actor)}, ${a.t}</small></div>`).join('')}</div>`:'<div class="muted sm">No recent activity.</div>')}
  </div></div>`;
  if(t==='projects')body=M.projects.length?card('',`<table><thead><tr><th>Project</th><th>${c.t==='owner'?'General Contractor':'Owner'}</th><th>${c.t==='trade'?'Submission':'Submissions'}</th><th>Status</th></tr></thead><tbody>${M.projects.map(x=>{const ap=x.subs.filter(s=>s.status==='Approved').length,one=c.t==='trade'?x.subs[0]:null;return `<tr class="click" data-act="mprojview" data-c="${esc(c.n)}" data-v="${esc(x.p.name)}"><td><div class="cell">${avt(x.p.name)}<div><b>${esc(x.p.name)}</b><small>${esc(x.p.addr)}</small></div></div></td><td>${coLink(c.t==='owner'?x.gc:x.owner)}</td><td>${one?badge(one.status):x.subs.length?`${ap} of ${x.subs.length} approved`:'<span class="muted">—</span>'}</td><td>${badge(x.p.status)}</td></tr>`}).join('')}</tbody></table>`,'',true):emptyState('No projects yet','Projects this company owns, manages or works on will appear here.','');
  if(t==='network')body=M.network.length?card('',`<table><thead><tr><th>Company</th><th>Relationship</th><th>Shared projects</th><th>Compliance</th></tr></thead><tbody>${M.network.map(x=>{const mc=MOJO_COS.find(y=>y.n===x.n);return `<tr class="${mc?'click':''}" ${mc?`data-go="mojo-company/${encodeURIComponent(x.n)}"`:''}><td><div class="cell">${avt(x.n)}<b>${esc(x.n)}</b></div></td><td><span class="b brand nodot">${x.role}</span></td><td>${x.projects}</td><td>${x.stat&&x.stat!=='—'?badge(x.stat):'<span class="muted">—</span>'}</td></tr>`}).join('')}</tbody></table>`,'',true):emptyState('No connected companies','Companies working with this one appear here.','');
- if(t==='team')body=card('',team.map(m=>`<div class="prs"><span>${pav(m.n,34)}</span><div class="who"><b>${esc(m.n)}</b><small>${esc(m.title||m.e)}</small></div>${badge(m.r)}<span class="b ok">Active</span></div>`).join(''),'',true);
+ if(t==='team')body=mtTeamHtml(c);
  if(t==='activity')body=(act.length||rv.length)?card('',`<table class="logtbl"><colgroup><col style="width:10.5rem"><col><col style="width:12rem"></colgroup><thead><tr><th>When</th><th>What</th><th>By</th></tr></thead><tbody>${act.map(a=>`<tr><td class="muted" data-label="When">${a.t}</td><td data-label="What"><span class="b mute nodot">${a.cat}</span> ${esc(a.msg)}</td><td class="muted" data-label="By">${esc(a.actor)}</td></tr>`).join('')}${rv.map(r=>`<tr><td class="muted" data-label="When">${dnorm(r.d)} ${r.tm}</td><td data-label="What">${badge(r.decision)} ${esc(r.q)}</td><td class="muted" data-label="By">${esc(r.reviewer)}</td></tr>`).join('')}</tbody></table>`,'',true):emptyState('No activity yet','Reviews and admin actions for this company will appear here.','');
- if(t==='profile')body=mojoProfileHtml(c);
+ if(t==='profile')body=mojoProfileHtml(c)+`<div class="mt">${mtProfileCard(c)}</div>`;
  return head(c.n,c.loc+', '+c.t.toUpperCase(),pp[0]?`<a class="btn" data-act="mailto" data-v="${esc(pp[0].n)}">${I('mail','sm')} Email ${esc(pp[0].n.split(' ')[0])}</a>`:'',crumb(['Companies','mojo-companies'],[c.n]))+sum+`<div class="kpis k3">${kp('Projects',nProj,active+' active','projects')}${kp(netLbl,M.network.length,'Connected companies','network')}${kp('Awaiting review',q.length,q.length?'In the Mojo queue':'Nothing waiting','activity')}</div>`+
  tabs('mc3',[['overview','Overview'],['profile','Profile'],['projects','Projects',M.projects.length||null],['network',netLbl,M.network.length||null],['team','Team',team.length],['activity','Activity',act.length+rv.length||null]])+body;
 };
@@ -3642,7 +3712,7 @@ const TABLBL={
  mc3:{overview:'Overview',profile:'Profile',projects:'Projects',network:'Network',team:'Team',activity:'Activity',dashboard:'Dashboard'}
 };
 ACT.gotab=e=>{S.tab[e.dataset.k]=e.dataset.v;S.menu=null;const r=e.dataset.r;if(location.hash==='#/'+r)rerender();else go(r+(['pd','cd','mc3'].includes(e.dataset.k)?'?tab='+e.dataset.v:''))};
-const navLbl=k=>{const n=(NAV[S.role]||[]).find(x=>x[0]===k&&x.length>1);return n?(k==='projects'&&S.role==='trade'?'My Projects':n[1]):null};
+const navLbl=k=>{const n=(NAV[S.role]||[]).find(x=>x[0]===k&&x.length>1);return n?(n[1]):null};
 /* item: [label, route, tabReset?]  — tabReset={k,v} makes the link also select that tab */
 function trail(r,a){
  const T=[],H=['Home','dashboard'];
@@ -3665,10 +3735,10 @@ function trail(r,a){
   case 'trade-detail':return [H,sect('trades'),...tabCrumb('cd',[a||'—','trade-detail/'+encodeURIComponent(a||'')])];
   case 'q-builder':{const t=TEMPLATES.find(x=>x.id===a);return [H,sect('questionnaires'),[t?t.n:'New questionnaire']]}
   case 'q-assign':{const p=proj(a);return p?[H,sect('projects'),[p.name,'project/'+p.id,{k:'pd',v:'overview'}],['Assign questionnaire']]:[H,sect('questionnaires'),['Assign questionnaire']]}
-  case 'q-assignments':{const g=S.role==='gc';return g?(a?[H,['Assignments','my-assign'],['Assigned by me','q-assignments'],[a]]:[H,['Assignments','my-assign'],['Assigned by me']]):(a?[H,['Assignments','q-assignments'],[a]]:[H,['Assignments']])}
-  case 'my-assign':return S.role==='gc'?[H,['Assignments','my-assign'],['Assigned to me']]:[H,['Assignments']];
-  case 'review':{const x=ASSIGN.find(y=>y.id===a),lbl=x?x.q+', '+x.co:'Review';return S.role==='gc'?[H,['Assignments','my-assign'],['Assigned by me','q-assignments'],[lbl]]:[H,['Assignments','q-assignments'],[lbl]]}
-  case 'respond':{const x=ASSIGN.find(y=>y.id===a)||myAssign()[0],lbl=x?x.q:'Respond';return S.role==='gc'?[H,['Assignments','my-assign'],['Assigned to me','my-assign'],[lbl]]:[H,['Assignments','my-assign'],[lbl]]}
+  case 'q-assignments':{const g=(S.role==='gc'||S.role==='trade');return g?(a?[H,['Assignments','my-assign'],['Assigned by me','q-assignments'],[a]]:[H,['Assignments','my-assign'],['Assigned by me']]):(a?[H,['Assignments','q-assignments'],[a]]:[H,['Assignments']])}
+  case 'my-assign':return (S.role==='gc'||S.role==='trade')?[H,['Assignments','my-assign'],['Assigned to me']]:[H,['Assignments']];
+  case 'review':{const x=ASSIGN.find(y=>y.id===a),lbl=x?x.q+', '+x.co:'Review';return (S.role==='gc'||S.role==='trade')?[H,['Assignments','my-assign'],['Assigned by me','q-assignments'],[lbl]]:[H,['Assignments','q-assignments'],[lbl]]}
+  case 'respond':{const x=ASSIGN.find(y=>y.id===a)||myAssign()[0],lbl=x?x.q:'Respond';return (S.role==='gc'||S.role==='trade')?[H,['Assignments','my-assign'],['Assigned to me','my-assign'],[lbl]]:[H,['Assignments','my-assign'],[lbl]]}
   case 'account':return [H,['My account']];
   case 'notifications':return [H,['Notifications']];
   case 'activity':case 'mojo-companies':case 'mojo-bank':case 'mojo-queue':case 'mojo-activity':return [H,[navLbl(r)||r]];
@@ -3698,7 +3768,7 @@ Object.keys(P).forEach(k=>{if(k==='dashboard'||k==='mojoDash')return;const f=P[k
 /* ============ v7, ROLE-BASED ACCESS (company type × Admin/Contributor) ============ */
 const isContrib=()=>!!CUR&&S.role!=='mojo'&&S.userRole==='contributor';
 function can(a){
- const r=S.role,adm=S.userRole==='admin'||r==='mojo',oc=r==='owner'||r==='gc';
+ const r=S.role,adm=S.userRole==='admin'||r==='mojo',oc=r==='owner'||r==='gc'||r==='trade';
  switch(a){
   case 'project.create':case 'project.edit':return oc&&adm;
   case 'invite.any':return adm;
@@ -3741,6 +3811,7 @@ function ensureAssigned(d){
   const adm=TEAM.find(m=>m.r==='Admin'&&m.st==='Active');
   if(S.role==='trade'&&adm)add(adm);
   TEAM.filter(m=>m.r==='Contributor'&&(p.assigned||[]).includes(m.n)).forEach(add);
+  (p.partners||[]).forEach(g=>{const pp=(DIR[g]||[])[0];if(pp&&!out.some(x=>x.n===pp.n&&x.co===g))out.push({...pp,role:'Partner GC',co:g})});
   return out;
  };
 }
@@ -3810,7 +3881,7 @@ ACT.assignsave=e=>{
 {
  ['owner','gc','trade','mojo'].forEach(k=>{
   let base=NAV[k].slice();
-  if(k==='gc'){const i=base.findIndex(x=>x[0]==='questionnaires');base.splice(i+1,0,['bank','Question Bank','db'])}
+  
   Object.defineProperty(NAV,k,{configurable:true,get:()=>isContrib()?base.filter(x=>!['invite','bank'].includes(x[0])):base});
  });
 }
@@ -3819,14 +3890,15 @@ function denied(r,a){
  if(!CUR)return null;
  const role=S.role,adm='Only company admins can open that page';
  if(/^mojo-/.test(r)&&role!=='mojo')return 'That area is for Mojo staff only';
- if(r==='gc-detail'&&role!=='owner')return "You don't have access to that page";
- if(r==='trade-detail'&&!(role==='owner'||role==='gc')){const t=TRADES.find(x=>x.n===decodeURIComponent(a||''));if(!(role==='trade'&&t&&t.by===meName()))return "You don't have access to that page"}
- if((r==='project-new'||r==='bulk')&&!can('project.create'))return role==='trade'?"Trades can't create projects":adm;
+ if(r==='gc-detail'){const g=GCS.find(x=>x.n===decodeURIComponent(a||''));if(!(role==='owner'||(role==='gc'&&g&&g.by===meName())))return "You don't have access to that page"}
+ if(r==='gcs'&&!(role==='owner'||role==='gc'))return "You don't have access to that page";
+ if(r==='trade-detail'&&role!=='owner'&&role!=='gc'){const t=TRADES.find(x=>x.n===decodeURIComponent(a||''));if(!(role==='trade'&&t&&t.by===meName()))return "You don't have access to that page"}
+ if((r==='project-new'||r==='bulk')&&!can('project.create'))return adm;
  if(r==='invite'&&!can('invite.any'))return adm;
- if((r==='q-builder'||r==='q-assign')&&!can('q.manage'))return role==='trade'?"Trades can't manage questionnaires":adm;
+ if((r==='q-builder'||r==='q-assign')&&!can('q.manage'))return adm;
  if(r==='bank'&&!can('bank.view'))return adm;
  if((r==='respond'||r==='submit')&&!(role==='trade'||role==='gc'))return "Only contractors respond to questionnaires and submit pre-qualifications";
- if((r==='review'||r==='q-assignments'||r==='submission')&&!(role==='owner'||role==='gc'))return "Only the reviewing company can open that page";
+ if((r==='review'||r==='q-assignments'||r==='submission')&&role==='mojo')return "Only the reviewing company can open that page";
  return null;
 }
 {
@@ -3846,6 +3918,7 @@ const LOCKRULES=[
  [e=>['addTrade','projqr'].includes(e.act),'trade.add','add trades or send project invites'],
  [e=>e.act==='invproj','invite.any','invite companies to projects'],
  [e=>e.act==='asgco','q.manage','manage or assign questionnaires'],
+ [e=>e.act==='qassignsave','q.manage','manage or assign questionnaires'],
  [e=>['tpldel','tpldup'].includes(e.act),'q.manage','manage questionnaires'],
  [e=>e.act==='docdel','docs.delete','delete documents'],
  [e=>['decide','rdec','rv'].includes(e.act),'review.decide','make approval decisions']
@@ -3950,7 +4023,7 @@ function subDetail(id){
  return head(s.trade,'','',crumb(['Projects','projects'],['Submission review']))+sum+
  `<div class="grid g21"><div class="grid" style="gap:16px;align-content:start">
   ${card('Review checklist',`<div>${i.checks.map(c=>{const x=ic(c);return `<div class="todo" style="cursor:default"><span class="ti" style="background:${x[2]};color:${x[1]}">${I(x[0],'sm')}</span><span style="flex:1;min-width:0"><b>${c.k}</b><small>${esc(c.d)}</small></span></div>`}).join('')}</div>`,i.fails?`<span class="b bad nodot">${i.fails} of 4 need attention</span>`:'<span class="b mute nodot">4 of 4 passed</span>',true)}
-  ${card('Safety & company profile',`<div class="grid g3" style="gap:10px">${[['EMR',i.emr.toFixed(2),i.emr>1?'var(--warn-t)':'inherit'],['TRIR',i.trir,'inherit'],['DART',i.dart,'inherit'],['PTP program',i.ptp?'In place':'None',i.ptp?'inherit':'var(--bad-t)'],['Bonding capacity',i.bond,'inherit'],['Employees',i.emp,'inherit']].map(x=>`<div style="background:var(--surface2);padding:11px 13px;border-radius:10px"><small class="muted">${x[0]}</small><div class="fw" style="font-size:17px;color:${x[2]}">${x[1]}</div></div>`).join('')}</div><p class="sm muted mt">${i.yrs} years in business. Figures are a snapshot taken when the contractor submitted.</p>`)}
+  ${card('Safety & company profile',`<div class="grid g3" style="gap:10px">${[['EMR',emrT(i.emr),i.emr>1?'var(--warn-t)':'inherit'],['TRIR',i.trir,'inherit'],['DART',i.dart,'inherit'],['PTP program',i.ptp?'In place':'None',i.ptp?'inherit':'var(--bad-t)'],['Bonding capacity',i.bond,'inherit'],['Employees',i.emp,'inherit']].map(x=>`<div style="background:var(--surface2);padding:11px 13px;border-radius:10px"><small class="muted">${x[0]}</small><div class="fw" style="font-size:17px;color:${x[2]}">${x[1]}</div></div>`).join('')}</div><p class="sm muted mt">${i.yrs} years in business. Figures are a snapshot taken when the contractor submitted.</p>`)}
   ${card('Insurance',ins.map(r=>`<div class="prs"><div class="who"><b>${r[0]}</b><small>${r[1]}, ${r[2]}</small></div><span class="due ${i.ed!==null&&i.ed<=0?'bad':i.ed!==null&&i.ed<=60?'warn':''}">${i.ed!==null&&i.ed<=0?'Expired':'Exp '+i.exp}</span></div>`).join(''),'',true)}
   ${card('Documents',`<table><thead><tr><th>Document</th><th>File</th><th>Uploaded</th><th></th></tr></thead><tbody>${i.names.map(k=>{const f=s.docs&&s.docs[k]?s.docs[k]:k+'.pdf',ok=i.have.includes(k);return ok?`<tr><td data-label="Document"><b>${esc(k)}</b></td><td data-label="File" class="muted">${esc(f)}</td><td data-label="Uploaded">${dnorm(s.date)}</td><td class="ta-r"><a class="btn sm" data-act="toast" data-v="Preview opens in a new tab (mockup)">${I('eye','sm')} View</a></td></tr>`:`<tr><td data-label="Document"><b>${esc(k)}</b></td><td data-label="File" class="muted">Not provided</td><td data-label="Uploaded">—</td><td class="ta-r"><span class="b warn nodot">Missing</span></td></tr>`}).join('')}</tbody></table>`,`<span class="muted sm">${i.have.length} of ${i.names.length} provided</span>`,true)}
  </div><div class="grid" style="gap:16px;align-content:start">
@@ -3968,7 +4041,7 @@ function subDetail(id){
 
 /* ============ v9, ASSIGNED TO ME vs ASSIGNED BY ME  +  review hierarchy ============ */
 function assignSeg(active){
- if(S.role!=='gc')return '';
+ if(S.role!=='gc'&&S.role!=='trade')return '';
  const to=myAssign().filter(a=>OPEN_ST.includes(a.status)).length,by=toReview().filter(a=>a.status==='Submitted').length;
  const t=(k,l,go,n)=>`<button type="button" class="${active===k?'on':''}" data-go="${go}" role="tab" aria-selected="${active===k}">${l}${n?`<span class="n">${n}</span>`:''}</button>`;
  return `<div class="tabs" role="tablist" aria-label="Assignment direction">${t('to','Assigned to me','my-assign',to)}${t('by','Assigned by me','q-assignments',by)}</div>`;
@@ -4005,7 +4078,7 @@ function ovTag(h,ix,hist,g){
 
 /* ============ v10, PROJECT STATUS (owned by the Owner, or by a GC for projects it created) ============ */
 BADGE['On hold']='warn';BADGE.Completed='info';
-const canEditProject=p=>!!p&&can('project.edit')&&(S.role==='owner'||(S.role==='gc'&&p.kind==='managed'));
+const canEditProject=p=>!!p&&can('project.edit')&&(S.role==='owner'||((S.role==='gc'||S.role==='trade')&&p.kind==='managed'));
 const PST=[['Planning','Being set up — invite contractors and assign questionnaires.'],['Active','Work is underway and contractors are submitting.'],['On hold','Temporarily paused. You can resume at any time.'],['Completed','Project is finished. Kept for your records.']];
 ACT.statusopen=e=>{
  const p=PROJECTS.find(x=>x.id===e.dataset.id);
@@ -4110,7 +4183,7 @@ Object.assign(ACT,{
 });
 
 /* ---------- Project membership: remove a company from a project ---------- */
-const canRemoveFromProject=(p,co)=>!!p&&S.role!=='trade'&&can('trade.add')&&co!==meName()&&co!==pmeta(p).owner&&(co!==p.gc||S.role==='owner');
+const canRemoveFromProject=(p,co)=>!!p&&(S.role!=='trade'||p.kind==='managed')&&can('trade.add')&&co!==meName()&&co!==pmeta(p).owner&&(co!==p.gc||S.role==='owner');
 ACT.projremove=e=>{
  const p=PROJECTS.find(x=>x.id===e.dataset.id),co=e.dataset.v;
  if(!canRemoveFromProject(p,co))return toast("You can't remove that company from this project");
@@ -4151,7 +4224,7 @@ Object.assign(ACT,{
 function teamPage(){
  const adm=isAdmin(),n=s=>TEAM.filter(m=>m.st===s).length;
  const stB=m=>m.st==='Active'?'<span class="b mute">Active</span>':m.st==='Inactive'?'<span class="b mute">Inactive</span>':'<span class="b mute">Invited</span>';
- return head('My Team','',adm?'<a class="btn p" data-go="invite/member">'+I('plus','sm')+' Invite member</a>':'')+
+ return head('People','',adm?'<a class="btn p" data-go="invite/member">'+I('plus','sm')+' Invite member</a>':'')+
  `<div class="sumline"><span><b>${n('Active')}</b> active</span>${n('Invited')?`<span class="muted">${n('Invited')} invited</span>`:''}${n('Inactive')?`<span class="muted">${n('Inactive')} inactive</span>`:''}</div>`+
  (!adm?`<div class="banner info">${I('lock')}<div>You're a <b>Contributor</b> in ${esc(meName())}. Only company admins can invite members or change roles.</div></div>`:'')+
  card('',TEAM.length?`<table><thead><tr><th>Member</th><th>Role</th><th>Status</th><th>Last active</th><th></th></tr></thead><tbody>${TEAM.map(m=>{const self=CUR&&m.e===CUR.email,off=m.st==='Inactive';return `<tr style="${off?'opacity:.65':''}"><td><div class="cell"><div class="av" style="background:${col(m.n)}">${ini(m.n)}</div><div><b>${esc(m.n)}${self?' <span class="b mute nodot">You</span>':''}</b><small>${esc(m.e)}</small></div></div></td><td>${adm&&!self&&!off?`<select class="inp" style="width:140px;padding:5px 8px" data-change="teamrole" data-v="${esc(m.e)}"><option ${m.r==='Admin'?'selected':''}>Admin</option><option ${m.r!=='Admin'?'selected':''}>Contributor</option></select>`:badge(m.r)}</td><td>${stB(m)}</td><td class="muted">${m.last}</td><td style="white-space:nowrap">${adm&&!self?(m.st==='Invited'?`<a class="btn sm g" data-act="memresend" data-v="${esc(m.e)}">Resend</a><a class="btn sm g" data-act="memrevoke" data-v="${esc(m.e)}">Revoke</a>`:m.st==='Active'?`<a class="btn sm g" data-act="memdeact" data-v="${esc(m.e)}">Deactivate</a>`:`<a class="btn sm" data-act="memreact" data-v="${esc(m.e)}">Reactivate</a>`)+(m.st==='Invited'?'':`<a class="btn sm g" data-act="rmember" data-v="${esc(m.e)}">Remove</a>`):''}</td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:34px;text-align:center">No team members yet.</div>','',true);
@@ -4181,7 +4254,7 @@ LOCKRULES.push([e=>['substart','subreopen'].includes(e.act),'review.decide','rev
 
 /* ============ v12, MOJO ADMIN: company profile (read-only) ============ */
 function mojoProfile(c){
- const ws=Object.keys(WS).find(k=>WS[k].name===c.n&&WS[k].type!=='mojo'),org=ws?wsData(ws).ORG:null,M=mojoCo(c.n),o=M.own,pn=(DIR[c.n]||[])[0]||null;
+ const ws=Object.keys(WS).find(k=>WS[k].name===c.n&&WS[k].type!=='mojo'),org=ws?wsData(ws).ORG:null,M=mojoCo(c.n),o=M.own,pn=coPeople(c).find(x=>x.role==='Admin')||coPeople(c)[0]||null;
  const g=k=>org&&org[k]!=null&&String(org[k]).trim()?String(org[k]).trim():null;
  const h=hsh(c.n),isO=c.t==='owner';
  const emr=g('emr')?parseFloat(g('emr')):o&&o.emr!==undefined?o.emr:null;
@@ -4205,7 +4278,7 @@ function mojoProfileHtml(c){
  const expChip=(s)=>{const n=dd(s);return s?`<span class="due ${n!==null&&n<=0?'bad':n!==null&&n<=60?'warn':''}">${n!==null&&n<=0?'Expired':'Exp '+esc(s)}</span>`:'<span class="muted">—</span>'};
  return `${p.pct!==null?`<div class="card" style="margin-bottom:16px"><div class="bd" style="padding:14px 20px"><div class="row sm" style="margin-bottom:8px"><b>Profile completeness</b><span class="muted ml">${p.pct}%</span></div><div class="prog"><i style="width:${p.pct}%;background:${p.pct>=80?'var(--ok)':'var(--warn)'}"></i></div></div></div>`:''}
  <div class="grid g2">${card('Company information',kvRows(p.info))}
- ${p.isO?card('Account',kvRows([['Plan',c.sub],['Users',String(c.users)],['Customer since',c.since]])):card('Insurance',p.ins.map(r=>`<div class="prs"><div class="who"><b>${r[0]}</b><small>${esc(r[1])}, ${esc(r[2])}</small></div>${expChip(r[3])}</div>`).join(''),'',true)}</div>
+ ${p.isO?card('Account',kvRows([['Plan',c.sub],['Users',String(coTeam(c).length)],['Customer since',c.since]])):card('Insurance',p.ins.map(r=>`<div class="prs"><div class="who"><b>${r[0]}</b><small>${esc(r[1])}, ${esc(r[2])}</small></div>${expChip(r[3])}</div>`).join(''),'',true)}</div>
  ${p.isO?'':`<div class="grid g2 mt">${card('Safety record',`<div class="grid g2" style="gap:10px">${p.safety.map(r=>`<div style="background:var(--surface2);padding:10px 12px;border-radius:10px"><small class="muted">${r[0]}</small><div class="fw" style="font-size:17px;color:${r[0]==='EMR'&&p.emr>1?'var(--bad-t)':'inherit'}">${esc(r[1])}</div></div>`).join('')}</div><div class="row mt wrap"><span class="b ${p.ptp?'ok':'bad'} nodot">${p.ptp?'PTP program in place':'No PTP program'}</span></div>`)}
  ${card('Bonding',kvRows(p.bond))}</div>
  <div class="mt">${card('Documents on file',`<div class="pgrid" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">${p.docs.map(d=>{const n=dd(d[1]),bad=n!==null&&n<=0;return `<div class="file"><div class="fi">PDF</div><b class="sm">${d[0]}</b><span class="ml b ${bad?'bad':'ok'} nodot">${bad?'Expired':'On file'}</span></div>`}).join('')}</div>`)}</div>`}`;
@@ -4311,7 +4384,7 @@ Object.assign(ACT,{
 function showInvMail(ctx){
  F.mailctx=ctx;
  if(F.mailqr===undefined)F.mailqr=true;
- const {rec,link,to,pre}=ctx,sender=rec.sender||(CUR?CUR.name:'Your contact'),myCo=curWS().name,projs=rec.projects||[];
+ const {rec,link,to,pre}=ctx,sender=rec.sender||(CUR?CUR.name:'Your contact'),myCo=(rec.member&&rec.company)||curWS().name,projs=rec.projects||[];
  const row=(k,v)=>`<div style="display:flex;gap:10px;font-size:13px;padding:2px 0"><span class="muted" style="width:56px">${k}</span><span>${v}</span></div>`;
  const subject=rec.member?`${sender} invited you to join ${myCo} on PreQual Pro`:`${sender} invited ${rec.company?rec.company:'you'} to PreQual Pro${projs.length?' — '+projs[0]:''}`;
  const what=rec.member
@@ -4391,8 +4464,8 @@ function tabbarHtml(route){
 /* quick jump: pages and actions first, then people, projects and companies */
 {
  const _gs=gsearch;
- const pages=()=>NAV[S.role].filter(n=>n.length>1).map(n=>({l:n[0]==='projects'&&S.role==='trade'?'My Projects':n[1],go:n[0],ic:n[2]}));
- const actions=()=>[['New project','project-new','plus',can('project.create')],['Invite a company','invite','send',can('invite.any')&&S.role!=='trade'&&S.role!=='mojo'],['Assign a questionnaire','q-assign','clip',can('q.manage')]].filter(a=>a[3]);
+ const pages=()=>NAV[S.role].filter(n=>n.length>1).map(n=>({l:n[1],go:n[0],ic:n[2]}));
+ const actions=()=>[['New project','project-new','plus',can('project.create')],['Invite a company','invite','send',can('invite.any')&&S.role!=='mojo'],['Assign a questionnaire','q-assign','clip',can('q.manage')]].filter(a=>a[3]);
  const row=(kind,title,go,ic)=>`<a role="option" data-go="${go}"><span class="gsic">${I(ic,'sm')}</span><span style="min-width:0"><b>${esc(title)}</b><small>${esc(kind)}</small></span></a>`;
  gsearch=function(q){
   q=(q||'').trim().toLowerCase();
@@ -4578,6 +4651,133 @@ Object.assign(ACT,{
 
 function labelCells(){document.querySelectorAll('.content table').forEach(t=>{const hs=[...t.querySelectorAll('thead th')].map(x=>x.textContent.trim());if(!hs.length)return;t.querySelectorAll('tbody tr').forEach(r=>[...r.children].forEach((c,i)=>{if(c.tagName==='TD'&&!c.hasAttribute('data-label'))c.setAttribute('data-label',hs[i]||'')}))})}
 const _obs=new MutationObserver(()=>{labelCells();enhance()});_obs.observe(document.getElementById('root'),{childList:true,subtree:true});_obs.observe(document.getElementById('modal'),{childList:true,subtree:true});
+/* ============ v18, MOJO ADMIN: company team (add, edit, deactivate and remove contributors) ============ */
+/* Mojo creates a company with its admin and can then manage that company's contributors. The list is the
+   company's own team, so what Mojo changes is what the company sees under My Team. */
+const coWsKey=c=>Object.keys(WS).find(k=>WS[k].name===c.n&&WS[k].type!=='mojo')||null;
+function coTeam(c){
+ const k=coWsKey(c);
+ if(k){const d=wsData(k);ensureAssigned(d);return d.TEAM}
+ if(!MOJO_TEAMS[c.n]){
+  const pp=DIR[c.n]||[],slug=c.n.toLowerCase().replace(/[^a-z]/g,'');
+  MOJO_TEAMS[c.n]=pp.length?pp.map((x,i)=>({n:x.n,e:x.email,r:i<2?'Admin':'Contributor',st:'Active',last:i===0?'Today':'2 days ago',title:x.title}))
+   :[['Primary Admin','admin@'+slug+'.com','Admin'],['Operations Lead','ops@'+slug+'.com','Admin'],['Site Coordinator','site@'+slug+'.com','Contributor']].map(m=>({n:m[0],e:m[1],r:m[2],st:'Active',last:'Today',title:''}));
+ }
+ return MOJO_TEAMS[c.n];
+}
+const memTitle=(c,m)=>m.title||((DIR[c.n]||[]).find(x=>x.n===m.n)||{}).title||(m.r==='Admin'?'Company admin':'Team member');
+/* the admin Mojo created shows as invited until they first sign in */
+const memSt=(c,m)=>c.pending&&m.r==='Admin'&&m.e===c.pending.email?'Invited':(m.st||'Active');
+const coPeople=c=>coTeam(c).filter(m=>memSt(c,m)!=='Inactive').map(m=>({n:m.n,title:memTitle(c,m),email:m.e,phone:((DIR[c.n]||[]).find(x=>x.n===m.n)||{}).phone||'',co:c.n,role:m.r}));
+const syncUsers=c=>{c.users=coTeam(c).length};
+const memProjects=(c,m)=>{const k=coWsKey(c);if(!k)return null;if(m.r==='Admin')return 'All';return wsData(k).PROJECTS.filter(p=>(p.assigned||[]).includes(m.n)).length};
+const mtLog=(c,msg)=>ACTIVITY.unshift({t:nowStamp(),cat:'Company',actor:MOJO_ACTOR,co:c.n,msg});
+const mtCo=e=>MOJO_COS.find(x=>x.n===e.dataset.c);
+const activeAdmins=c=>coTeam(c).filter(m=>m.r==='Admin'&&memSt(c,m)!=='Inactive');
+/* the last admin (or the admin who has not signed in yet) can't be removed, deactivated or demoted */
+const mtProtected=(c,m)=>m.r==='Admin'&&(activeAdmins(c).length<=1||(c.pending&&m.e===c.pending.email));
+const mtMem=(c,email)=>coTeam(c).find(x=>(x.e||'').toLowerCase()===String(email||'').toLowerCase());
+/* invitation record for a pending contributor, created on demand */
+function mtInv(c,m){
+ let i=INVS.find(x=>x.role==='member'&&(x.email||'').toLowerCase()===m.e.toLowerCase()&&x.status!=='Revoked'&&x.status!=='Accepted'&&(x.ws===coWsKey(c)||x.co===c.n));
+ if(!i){i={ws:coWsKey(c)||undefined,co:c.n,email:m.e,company:'',role:'member',userRole:m.r==='Admin'?'admin':'contributor',projects:[],date:todayS(),status:'Pending'};INVS.unshift(i)}
+ if(!i.token)i.token=Math.random().toString(36).slice(2,10);
+ return i;
+}
+function mtRec(c,m,i){return {userRole:m.r==='Admin'?'admin':'contributor',sender:MOJO_ACTOR,company:c.n,roleLbl:'Team member',base:c.t,member:true,projects:[],email:m.e,qr:false,ws:coWsKey(c)||undefined,title:m.title||''}}
+function mtLink(c,m){const i=mtInv(c,m);return inviteLink(i.token,mtRec(c,m,i))}
+
+function mtTeamHtml(c){
+ const team=coTeam(c),n=s=>team.filter(m=>memSt(c,m)===s).length;
+ const rows=team.slice().sort((a,b)=>(a.r==='Admin'?0:1)-(b.r==='Admin'?0:1));
+ const act=m=>{
+  const st=memSt(c,m),ea=esc(c.n),ee=esc(m.e);
+  const b=(a,ic,l,cls='g')=>`<a class="btn sm ${cls}" data-act="${a}" data-c="${ea}" data-v="${ee}" title="${l}" aria-label="${l} ${esc(m.n)}">${I(ic,'sm')}${cls==='g'?'':' '+l}</a>`;
+  if(mtProtected(c,m))return b('mtedit','edit','Edit')+`<span class="muted sm" title="Every company needs an admin" style="padding:0 6px">${I('lock','sm')}</span>`;
+  return st==='Invited'?b('mtmail','mail','View invitation email')+b('mtcopy','copy','Copy invite link')+b('mtresend','send','Resend invitation')+b('mtedit','edit','Edit')+b('mtremove','trash','Remove')
+   :st==='Inactive'?b('mtreact','check','Reactivate','')+b('mtedit','edit','Edit')+b('mtremove','trash','Remove')
+   :b('mtedit','edit','Edit')+b('mtdeact','lock','Deactivate')+b('mtremove','trash','Remove');
+ };
+ return `<div class="row" style="margin-bottom:14px;gap:var(--space-md);flex-wrap:wrap"><div class="sumline" style="margin:0"><span><b>${n('Active')}</b> active</span>${n('Invited')?`<span class="muted">${n('Invited')} invited</span>`:''}${n('Inactive')?`<span class="muted">${n('Inactive')} inactive</span>`:''}</div><a class="btn p ml" data-act="mtadd" data-c="${esc(c.n)}">${I('plus','sm')} Add team member</a></div>`+
+ card('',`<table><thead><tr><th>Member</th><th>Title</th><th>Role</th><th>Status</th><th>Projects</th><th>Last active</th><th></th></tr></thead><tbody>${rows.map(m=>{const st=memSt(c,m),pj=memProjects(c,m),off=st==='Inactive';return `<tr style="${off?'opacity:.65':''}"><td data-label="Member"><div class="cell">${pav(m.n,34)}<div><b>${esc(m.n)}</b><small>${esc(m.e)}</small></div></div></td><td data-label="Title" class="muted">${esc(memTitle(c,m))}</td><td data-label="Role">${badge(m.r)}</td><td data-label="Status">${badge(st)}</td><td data-label="Projects">${pj===null?'<span class="muted">—</span>':pj==='All'?'<span class="muted">All projects</span>':pj?pj+' assigned':'<span class="muted">None yet</span>'}</td><td data-label="Last active" class="muted">${esc(m.last||'—')}</td><td data-label="Actions" style="white-space:nowrap" class="ta-r"><div class="row" style="gap:4px;justify-content:flex-end">${act(m)}</div></td></tr>`}).join('')}</tbody></table>`,'',true)+
+ `<p class="muted sm" style="margin-top:12px">Admins have full access to the company. Contributors only see the projects an admin assigns them. Every company keeps at least one admin.</p>`;
+}
+/* read-only listing for the company profile */
+function mtProfileCard(c){
+ const team=coTeam(c),adm=team.filter(m=>m.r==='Admin'),con=team.filter(m=>m.r!=='Admin');
+ const grp=(l,list)=>`<div class="asggrp"><span>${l}</span><b>${list.length}</b></div>`+(list.length?list.map(m=>`<div class="prs">${pav(m.n,34)}<div class="who"><b>${esc(m.n)}</b><small>${esc(memTitle(c,m))}, ${esc(m.e)}</small></div>${badge(memSt(c,m))}</div>`).join(''):`<div class="muted sm" style="padding:10px 0 14px">No ${l.toLowerCase()} yet.</div>`);
+ return card('Team',grp('Admins',adm)+grp('Contributors',con),`<a class="btn sm" data-act="tab" data-k="mc3" data-v="team">Manage team</a>`);
+}
+function mtModal(){
+ const f=F.mt;if(!f)return;const add=f.mode==='add',c=MOJO_COS.find(x=>x.n===f.co);if(!c)return;
+ openModal(`<div class="mh"><span class="sq" style="background:var(--brand);width:34px;height:34px">${I(add?'plus':'edit','sm')}</span><div style="min-width:0"><h2 class="sh">${add?'Add team member':'Edit team member'}</h2><div class="muted sm">${add?'They get an email invite to join '+esc(c.n)+'.':esc(c.n)}</div></div><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div>
+ <div class="mb"><div style="display:grid;gap:14px"><div class="fld"><label>Full name *</label>${bin('mt.name','e.g. Jamie Rivera')}</div>
+ <div class="fld"><label>Email *</label>${f.locked?`<input class="inp" value="${esc(f.email)}" disabled><small>Email can't be changed once the person has joined.</small>`:bin('mt.email','name@company.com',{type:'email'})}</div>
+ <div class="fld"><label>Job title <span class="muted fw">(optional)</span></label>${bin('mt.title','e.g. Site Coordinator')}</div>
+ <div class="fld"><label>Role in the company</label><div class="rolegrid">${[['Admin','Admin','Full access to all projects and company settings'],['Contributor','Contributor','Access limited to assigned projects']].map(r=>`<button type="button" class="rolecard ${f.role===r[0]?'on':''}" ${f.lockRole?'disabled':''} data-act="mtrole" data-v="${r[0]}"><b>${r[1]}</b><span>${r[2]}</span></button>`).join('')}</div>${f.lockRole?'<small>This is the only admin, so the role can\'t change.</small>':''}</div>
+ <p class="ferr" id="mterr"></p></div></div>
+ <div class="mf"><a class="btn" data-act="closeModal">Cancel</a><a class="btn p" data-act="mtsave">${add?'Add and send invitation':'Save changes'}</a></div>`);
+}
+Object.assign(ACT,{
+ mtadd:e=>{if(S.role!=='mojo')return;F.mt={mode:'add',co:e.dataset.c,name:'',email:'',title:'',role:'Contributor',locked:false};mtModal()},
+ mtrole:e=>{if(!F.mt||F.mt.lockRole)return;F.mt.role=e.dataset.v;mtModal()},
+ mtedit:e=>{const c=mtCo(e),m=c&&mtMem(c,e.dataset.v);if(!m)return;const pr=mtProtected(c,m);F.mt={mode:'edit',co:c.n,orig:m.e,name:m.n,email:m.e,title:memTitle(c,m)===(m.r==='Admin'?'Company admin':'Team member')?'':memTitle(c,m),role:m.r,lockRole:pr,locked:memSt(c,m)!=='Invited'||pr};mtModal()},
+ mtsave:()=>{
+  const f=F.mt,c=f&&MOJO_COS.find(x=>x.n===f.co);if(!c)return;
+  const err=m=>{const el=$('#mterr');if(el)el.textContent=m};
+  const name=(f.name||'').trim(),email=(f.email||'').trim().toLowerCase(),title=(f.title||'').trim(),team=coTeam(c);
+  if(!name){err('Full name is required');return}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){err('Enter a valid email address');return}
+  if(f.mode==='add'){
+   if(team.some(x=>(x.e||'').toLowerCase()===email)||ACCOUNTS[email]){err('A user with this email already exists');return}
+   const m={n:name,e:email,r:f.role==='Admin'?'Admin':'Contributor',st:'Invited',last:'—',title};team.push(m);
+   (DIR[c.n]=DIR[c.n]||[]).push({n:name,title:title||'Team member',email,phone:'',co:c.n});
+   const link=mtLink(c,m);syncUsers(c);mtLog(c,'Added '+m.r.toLowerCase()+' '+name+' ('+email+') and sent an invitation');
+   F.mt=null;closeModal();rerender();showInvMail({rec:mtRec(c,m),link,to:email,pre:false});toast(m.r+' added, invitation sent');return;
+  }
+  const m=mtMem(c,f.orig);if(!m)return;
+  if(!f.locked&&email!==(f.orig||'').toLowerCase()&&(team.some(x=>x!==m&&(x.e||'').toLowerCase()===email)||ACCOUNTS[email])){err('A user with this email already exists');return}
+  const oldN=m.n,oldE=m.e,newR=f.role==='Admin'?'Admin':'Contributor';
+  if(newR!==m.r&&mtProtected(c,m)){err('Every company needs an admin');return}
+  m.n=name;m.title=title;m.r=newR;if(!f.locked)m.e=email;
+  const kk=coWsKey(c);if(kk&&ACCOUNTS[m.e])ACCOUNTS[m.e].memberships.forEach(x=>{if(x.ws===kk)x.ur=newR==='Admin'?'admin':'contributor'});
+  const d=(DIR[c.n]||[]).find(x=>x.email===oldE||x.n===oldN);if(d){d.n=name;d.email=m.e;d.title=title||d.title}
+  const k=coWsKey(c);if(k&&oldN!==name)wsData(k).PROJECTS.forEach(p=>{p.assigned=(p.assigned||[]).map(x=>x===oldN?name:x)});
+  if(ACCOUNTS[m.e])ACCOUNTS[m.e].name=name;
+  const iv=INVS.find(x=>x.role==='member'&&(x.email||'').toLowerCase()===oldE.toLowerCase()&&x.status==='Pending');if(iv)iv.email=m.e;
+  mtLog(c,'Updated '+m.r.toLowerCase()+' '+name);F.mt=null;closeModal();rerender();toast('Team member updated');
+ },
+ mtdeact:e=>{const c=mtCo(e),m=c&&mtMem(c,e.dataset.v);if(!m||mtProtected(c,m))return;confirmBox('Deactivate team member',`<b>${esc(m.n)}</b> will lose access to ${esc(c.n)} but keeps their account. You can reactivate them any time.`,'mtdeactok',c.n+'|'+m.e,'Deactivate')},
+ mtdeactok:e=>{const [cn,em]=e.dataset.v.split('|'),c=MOJO_COS.find(x=>x.n===cn),m=c&&mtMem(c,em);if(!m)return;m.st='Inactive';m.last='Deactivated '+shortDate();mtLog(c,'Deactivated '+m.r.toLowerCase()+' '+m.n);closeModal();rerender();toast(m.n+' deactivated')},
+ mtreact:e=>{const c=mtCo(e),m=c&&mtMem(c,e.dataset.v);if(!m)return;m.st='Active';m.last='Reactivated '+shortDate();mtLog(c,'Reactivated '+m.r.toLowerCase()+' '+m.n);rerender();toast(m.n+' reactivated')},
+ mtremove:e=>{const c=mtCo(e),m=c&&mtMem(c,e.dataset.v);if(!m||mtProtected(c,m))return;confirmBox('Remove team member',`Remove <b>${esc(m.n)}</b> from <b>${esc(c.n)}</b>? They lose access to every project and the company's history keeps their past work.`,'mtremoveok',c.n+'|'+m.e,'Remove')},
+ mtremoveok:e=>{
+  const [cn,em]=e.dataset.v.split('|'),c=MOJO_COS.find(x=>x.n===cn),team=c&&coTeam(c),i=team?team.findIndex(x=>(x.e||'').toLowerCase()===em.toLowerCase()):-1;if(i<0)return;
+  const m=team[i];team.splice(i,1);
+  const dd=DIR[c.n]||[],di=dd.findIndex(x=>x.email===m.e||x.n===m.n);if(di>=0)dd.splice(di,1);
+  const k=coWsKey(c);if(k)wsData(k).PROJECTS.forEach(p=>{p.assigned=(p.assigned||[]).filter(x=>x!==m.n)});
+  const a=ACCOUNTS[m.e];if(a&&k)a.memberships=a.memberships.filter(x=>x.ws!==k);
+  INVS.forEach(x=>{if(x.role==='member'&&(x.email||'').toLowerCase()===m.e.toLowerCase()&&x.status==='Pending')x.status='Revoked'});
+  syncUsers(c);mtLog(c,'Removed '+m.r.toLowerCase()+' '+m.n);closeModal();rerender();toast(m.n+' removed from '+c.n);
+ },
+ mtresend:e=>{const c=mtCo(e),m=c&&mtMem(c,e.dataset.v);if(!m)return;const i=mtInv(c,m);i.status='Pending';i.date=todayS();m.last='Re-sent '+shortDate();mtLog(c,'Resent invitation to '+m.e);rerender();toast('Invitation re-sent to '+m.e)},
+ mtcopy:e=>{const c=mtCo(e),m=c&&mtMem(c,e.dataset.v);if(!m)return;try{navigator.clipboard.writeText(mtLink(c,m))}catch(_){}toast('Invite link copied')},
+ mtmail:e=>{const c=mtCo(e),m=c&&mtMem(c,e.dataset.v);if(!m)return;const i=mtInv(c,m);showInvMail({rec:mtRec(c,m,i),link:mtLink(c,m),to:m.e,pre:false})}
+});
+
+/* Mojo network view: show which GC invited which */
+{
+ const _mc=mojoCo;
+ mojoCo=function(name){
+  const M=_mc(name),add=(n,role,stat)=>{if(!n||n===name||M.network.some(x=>x.n===n&&x.role===role))return;M.network.push({n,role,projects:0,stat:stat||'—'})};
+  Object.keys(WS).filter(k=>WS[k].type!=='mojo').forEach(k=>wsData(k).GCS.forEach(g=>{
+   if(g.by===name)add(g.n,'GC invited',g.stat);
+   if(g.n===name&&g.by)add(g.by,'Invited by GC');
+  }));
+  return M;
+ };
+}
+
 applyTheme();
 if(!deepLink())render();
 </script>
