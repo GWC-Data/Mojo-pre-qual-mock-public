@@ -1943,15 +1943,19 @@ P.invite=(arg)=>{
  const proj=role!=='member'&&pc?PROJECTS.find(p=>p.id===pc):null;
  const pid=proj?proj.id:null;
  const key=role+'/'+(pid||'');
- if(F.inv._key!==key)F.inv={_key:key,tab:'email',email:'',company:'',userRole:'contributor',projects:pid?[pid]:[],sent:null,qr:null,copied:false,err:{}};
+ if(F.inv._key!==key)F.inv={_key:key,tab:'email',email:'',company:'',userRole:'contributor',projects:pid?[pid]:[],sent:null,qr:null,qrEmail:"",qrSent:null,copied:false,err:{}};
  const v=F.inv,meta=INVMETA[role],isMember=role==='member',isNew=!isMember;
  const fields=`${isNew?`<div class="fld"><label>${role==='gc'?'GC':'Trade'} company name${reqI}</label>${bin('inv.company',role==='gc'?'Ironbridge Construction LLC':'Acme Electrical LLC',{err:v.err.company})}${ferr(v.err.company)}</div>`:''}
  ${isMember?`<div class="fld"><label>Role in your company</label><div class="rolegrid">${[['admin','Admin','Full access to all projects and company settings'],['contributor','Contributor','Access limited to assigned projects']].map(r=>`<button type="button" class="rolecard ${v.userRole===r[0]?'on':''}" data-act="fset" data-path="inv.userRole" data-v="${r[0]}"><b>${r[1]}</b><span>${r[2]}</span></button>`).join('')}</div></div>`:''}
  ${isNew?(proj?`<div class="fld"><label>Project</label><div class="lock">${I('folder','sm')} ${proj.name}<span class="muted sm ml fw">Invitation will be linked to this project</span></div></div>`
  :`<div class="fld"><label>Attach to project(s)</label><div class="picker">${PROJECTS.map(p=>`<label class="chkrow"><input type="checkbox" data-act="ftoggle" data-path="inv.projects" data-v="${p.id}" ${v.projects.includes(p.id)?'checked':''}>${p.name}</label>`).join('')}</div><small>Leave unchecked to add them to your network without connecting a project yet.</small></div>`):''}`;
- const sentBanner=v.sent?`<div class="banner ok">${I('check')}<div style="flex:1"><b>Invitation sent!</b><div class="sm">Email sent to <b>${esc(v.sent.email)}</b>, expires in 7 days</div><a class="sm fw" data-act="invemail">View email</a><a class="sm fw" data-act="fset" data-path="inv.tab" data-v="qr">View QR code for this invite</a></div><a class="btn sm g" data-act="fset" data-path="inv.sent" data-v="">${I('x','sm')}</a></div>`:'';
+ const sentBanner=v.sent?`<div class="banner ok">${I('check')}<div style="flex:1"><b>Invitation sent!</b><div class="sm">Email sent to <b>${esc(v.sent.email)}</b>, expires in 7 days</div><a class="sm fw" data-act="invemail">View email</a></div><a class="btn sm g" data-act="fset" data-path="inv.sent" data-v="">${I('x','sm')}</a></div>`:'';
  const emailTab=`${sentBanner}<div class="card"><div class="bd"><div class="form1">${fields}<div class="fld"><label>Recipient email address${reqI}</label>${bin('inv.email','contractor@company.com',{type:'email',err:v.err.email,enter:'invsend'})}${ferr(v.err.email)}</div></div><div class="row mt wrap" style="justify-content:space-between"><a class="btn" data-act="back">Cancel</a><span class="row wrap" style="gap:8px"><a class="btn" data-act="invpreview">${I('eye','sm')} Preview email</a><a class="btn p" data-act="invsend" ${invReady(v,isMember)?'':'disabled aria-disabled="true" title="Fill in the required fields to send"'}>${I('send','sm')} Send invitation</a></span></div></div></div>`;
- const qrTab=`<div class="card"><div class="bd"><div class="form1">${fields}</div>${v.qr?`<div class="qrbox"><div class="qrwrap">${qrSvg(v.qr.url,200)}</div><b>${meta.h}</b><small class="muted">Scan with a phone camera to create an account and join, valid for 7 days</small><div class="muted sm" style="word-break:break-all;max-width:320px">${v.qr.url}</div><div class="row wrap" style="justify-content:center"><a class="btn" data-act="invcopy">${I(v.copied?'check':'copy','sm')} ${v.copied?'Copied!':'Copy link'}</a><a class="btn" data-act="qrpng">${I('dl','sm')} PNG</a><a class="btn" data-act="qrsvg">${I('dl','sm')} SVG</a><a class="btn" data-act="qrprint">${I('file','sm')} Print</a><a class="btn" data-act="invnewqr">${I('qr','sm')} New QR code</a></div></div>`
+ const qrTab=`<div class="card"><div class="bd"><div class="form1">${fields}</div>${v.qr?`<div class="qrbox"><div class="qrwrap">${qrSvg(v.qr.url,200)}</div><b>${meta.h}</b><small class="muted">Scan with a phone camera to create an account and join, valid for 7 days</small><div class="muted sm" style="word-break:break-all;max-width:320px">${v.qr.url}</div><div class="row wrap" style="justify-content:center"><a class="btn" data-act="invcopy">${I(v.copied?'check':'copy','sm')} ${v.copied?'Copied!':'Copy link'}</a><a class="btn" data-act="qrpng">${I('dl','sm')} PNG</a><a class="btn" data-act="qrsvg">${I('dl','sm')} SVG</a><a class="btn" data-act="qrprint">${I('file','sm')} Print</a><a class="btn" data-act="invnewqr">${I('qr','sm')} New QR code</a></div></div>
+ <hr class="invrule">
+ <div class="form1"><div class="fld"><label>Email this QR code to the recipient</label>${bin('inv.qrEmail','contractor@company.com',{type:'email',err:v.err.qrEmail,enter:'invqrsend'})}${ferr(v.err.qrEmail)}<small>Sends an email with the QR code. Use this when you can't hand it over in person.</small></div>
+ ${v.qrSent?`<div class="banner ok">${I('check')}<div class="sm">QR code emailed to <b>${esc(v.qrSent.email)}</b>, expires in 7 days</div></div>`:''}
+ <div class="row wrap" style="gap:8px;justify-content:flex-end"><a class="btn" data-act="invqrpreview">${I('eye','sm')} Preview email</a><a class="btn p" data-act="invqrsend" ${vEmail(v.qrEmail)?'':'disabled aria-disabled="true" title="Enter the recipient email to send"'}>${I('send','sm')} Email QR code</a></div></div>`
  :`<div class="qrempty">${I('qr')}<p>Generate a QR code to share in person.<br>The recipient scans it, then enters their own email to complete sign-up.</p><a class="btn p" data-act="invqr" ${isMember||(v.company||'').trim()?'':'disabled aria-disabled="true" title="Enter the company name to generate a QR code"'}>${I('qr','sm')} Generate QR code</a></div>`}</div></div>`;
  const recent=visI().filter(i=>i.role===role&&(!proj||i.projects.includes(proj.name)));
  const bc=proj?crumb(['Projects','projects'],[proj.name,'project/'+proj.id],['Invite']):role==='gc'?crumb(['General Contractors','gcs'],['Invite']):role==='trade'?crumb(['Trades','trades'],['Invite']):crumb(['People','team'],['Invite']);
@@ -2734,7 +2738,8 @@ Object.assign(ACT,{
   if(Object.keys(v.err).length){rerender();return}
   S.notifs.unshift({t:role==='member'?'You invited '+v.email.trim()+' to your team':'You invited '+v.company.trim()+' ('+v.email.trim()+') as '+(role==='gc'?'a general contractor':'a trade'),time:'Just now',un:true,go:''});
   INVS.unshift({ws:curKey(),email:v.email.trim(),company:role==='member'?'':v.company.trim(),role,userRole:v.userRole,projects:role==='member'?[]:v.projects.map(id=>PROJECTS.find(p=>p.id===id).name),date:todayS(),status:'Pending'});
-  v.sent={email:v.email.trim()};v.qr={token:Math.random().toString(36).slice(2,10)};v.qr.url=inviteLink(v.qr.token,mkInvRec(role,v,false));INVS[0].token=v.qr.token;
+  const tok=Math.random().toString(36).slice(2,10);
+  v.sent={email:v.email.trim(),url:inviteLink(tok,mkInvRec(role,v,false))};INVS[0].token=tok;
   v.email='';v.company='';rerender();toast('Invitation sent');
  },
  invqr:()=>{
@@ -2745,7 +2750,7 @@ Object.assign(ACT,{
   INVS.unshift({token,ws:curKey(),email:'QR invite, awaiting scan',company:role==='member'?'':v.company.trim(),role,projects:role==='member'?[]:v.projects.map(id=>PROJECTS.find(p=>p.id===id).name),date:todayS(),status:'Pending'});
   rerender();toast('QR code generated');
  },
- invnewqr:()=>{F.inv.qr=null;F.inv.copied=false;rerender()},
+ invnewqr:()=>{F.inv.qr=null;F.inv.qrSent=null;F.inv.qrEmail='';F.inv.copied=false;rerender()},
  invcopy:()=>{
   const url=F.inv.qr&&F.inv.qr.url;try{navigator.clipboard&&navigator.clipboard.writeText(url)}catch(_){}
   F.inv.copied=true;rerender();setTimeout(()=>{F.inv.copied=false;if(parse()[0]==='invite')rerender()},2000);
@@ -3043,7 +3048,7 @@ Object.assign(ACT,{
   if(!idx.length){toast('Select at least one trade');return}
   idx.forEach(i=>{TRADES[i].proj.push(p.name);if(p.kind==='invited'&&S.role==='trade')shareTrade(TRADES[i],p.name,meName())});p.trades+=idx.length;closeModal();rerender();toast(idx.length+' trade'+(idx.length>1?'s':'')+' added to the project');
  },
- projqr:e=>{const id=e.dataset.id;F.inv={_key:'trade/'+id,tab:'qr',email:'',company:'',userRole:'contributor',projects:[id],sent:null,qr:null,copied:false,err:{}};go('invite/trade/'+id)},
+ projqr:e=>{const id=e.dataset.id;F.inv={_key:'trade/'+id,tab:'qr',email:'',company:'',userRole:'contributor',projects:[id],sent:null,qr:null,qrEmail:"",qrSent:null,copied:false,err:{}};go('invite/trade/'+id)},
  /* ---- submissions ---- */
  subdoc:t=>{const f=t.files&&t.files[0];if(!f)return;F.sub[t.dataset.pid].docs[t.dataset.v]=f.name;F.sub[t.dataset.pid].err='';rerender();toast(f.name+' uploaded')},
  subdocclr:e=>{delete F.sub[e.dataset.pid].docs[e.dataset.v];rerender()},
@@ -4419,7 +4424,8 @@ function showInvMail(ctx){
   ?`<b>${esc(sender)}</b> has invited you to join <b>${esc(myCo)}</b> on PreQual Pro as ${rec.userRole==='admin'?'an <b>Admin</b>':'a <b>Contributor</b>'}.`
   :`<b>${esc(sender)}</b> from <b>${esc(myCo)}</b> has invited ${rec.company?'<b>'+esc(rec.company)+'</b>':'you'} to join PreQual Pro as a <b>${esc(rec.roleLbl)}</b>${projs.length?`, linked to <b>${projs.map(esc).join(', ')}</b>`:''}.`;
  const hint=rec.member?(rec.userRole==='admin'?'Admins can edit the Organization profile and manage the team.':'Contributors work on the projects and questionnaires they are assigned to.'):'Create an account to complete your company profile and upload your insurance, safety and compliance documents.';
- const qr=F.mailqr?(pre?`<div style="border:1.5px dashed var(--border2);border-radius:12px;padding:16px;text-align:center;color:var(--muted);margin:18px 0 4px"><div style="display:grid;place-items:center">${I('qr')}</div><div class="sm" style="margin-top:6px">A QR code for this invitation is added when you send it.</div></div>`
+ const qrMode=!!rec.qr; /* email invite = login link only; QR invite = mail that carries the QR code */
+ const qr=qrMode?(pre?`<div style="border:1.5px dashed var(--border2);border-radius:12px;padding:16px;text-align:center;color:var(--muted);margin:18px 0 4px"><div style="display:grid;place-items:center">${I('qr')}</div><div class="sm" style="margin-top:6px">A QR code for this invitation is added when you send it.</div></div>`
    :`<div style="text-align:center;margin:18px 0 4px"><div style="display:inline-block;background:var(--color-qr-paper);border:1px solid var(--border);border-radius:12px;padding:10px">${qrSvg(link,150)}</div><div class="sm muted" style="margin-top:6px">On your phone? Scan to open the invitation.</div></div>`):'';
  openModal(`<div class="mh"><span class="tav" style="background:${pre?'var(--brand)':'var(--ok)'}">${I(pre?'eye':'check','sm')}</span><div><h2 class="sh">${pre?'Email preview':'Invitation email'}</h2><div class="muted sm">${pre?'Nothing has been sent yet':'Sent to '+esc(to)}</div></div><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div>
  <div class="mb"><div class="muted sm" style="margin-bottom:10px">This is a mockup for reference — it is what <b>${esc(to)}</b> receives:</div>
@@ -4430,11 +4436,11 @@ function showInvMail(ctx){
    <p style="margin:0 0 10px">Hello,</p>
    <p style="margin:0 0 10px">${what}</p>
    <p style="margin:0 0 16px" class="muted">${hint}</p>
-   <span class="btn p">Accept invitation</span>
+   ${qrMode?'':'<span class="btn p">Accept invitation</span>'}
    ${qr}
    <p class="sm muted" style="margin:16px 0 0;word-break:break-all">Or paste this link into your browser:<br>${pre?esc(link)+' <i>(unique link created on send)</i>':esc(link)}<br><br>This invitation expires in 7 days. If you weren't expecting it, you can ignore this email.</p>
   </div></div>
-  <div class="row" style="margin-top:14px"><button class="sw ${F.mailqr?'on':''}" data-act="mailqrtoggle" aria-label="Include QR code"></button><span class="sm">Include a QR code in the email</span></div></div>
+  </div>
  <div class="mf">${pre?'':`<a class="btn" data-act="mailcopy">${I('copy','sm')} Copy link</a>`}<a class="btn p" data-act="closeModal">${pre?'Close preview':'Done'}</a></div>`);
 }
 Object.assign(ACT,{
@@ -4445,9 +4451,23 @@ Object.assign(ACT,{
   showInvMail({rec,link:appBase()+'#/join/········',to:(v.email||'').trim()||'recipient@company.com',pre:true});
  },
  invemail:()=>{
+  const v=F.inv,url=v.sent&&v.sent.url;if(!url)return;
+  const tok=url.split('#/join/')[1],rec=INVITES[tok]||regGet(tok);if(!rec)return;
+  showInvMail({rec,link:url,to:v.sent.email||rec.email||'the recipient',pre:false});
+ },
+ invqrpreview:()=>{
   const v=F.inv,url=v.qr&&v.qr.url;if(!url)return;
   const tok=url.split('#/join/')[1],rec=INVITES[tok]||regGet(tok);if(!rec)return;
-  showInvMail({rec,link:url,to:(v.sent&&v.sent.email)||rec.email||'the recipient',pre:false});
+  showInvMail({rec,link:url,to:(v.qrEmail||'').trim()||'recipient@company.com',pre:false});
+ },
+ invqrsend:()=>{
+  const v=F.inv,role=v._key.split('/')[0];v.err={};
+  if(!v.qr)return;
+  if(!vEmail(v.qrEmail)){v.err.qrEmail='Enter a valid email address';rerender();return}
+  const em=v.qrEmail.trim(),row=INVS.find(i=>i.token===v.qr.token);
+  if(row)row.email=em;
+  S.notifs.unshift({t:'You emailed a QR invite to '+em+(role==='member'?'':' ('+(v.company||'').trim()+')'),time:'Just now',un:true,go:''});
+  v.qrSent={email:em};v.qrEmail='';rerender();toast('QR code emailed to '+em);
  },
  invrowmail:e=>{
   const i=INVS[+e.dataset.i];if(!i)return;
