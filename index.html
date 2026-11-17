@@ -1345,11 +1345,14 @@ const ini=s=>s.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
 const ROLELBL={owner:'Project Owner',gc:'General Contractor',trade:'Trade Contractor',mojo:'Mojo Admin'};
 
+/* demo data: a project that requires invite approval, with its creator as approver */
+const mkAp=(id,by,byCo,company,email,role,status,at,decidedBy,decidedAt,note)=>({id,by,byCo,company,email,role,status,at,inv:null,...(decidedBy?{decidedBy,decidedAt}:{}),...(note?{note}:{})});
+const needAp=(p,by,list)=>({...p,needsApproval:true,createdBy:by,approvals:list});
 let PROJECTS=[
- {id:'p1',name:'Harbor Point Tower',addr:'1200 Harbor Blvd, Houston, TX',start:'Jan 12, 2026',end:'Nov 30, 2027',status:'Active',gc:'Ironbridge Construction',trades:12,pend:3,pct:68,kind:'managed'},
- {id:'p2',name:'Eastgate Distribution Center',addr:'8800 Eastgate Pkwy, Katy, TX',start:'Mar 03, 2026',end:'Sep 15, 2026',status:'Active',gc:'Summit Builders Group',trades:8,pend:1,pct:84,kind:'managed'},
+ {id:'p1',name:'Harbor Point Tower',addr:'1200 Harbor Blvd, Houston, TX',start:'Jan 12, 2026',end:'Nov 30, 2027',status:'Active',gc:'Ironbridge Construction',trades:12,pend:3,pct:68,kind:'managed',needsApproval:true,createdBy:'Sarah Whitfield',approvals:[mkAp('ap1','Marcus Lee','Meridian Development','Gulf Steel Fab','estimator@gulfsteel.com','trade','Pending','Nov 04'),mkAp('ap3','Elena Petrova','Meridian Development','Lonestar General','bids@lonestargeneral.com','gc','Pending','Nov 03'),mkAp('ap2','Mei Chen','Ironbridge Construction','Bay City Electric','bids@baycityelectric.com','trade','Approved','Oct 24','Sarah Whitfield','Oct 25'),mkAp('ap4','Tom Brennan','Meridian Development','Quick Patch Drywall','hello@quickpatch.com','trade','Rejected','Oct 12','Sarah Whitfield','Oct 13','Not pre-qualified for this phase')]},
+ {id:'p2',name:'Eastgate Distribution Center',addr:'8800 Eastgate Pkwy, Katy, TX',start:'Mar 03, 2026',end:'Sep 15, 2026',status:'Active',gc:'Summit Builders Group',trades:8,pend:1,pct:84,kind:'managed',needsApproval:true,createdBy:'Sarah Whitfield',approvals:[mkAp('ap5','Rachel Kim','Summit Builders Group','Titan Concrete Pumping','ops@titanpumping.com','trade','Pending','Nov 02'),mkAp('ap6','Marcus Lee','Meridian Development','Gulf Coast Concrete','estimator@gulfcoastconcrete.com','trade','Approved','Oct 08','Sarah Whitfield','Oct 09')]},
  {id:'p3',name:'Medical Plaza Renovation',addr:'450 Fannin St, Houston, TX',start:'Jun 20, 2026',end:'Apr 02, 2027',status:'Active',gc:'Ironbridge Construction',trades:6,pend:2,pct:41,kind:'invited'},
- {id:'p4',name:'Riverside Mixed-Use',addr:'77 Riverside Dr, Austin, TX',start:'Feb 01, 2027',end:'Dec 20, 2028',status:'Planning',gc:'Unassigned',trades:0,pend:0,pct:5,kind:'managed'}
+ {id:'p4',name:'Riverside Mixed-Use',addr:'77 Riverside Dr, Austin, TX',start:'Feb 01, 2027',end:'Dec 20, 2028',status:'Planning',gc:'Unassigned',trades:0,pend:0,pct:5,kind:'managed',needsApproval:true,createdBy:'Sarah Whitfield',approvals:[mkAp('ap7','Elena Petrova','Meridian Development','Gulfshore Contractors','estimating@gulfshoregc.com','gc','Pending','Nov 05')]}
 ];
 let GCS=[
  {n:'Ironbridge Construction',loc:'Houston, TX',proj:2,emr:.82,stat:'Compliant',ins:'Jun 2027'},
@@ -1615,7 +1618,7 @@ BASE.TEAM[0].e='sarah.w@meridian.com';
 const WS={
  o1:{name:'Meridian Development',sub:'Owner, Houston, TX',type:'owner',seed:()=>({...BASE,ORG:mkOrg({name:'Meridian Development',phone:'(713) 555-0100',addr:'500 Main Street, Suite 2100',city:'Houston',state:'TX',zip:'77002',web:'https://meridiandev.com',logo:'meridian-logo.png'}),CHART:{trend:[8,12,9,16,14,21],split:[31,9,5,3]}})},
  o2:{name:'Meridian Healthcare Realty',sub:'Owner, Dallas, TX',type:'owner',seed:()=>({
-  PROJECTS:[mkP('p21','Westside Clinic Expansion','2200 Westheimer Rd, Houston, TX','Feb 09, 2026','Jan 29, 2027','Active','Summit Builders Group',5,2,55,'managed'),mkP('p22','Heights Imaging Center','410 W 19th St, Houston, TX','Jan 11, 2027','Nov 12, 2027','Planning','Unassigned',0,0,8,'managed')],
+  PROJECTS:[needAp(mkP('p21','Westside Clinic Expansion','2200 Westheimer Rd, Houston, TX','Feb 09, 2026','Jan 29, 2027','Active','Summit Builders Group',5,2,55,'managed'),'Hannah Cole',[mkAp('ap21','Raj Patel','Meridian Healthcare Realty','Texas Medical Gas','info@txmedgas.com','trade','Pending','Nov 03'),mkAp('ap22','Rachel Kim','Summit Builders Group','Coastal Fire Protection','ops@coastalfire.com','trade','Approved','Oct 15','Hannah Cole','Oct 16')]),needAp(mkP('p22','Heights Imaging Center','410 W 19th St, Houston, TX','Jan 11, 2027','Nov 12, 2027','Planning','Unassigned',0,0,8,'managed'),'Hannah Cole',[mkAp('ap23','Raj Patel','Meridian Healthcare Realty','Lonestar General','bids@lonestargeneral.com','gc','Pending','Nov 04')])],
   GCS:[mkG('Summit Builders Group','Dallas, TX',1,.91,'Compliant','Mar 2027'),mkG('Lonestar General','Austin, TX',0,1.12,'Flagged','Dec 2026')],
   TRADES:[mkTr('Titan Steel Erectors','Structural Steel',.95,'Under review',['Westside Clinic Expansion'],true,'Feb 2027'),mkTr('Gulf Coast Concrete','Concrete',.88,'Approved',['Westside Clinic Expansion'],true,'May 2027'),mkTr('Coastal Fire Protection','Fire Protection',.84,'Needs info',['Westside Clinic Expansion'],true,'Oct 2026')],
   SUBS:[mkS('s21','Titan Steel Erectors','Westside Clinic Expansion','Under review',[],'Nov 02'),mkS('s22','Gulf Coast Concrete','Westside Clinic Expansion','Approved',[],'Oct 19'),mkS('s23','Coastal Fire Protection','Westside Clinic Expansion','Needs info',[],'Oct 27')],
@@ -1625,7 +1628,7 @@ const WS={
   NOTIFS:[mkN('Titan Steel Erectors submitted a pre-qualification for Westside Clinic Expansion','1 hour ago',true,'submission/s21'),mkN('Coastal Fire Protection was asked for more information','Oct 27',false,'submission/s23')],
   ORG:mkOrg({name:'Meridian Healthcare Realty',phone:'(214) 555-0166',addr:'2200 Ross Avenue, Floor 14',city:'Dallas',state:'TX',zip:'75201',web:'https://meridianhealthrealty.com'}),CHART:{trend:[2,3,4,3,6,7],split:[6,3,1,0]}})},
  g1:{name:'Ironbridge Construction',sub:'General Contractor, Houston, TX',type:'gc',seed:()=>({
-  PROJECTS:[{...mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',4,3,68,'invited'),partners:['Summit Builders Group']},mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',3,2,41,'invited'),mkP('p31','Ironbridge Yard Expansion','9100 Navigation Blvd, Houston, TX','Mar 02, 2026','Aug 14, 2026','Active','Ironbridge Construction',2,0,90,'managed')],
+  PROJECTS:[{...mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',4,3,68,'invited'),partners:['Summit Builders Group']},mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',3,2,41,'invited'),needAp(mkP('p31','Ironbridge Yard Expansion','9100 Navigation Blvd, Houston, TX','Mar 02, 2026','Aug 14, 2026','Active','Ironbridge Construction',2,0,90,'managed'),'Daniel Ortiz',[mkAp('ap31','Mei Chen','Ironbridge Construction','Gulf Steel Fab','estimator@gulfsteel.com','trade','Pending','Nov 04'),mkAp('ap32','Luis Romero','Ironbridge Construction','Bay City Electric','bids@baycityelectric.com','trade','Pending','Nov 02'),mkAp('ap33','Mei Chen','Ironbridge Construction','Bayou Mechanical','estimator@bayoumech.com','trade','Approved','Oct 20','Daniel Ortiz','Oct 20'),mkAp('ap34','Luis Romero','Ironbridge Construction','Budget Paving Co','sales@budgetpaving.com','trade','Rejected','Oct 10','Daniel Ortiz','Oct 11','Insurance limits too low')])],
   GCS:[{...mkG('Summit Builders Group','Dallas, TX',1,.91,'Compliant','Mar 2027'),by:'Ironbridge Construction',projs:['Harbor Point Tower']},{...mkG('Lonestar General','Austin, TX',0,1.12,'Flagged','Dec 2026'),by:'Ironbridge Construction',projs:[]}],
   TRADES:[mkTr('Apex Electrical','Electrical',.78,'Approved',['Harbor Point Tower','Medical Plaza Renovation'],true,'Aug 2027'),mkTr('Bayou Mechanical','HVAC / Mechanical',1.18,'Flagged',['Harbor Point Tower'],true,'Nov 2026'),mkTr('Titan Steel Erectors','Structural Steel',.95,'Under review',['Harbor Point Tower'],true,'Feb 2027'),mkTr('Prime Roofing Co','Roofing',1.04,'Flagged',['Medical Plaza Renovation'],false,'Jan 2027'),mkTr('Coastal Fire Protection','Fire Protection',.84,'Needs info',['Harbor Point Tower'],true,'Oct 2026'),{...mkTr('Apex Low Voltage','Low Voltage / Systems',.88,'Approved',['Harbor Point Tower'],true,'Sep 2027'),by:'Apex Electrical'}],
   SUBS:[mkS('s1','Titan Steel Erectors','Harbor Point Tower','Under review',[],'Nov 03'),mkS('s2','Bayou Mechanical','Harbor Point Tower','Submitted',['High EMR 1.18'],'Nov 02'),mkS('s3','Prime Roofing Co','Medical Plaza Renovation','Submitted',['No PTP program'],'Oct 30'),mkS('s4','Coastal Fire Protection','Harbor Point Tower','Needs info',[],'Oct 28'),mkS('s5','Apex Electrical','Medical Plaza Renovation','Approved',[],'Oct 21')],
@@ -1635,7 +1638,7 @@ const WS={
   NOTIFS:[mkN('Meridian Development assigned you "GC Pre-Qualification"','3 hours ago',true,'my-assign'),mkN('Titan Steel Erectors submitted a pre-qualification for Harbor Point Tower','12 min ago',true,'submission/s1'),mkN('Questionnaire "Trade Safety Questionnaire" was submitted by Titan Steel Erectors','Yesterday',false,'review/a33')],
   ORG:mkOrg({...FULL,name:'Ironbridge Construction',trade:'General Contractor',addr:'1840 Industrial Loop',city:'Houston, TX 77023',years:'22',emp:'142',lic:'GC-441872',phone:'(713) 555-0188',gl_exp:'2027-06-30',wc_exp:'2027-06-30',emr:'0.82',f_coi:'Ironbridge Certificate of Insurance.pdf',f_safety:'Ironbridge EMR Letter.pdf',f_ptp:'',f_bond:''}),CHART:{trend:[5,7,9,8,12,14],split:[18,6,3,1]}})},
  g2:{name:'Ironbridge Industrial',sub:'General Contractor, Pasadena, TX',type:'gc',seed:()=>({
-  PROJECTS:[mkP('p41','Pasadena Refinery Turnaround','1 Refinery Rd, Pasadena, TX','Apr 06, 2026','Dec 18, 2026','Active','Ironbridge Industrial',2,1,72,'managed'),mkP('p42','Baytown Plant Retrofit','300 Bayway Dr, Baytown, TX','Feb 15, 2027','Oct 29, 2027','Planning','Unassigned',0,0,3,'managed')],
+  PROJECTS:[needAp(mkP('p41','Pasadena Refinery Turnaround','1 Refinery Rd, Pasadena, TX','Apr 06, 2026','Dec 18, 2026','Active','Ironbridge Industrial',2,1,72,'managed'),'Daniel Ortiz',[mkAp('ap41','Grace Okafor','Ironbridge Industrial','Titan Steel Erectors','bids@titansteel.com','trade','Pending','Nov 03'),mkAp('ap42','Grace Okafor','Ironbridge Industrial','Coastal Fire Protection','ops@coastalfire.com','trade','Approved','Oct 18','Daniel Ortiz','Oct 18')]),needAp(mkP('p42','Baytown Plant Retrofit','300 Bayway Dr, Baytown, TX','Feb 15, 2027','Oct 29, 2027','Planning','Unassigned',0,0,3,'managed'),'Daniel Ortiz',[mkAp('ap43','Grace Okafor','Ironbridge Industrial','Gulf Process Piping','info@gulfpiping.com','trade','Pending','Nov 05')])],
   GCS:[],TRADES:[mkTr('Titan Steel Erectors','Structural Steel',.95,'Approved',['Pasadena Refinery Turnaround'],true,'Feb 2027'),mkTr('Bayou Mechanical','HVAC / Mechanical',1.18,'Under review',['Pasadena Refinery Turnaround'],true,'Nov 2026')],
   SUBS:[mkS('s41','Bayou Mechanical','Pasadena Refinery Turnaround','Submitted',['High EMR 1.18'],'Nov 01'),mkS('s42','Titan Steel Erectors','Pasadena Refinery Turnaround','Approved',[],'Oct 11')],
   ASSIGN:[mkA('a41','Trade Safety Questionnaire','Bayou Mechanical','Pasadena Refinery Turnaround','Submitted','Nov 08','Ironbridge Industrial')],
@@ -1644,7 +1647,7 @@ const WS={
   NOTIFS:[mkN('Bayou Mechanical submitted a pre-qualification for Pasadena Refinery Turnaround','2 days ago',true,'submission/s41')],
   ORG:mkOrg({...FULL,name:'Ironbridge Industrial',trade:'General Contractor',addr:'6100 Spencer Hwy',city:'Pasadena, TX 77505',years:'11',emp:'88',lic:'GC-552031',phone:'(281) 555-0121',emr:'0.97',f_ptp:'',f_bond:'',bond_co:'',bond_single:'',bond_agg:'',bond_exp:''}),CHART:{trend:[1,2,2,4,3,5],split:[7,3,1,1]}})},
  t1:{name:'Apex Electrical',sub:'Trade, Electrical, Houston, TX',type:'trade',seed:()=>({
-  PROJECTS:[mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',12,3,68,'invited'),mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',6,2,41,'invited'),mkP('p11','Apex Warehouse Retrofit','2201 Gulf Fwy, Houston, TX','Sep 14, 2026','Mar 12, 2027','Active','Apex Electrical',2,1,35,'managed')],
+  PROJECTS:[mkP('p1','Harbor Point Tower','1200 Harbor Blvd, Houston, TX','Jan 12, 2026','Nov 30, 2027','Active','Ironbridge Construction',12,3,68,'invited'),mkP('p3','Medical Plaza Renovation','450 Fannin St, Houston, TX','Jun 20, 2026','Apr 02, 2027','Active','Ironbridge Construction',6,2,41,'invited'),needAp(mkP('p11','Apex Warehouse Retrofit','2201 Gulf Fwy, Houston, TX','Sep 14, 2026','Mar 12, 2027','Active','Apex Electrical',2,1,35,'managed'),'Priya Raman',[mkAp('ap11','Marcus Lee','Apex Electrical','Gulf Coast Wiring','crew@gulfcoastwiring.com','trade','Pending','Nov 04'),mkAp('ap12','Elena Petrova','Apex Electrical','Apex Low Voltage','ops@apexlowvoltage.com','trade','Approved','Oct 22','Priya Raman','Oct 22'),mkAp('ap13','Marcus Lee','Apex Electrical','Quick Lights Inc','hi@quicklights.com','trade','Rejected','Oct 14','Priya Raman','Oct 15','Use an existing vendor instead')])],
   GCS:[],TRADES:[{n:'Apex Low Voltage',t:'Low Voltage / Systems',emr:.88,stat:'Approved',proj:['Harbor Point Tower','Apex Warehouse Retrofit'],ptp:true,exp:'Sep 2027',by:'Apex Electrical'},{n:'Gulf Coast Wiring',t:'Wiring',emr:1.06,stat:'Needs info',proj:['Medical Plaza Renovation','Apex Warehouse Retrofit'],ptp:false,exp:'Dec 2026',by:'Apex Electrical'}],
   SUBS:[mkS('s51','Apex Electrical','Harbor Point Tower','Under review',[],'Nov 03'),mkS('s5','Apex Electrical','Medical Plaza Renovation','Approved',[],'Oct 21'),mkS('s52','Apex Low Voltage','Apex Warehouse Retrofit','Submitted',[],'Nov 04'),mkS('s53','Gulf Coast Wiring','Apex Warehouse Retrofit','Needs info',['No PTP program'],'Nov 02')],
   ASSIGN:[mkA('a54','Subcontractor Site Safety Check','Apex Low Voltage','Apex Warehouse Retrofit','Submitted','Nov 10','Apex Electrical'),mkA('a55','Subcontractor Site Safety Check','Gulf Coast Wiring','Apex Warehouse Retrofit','In progress','Nov 20','Apex Electrical'),mkA('a51','Harbor Point Site Orientation','Apex Electrical','Harbor Point Tower','Pending','Nov 18','Ironbridge Construction'),mkA('a52','Trade Safety Questionnaire','Apex Electrical','Harbor Point Tower','In progress','Nov 12','Meridian Development'),mkA('a53','Financial Review — Tier 1','Apex Electrical','Medical Plaza Renovation','Needs more info','Nov 09','Ironbridge Construction')],
@@ -2071,7 +2074,7 @@ P['project-new']=()=>{
  if(!F.np)F.np={name:'',addr:'',start:'',end:'',desc:'',err:{}};
  const n=F.np;
  return head('Create project','','',crumb(['Projects','projects'],['New project']))+
- card('Project details',`<div class="form"><div class="fld"><label>Project name${reqI}</label>${bin('np.name','e.g. Harbor Point Tower',{err:n.err.name})}${ferr(n.err.name)}</div><div class="fld"><label>Address</label>${bin('np.addr','Street, city, state')}</div><div class="fld"><label>Start date</label>${bin('np.start','',{type:'date'})}</div><div class="fld"><label>End date</label>${bin('np.end','',{type:'date',err:n.err.end})}${ferr(n.err.end)}</div><div class="fld full"><label>Description</label>${bta('np.desc','What is being built?',3)}</div></div>`)+
+ card('Project details',`<div class="form"><div class="fld"><label>Project name${reqI}</label>${bin('np.name','e.g. Harbor Point Tower',{err:n.err.name})}${ferr(n.err.name)}</div><div class="fld"><label>Address</label>${bin('np.addr','Street, city, state')}</div><div class="fld"><label>Start date</label>${bin('np.start','',{type:'date'})}</div><div class="fld"><label>End date</label>${bin('np.end','',{type:'date',err:n.err.end})}${ferr(n.err.end)}</div><div class="fld full"><label>Description</label>${bta('np.desc','What is being built?',3)}</div><div class="fld full">${bchk('np.approval','This project requires approval','','When on, any invitation to this project sent by someone other than you waits for your approval before it goes out.')}</div></div>`)+
  `<div class="row mt" style="justify-content:flex-end"><a class="btn" data-go="projects">Cancel</a><a class="btn p" data-act="npsave">Create project</a></div>`;
 };
 
@@ -2810,7 +2813,7 @@ Object.assign(ACT,{
   if(!(n.name||'').trim())n.err.name='Project name is required';
   if(n.start&&n.end&&n.end<n.start)n.err.end='End date must be after the start date';
   if(Object.keys(n.err).length){rerender();return}
-  PROJECTS.unshift({id:'p'+Date.now(),name:n.name.trim(),addr:n.addr||'—',start:fmtD(n.start),end:fmtD(n.end),status:'Planning',gc:S.role!=='owner'?meName():'Unassigned',trades:0,pend:0,pct:0,kind:'managed'});
+  PROJECTS.unshift({id:'p'+Date.now(),name:n.name.trim(),addr:n.addr||'—',start:fmtD(n.start),end:fmtD(n.end),status:'Planning',gc:S.role!=='owner'?meName():'Unassigned',trades:0,pend:0,pct:0,kind:'managed',needsApproval:!!n.approval,createdBy:CUR?CUR.name:'',approvals:[]});
   F.np=null;toast('Project created');go('projects');
  },
  editproject:e=>{
@@ -3403,7 +3406,7 @@ P.projects=()=>{
 P.project=(id)=>{
  const p=PROJECTS.find(x=>x.id===id);
  if(!p)return emptyState('Project not found','It may belong to another workspace.','projects','Back to projects');
- let t=curTab('pd','overview');if(t==='team'||t==='members')t='people';if(t==='subs')t='assign';
+ let t=curTab('pd','overview');if(t==='team'||t==='members')t='people';if(t==='subs')t='assign';if(t==='approvals'&&!p.needsApproval)t='overview';
  const m=pmeta(p),st=projStats(p),ppl=projPeople(p),isT=S.role==='trade'&&p.kind!=='managed',me=meName();
  const mine=isT?SUBS.find(s=>s.trade===me&&s.proj===p.name):null;
  const asg=isT?st.asg.filter(a=>a.co===me):st.asg,openA=asg.filter(a=>OPEN_ST.includes(a.status));
@@ -3430,7 +3433,7 @@ P.project=(id)=>{
   ${card(isT?'My submissions':'Pre-qualification',isT?`<div class="row sm" style="margin-bottom:8px"><b>${qsubs.length} of ${asg.length} submitted</b></div><div class="prog"><i style="width:${asg.length?Math.round(qsubs.length/asg.length*100):0}%;background:var(--brand)"></i></div>`:`<div class="row sm" style="margin-bottom:8px"><b>${st.ap} of ${totT} trades approved</b></div>${segBar(st)}`,!isT&&st.subs.length?`<a class="btn sm" data-act="tab" data-k="pd" data-v="assign">View submissions</a>`:(isT?`<a class="btn sm" data-go="my-assign">Open</a>`:''))}
   ${card('Key people',ppl.length?`<div class="pgrid">${ppl.filter(x=>x.role!=='Your team').slice(0,3).map(x=>pchip(x)).join('')}</div>`:'<div class="muted sm">Nobody assigned yet.</div>',ppl.length>3?`<a class="btn sm" data-act="tab" data-k="pd" data-v="people">See all ${ppl.length}</a>`:'')}
  </div><div class="grid" style="gap:16px;align-content:start">
-  ${card('Details',`${m.desc?`<p class="sm muted" style="margin-bottom:12px">${esc(m.desc)}</p>`:''}<div class="kv"><small>Type</small><div>${esc(m.type)}</div><small>Timeline</small><div>${drange(p.start,p.end)}</div><small>Schedule</small><div>${p.pct}% elapsed</div><small>Budget</small><div>${esc(m.budget)}</div></div>`,isT?'':'<button class="btn sm" data-act="editproject" data-id="'+p.id+'">'+I('edit','sm')+' Edit</button>')}
+  ${card('Details',`${m.desc?`<p class="sm muted" style="margin-bottom:12px">${esc(m.desc)}</p>`:''}<div class="kv"><small>Type</small><div>${esc(m.type)}</div><small>Timeline</small><div>${drange(p.start,p.end)}</div><small>Schedule</small><div>${p.pct}% elapsed</div><small>Budget</small><div>${esc(m.budget)}</div><small>Invite approval</small><div>${p.needsApproval?'Required, by '+esc(p.createdBy||'the project owner'):'Not required'}</div></div>`,isT?'':'<button class="btn sm" data-act="editproject" data-id="'+p.id+'">'+I('edit','sm')+' Edit</button>')}
   ${card('Next up',dl.map(calRow).join(''),'',true)}
  </div></div>`;
  if(t==='people'){
@@ -3441,6 +3444,7 @@ P.project=(id)=>{
   (more?`<p class="muted sm" style="text-align:center">${p.trades-nk} more trade(s) on this project aren't in your network yet.</p>`:'');
  }
  if(t==='assign')body=asgT.length?card('',`<table><thead><tr><th>Questionnaire</th>${showCo?'<th>Company</th>':''}<th>Due</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody>${asgT.slice().sort((x,y)=>(OPEN_ST.includes(y.status)-OPEN_ST.includes(x.status))||0).map(a=>{const go=asgGo(a),mine=a.co===me,act=a.status==='Submitted'&&!mine&&can('review.decide');return `<tr class="click" ${go?`data-go="${go}"`:`data-act="asgmanage" data-id="${a.id}"`}><td data-label="Questionnaire"><b>${esc(a.q)}</b><div class="muted sm">from ${esc(a.by)}</div></td>${showCo?`<td data-label="Company">${coLink(a.co)}</td>`:''}<td data-label="Due">${OPEN_ST.includes(a.status)?dueChip(a.due):`<span class="muted">${dnorm(a.due)}</span>`}</td><td data-label="Submitted">${SUBMITTED_ST.includes(a.status)?dnorm(a.subAt||a.due):'<span class="muted">—</span>'}</td><td data-label="Status">${badge(a.status)}</td><td class="ta-r"><a class="btn sm ${act?'p':''}">${act?'Review':SUBMITTED_ST.includes(a.status)?'View':'Open'}</a></td></tr>`}).join('')}</tbody></table>`,!isT?'<a class="btn sm p" data-go="q-assign/'+p.id+'">'+I('plus','sm')+' Assign</a>':'',true):emptyState('No questionnaires on this project','Assign a questionnaire to a company working here.',isT?'':'q-assign/'+p.id,'Assign questionnaire');
+ if(t==='approvals')body=approvalsHtml(p);
  if(t==='activity'){
   const ev=[];st.subs.forEach(s=>{if(isT&&s.trade!==me)return;ev.push({d:s.date,ic:statusIc(s.status),t:`<b>${esc(s.trade)}</b> — ${s.status.toLowerCase()}`,go:'submission/'+s.id});(s.hist||[]).forEach(h=>ev.push({d:h.at,ic:statusIc(h.status),t:`<b>${esc(h.by)}</b> set ${esc(s.trade)} to ${h.status.toLowerCase()}`,go:'submission/'+s.id}))});
   asg.forEach(a=>ev.push({d:a.due,ic:statusIc(a.status),t:`<b>${esc(a.q)}</b>, ${esc(a.co)} — ${a.status.toLowerCase()}`,go:asgGo(a)}));
@@ -3450,7 +3454,7 @@ P.project=(id)=>{
  }
  const sum=`<div class="sumline box"><span class="sf"><small>${isT?'Status':'Health'}</small><span title="${isT?'':esc(st.h[3].join('. '))}">${isT?badge(p.status):hBadge(st.h)}</span></span><span class="sf"><small>Owner</small>${coLink(m.owner)}</span><span class="sf"><small>General contractor</small>${p.gc==='Unassigned'&&!isT?`<a class="colink" data-go="invite/gc/${p.id}">Assign</a>`:coLink(p.gc)}</span>${(p.partners||[]).length?`<span class="sf"><small>Partner GC${p.partners.length>1?'s':''}</small><span>${p.partners.map(g=>coLink(g)).join(', ')}</span></span>`:''}<span class="sf"><small>Timeline</small><span>${drange(p.start,p.end)}</span></span><span class="sf ml"><small>Team</small>${avStack(ppl,4)}</span></div>`;
  return head(p.name,p.addr,!isT?`<a class="btn" data-go="invite/trade/${p.id}">${I('send','sm')} Invite</a><a class="btn p" data-go="q-assign/${p.id}">Assign questionnaire</a>`:(S.role==='trade'&&can('q.manage')?`<a class="btn" data-go="invite/trade/${p.id}">${I('send','sm')} Invite</a><a class="btn" data-go="q-assign/${p.id}">Assign questionnaire</a>`:'')+`<a class="btn p" data-go="my-assign">My questionnaires</a>`,crumb(['Projects','projects'],[p.name]))+sum+`<div class="kpis k3">${kpis.join('')}</div>`+
- tabs('pd',[['overview','Overview'],['people','People',ppl.length],['assign','Submissions',asg.length],['activity','Activity']])+body;
+ tabs('pd',[['overview','Overview'],['people','People',ppl.length],['assign','Submissions',asg.length],...(p.needsApproval?[['approvals','Approvals',visApprovals(p).filter(a=>a.status==='Pending').length]]:[]),['activity','Activity']])+body;
 };
 
 /* ---- GCs & Trades lists: contacts + links ---- */
@@ -4231,12 +4235,12 @@ ACT.projremoveok=e=>{
 
 /* ---------- Invitations: resend, revoke, copy link, expiry ---------- */
 const invEff=i=>i.status==='Pending'&&dleft(i.date)!==null&&dleft(i.date)<-7?'Expired':i.status;
-const invBadge=s=>`<span class="b ${{Accepted:'ok',Pending:'warn',Expired:'bad',Revoked:'mute'}[s]||'mute'}">${s}</span>`;
+const invBadge=s=>`<span class="b ${{Accepted:'ok',Pending:'warn',Expired:'bad',Revoked:'mute','Awaiting approval':'warn',Rejected:'bad'}[s]||'mute'}">${s}</span>`;
 function recentCard(list,isMember){
  return card('Recent invitations',list.length?`<table><thead><tr><th>Recipient</th>${isMember?'':'<th>Project(s)</th>'}<th>Sent</th><th>Status</th><th></th></tr></thead><tbody>${list.map(i=>{
   const st=invEff(i),ix=INVS.indexOf(i),exp=dleft(i.date)===null?'—':st==='Pending'?'in '+(7+dleft(i.date))+'d':st==='Expired'?'Expired':'—';
   return `<tr><td><b>${esc(i.email)}</b>${i.company?`<div class="muted sm">${esc(i.company)}</div>`:''}</td>${isMember?'':`<td>${i.projects.length?`<span class="fw sm">${esc(i.projects[0])}</span>${i.projects.length>1?`<span class="muted sm"> +${i.projects.length-1} more</span>`:''}`:'<span class="muted sm" style="font-style:italic">Ecosystem only</span>'}</td>`}<td class="muted">${dnorm(i.date)}</td><td>${invBadge(st)}${exp&&exp!=='—'&&st==='Pending'?`<div class="muted sm">Expires ${exp}</div>`:''}</td>
-  <td style="white-space:nowrap">${st==='Pending'?`<a class="btn sm g" data-act="invrowmail" data-i="${ix}" title="View email">${I('mail','sm')}</a><a class="btn sm g" data-act="invrowcopy" data-i="${ix}" title="Copy invite link">${I('copy','sm')}</a><a class="btn sm g" data-act="invresend" data-i="${ix}">Resend</a><a class="btn sm g" data-act="invrevoke" data-i="${ix}">Revoke</a>`:st==='Expired'?`<a class="btn sm" data-act="invresend" data-i="${ix}">Send again</a>`:''}</td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:26px;text-align:center">No invitations sent yet.</div>','',true).replace('class="card"','class="card mt"');
+  <td style="white-space:nowrap">${st==='Pending'?`<a class="btn sm g" data-act="invrowmail" data-i="${ix}" title="View email">${I('mail','sm')}</a><a class="btn sm g" data-act="invrowcopy" data-i="${ix}" title="Copy invite link">${I('copy','sm')}</a><a class="btn sm g" data-act="invresend" data-i="${ix}">Resend</a><a class="btn sm g" data-act="invrevoke" data-i="${ix}">Revoke</a>`:st==='Expired'?`<a class="btn sm" data-act="invresend" data-i="${ix}">Send again</a>`:st==='Awaiting approval'?`<span class="muted sm">Waiting on ${esc(i.approver||'the owner')}</span>`:''}</td></tr>`}).join('')}</tbody></table>`:'<div class="muted" style="padding:26px;text-align:center">No invitations sent yet.</div>','',true).replace('class="card"','class="card mt"');
 }
 {
  const _inv=P.invite;
@@ -4252,6 +4256,70 @@ Object.assign(ACT,{
  invrevokeok:e=>{const i=INVS[+e.dataset.v];if(!i)return;i.status='Revoked';closeModal();rerender();toast('Invitation revoked')},
  invrowcopy:e=>{const i=INVS[+e.dataset.i];if(!i)return;const u=invRowLink(i);try{navigator.clipboard.writeText(u)}catch(_){}toast('Invite link copied')}
 });
+
+/* ---------- Project invite approvals ---------- */
+/* a project that needs approval holds invitations from anyone but its owner until the owner decides */
+const gatedProjects=(role,v)=>role==='member'||!CUR?[]:(v.projects||[]).map(id=>PROJECTS.find(p=>p.id===id)).filter(p=>p&&p.needsApproval&&p.createdBy&&p.createdBy!==CUR.name);
+const visApprovals=p=>{const me=CUR?CUR.name:'',all=p.approvals||[];return (p.createdBy===me?all:all.filter(a=>a.by===me)).slice().sort((x,y)=>(y.status==='Pending')-(x.status==='Pending'))};
+function approvalsHtml(p){
+ const me=CUR?CUR.name:'',isAp=p.createdBy===me,list=visApprovals(p);
+ const note=`<div class="banner">${I('lock')}<div style="flex:1"><b>Invitations to this project need approval</b><div class="sm">${isAp?'People invited by anyone else wait here until you approve or reject them.':'Your invitations wait for '+esc(p.createdBy||'the project owner')+' to approve them. You only see your own requests.'}</div></div></div>`;
+ if(!list.length)return note+emptyState('No approval requests','When someone invites a company to this project, the request will show up here.','','');
+ const row=a=>{const who=a.company?esc(a.company)+' <span class="muted">('+esc(a.email)+')</span>':esc(a.email),rl=((INVMETA[a.role]||{}).lbl||a.role),pend=a.status==='Pending';
+  return `<div class="prs" style="align-items:flex-start;flex-wrap:wrap;gap:12px"><div class="who" style="flex:1;min-width:220px"><b>${esc(a.by)}${a.byCo?' <span class="muted fw">· '+esc(a.byCo)+'</span>':''}</b><small style="white-space:normal">is inviting <b>${who}</b> as ${esc(rl)} to this project</small><small class="muted">Requested ${dnorm(a.at)}${a.decidedBy?' · '+esc(a.status)+' by '+esc(a.decidedBy)+(a.decidedAt?' on '+dnorm(a.decidedAt):''):''}${a.note?' · “'+esc(a.note)+'”':''}</small></div>
+  ${pend&&isAp?`<span class="row" style="gap:8px"><a class="btn sm" data-act="aprvreject" data-id="${p.id}" data-v="${a.id}">${I('x','sm')} Reject</a><a class="btn sm p" data-act="aprvapprove" data-id="${p.id}" data-v="${a.id}">${I('check','sm')} Approve</a></span>`:badge(a.status)}</div>`};
+ return note+card('',list.map(row).join(''),'',true);
+}
+function aprvFind(e){const p=PROJECTS.find(x=>x.id===e.dataset.id),a=p&&(p.approvals||[]).find(x=>x.id===e.dataset.v);return p&&a&&a.status==='Pending'?[p,a]:null}
+function aprvRelease(a){
+ const inv=a.inv;if(!inv)return;
+ const sib=PROJECTS.flatMap(p=>(p.approvals||[]).filter(x=>x.inv===inv));
+ if(sib.some(x=>x.status!=='Approved'))return;
+ const tok=Math.random().toString(36).slice(2,10),v={userRole:inv.userRole,company:inv.company,email:inv.email,projects:PROJECTS.filter(p=>inv.projects.includes(p.name)).map(p=>p.id)};
+ const rec=mkInvRec(inv.role,v,false);rec.sender=a.by;rec.ws=inv.ws;
+ inviteLink(tok,rec);inv.token=tok;inv.status='Pending';inv.date=todayS();
+}
+Object.assign(ACT,{
+ aprvapprove:e=>{
+  const r=aprvFind(e);if(!r)return;const [p,a]=r;
+  if(!CUR||CUR.name!==p.createdBy){toast('Only the project owner can approve this');return}
+  a.status='Approved';a.decidedBy=CUR.name;a.decidedAt=todayS();aprvRelease(a);
+  rerender();toast('Approved. The invitation to '+(a.company||a.email)+' was sent');
+ },
+ aprvreject:e=>{
+  const r=aprvFind(e);if(!r)return;const [p,a]=r;
+  if(!CUR||CUR.name!==p.createdBy){toast('Only the project owner can reject this');return}
+  openModal(`<div class="mh"><span class="sq" style="background:var(--bad);width:34px;height:34px">${I('x','sm')}</span><div style="min-width:0"><h2 class="sh">Reject invitation</h2><div class="muted sm">${esc(a.by)} wants to invite ${esc(a.company||a.email)} to ${esc(p.name)}</div></div><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div><div class="mb"><div class="fld"><label>Reason <span class="muted fw">(optional, shared with ${esc(a.by)})</span></label><textarea class="inp" id="aprvnote" rows="3" placeholder="Why is this being rejected?"></textarea></div></div><div class="mf"><a class="btn" data-act="closeModal">Cancel</a><a class="btn p" data-act="aprvrejectok" data-id="${p.id}" data-v="${a.id}">Reject</a></div>`);
+ },
+ aprvrejectok:e=>{
+  const r=aprvFind(e);if(!r)return;const [p,a]=r;
+  if(!CUR||CUR.name!==p.createdBy)return;
+  a.status='Rejected';a.decidedBy=CUR.name;a.decidedAt=todayS();a.note=((document.getElementById('aprvnote')||{}).value||'').trim();
+  if(a.inv){a.inv.status='Rejected';PROJECTS.forEach(q=>(q.approvals||[]).forEach(x=>{if(x.inv===a.inv&&x.status==='Pending'){x.status='Cancelled';x.decidedBy=CUR.name;x.decidedAt=todayS()}}))}
+  closeModal();rerender();toast('Invitation rejected');
+ }
+});
+{
+ const _send=ACT.invsend,_qr=ACT.invqr;
+ ACT.invsend=function(e){
+  const v=F.inv,role=(v._key||'').split('/')[0],g=gatedProjects(role,v);
+  if(!g.length)return _send.call(this,e);
+  v.err={};
+  if(!invReady(v,false))return;
+  if(!(v.company||'').trim())v.err.company='Company name is required';
+  if(!vEmail(v.email))v.err.email='Enter a valid email address';
+  if(Object.keys(v.err).length){rerender();return}
+  const inv={ws:curKey(),email:v.email.trim(),company:v.company.trim(),role,userRole:v.userRole,projects:v.projects.map(id=>PROJECTS.find(p=>p.id===id).name),date:todayS(),status:'Awaiting approval',approver:[...new Set(g.map(p=>p.createdBy))].join(', ')};
+  INVS.unshift(inv);
+  g.forEach(p=>(p.approvals=p.approvals||[]).push({id:'ap'+Date.now()+Math.random().toString(36).slice(2,5),by:CUR.name,byCo:meName(),email:inv.email,company:inv.company,role,status:'Pending',at:todayS(),inv}));
+  S.notifs.unshift({t:'Your invitation to '+inv.company+' is waiting for approval from '+inv.approver,time:'Just now',un:true,go:''});
+  v.email='';v.company='';rerender();toast('Sent for approval. '+inv.approver+' will review it');
+ };
+ ACT.invqr=function(e){
+  if(gatedProjects((F.inv._key||'').split('/')[0],F.inv).length){toast('This project needs approval. Send an email invitation so the owner can approve it first');return}
+  return _qr.call(this,e);
+ };
+}
 
 /* ---------- Team: deactivate / reactivate / resend / revoke ---------- */
 function teamPage(){
