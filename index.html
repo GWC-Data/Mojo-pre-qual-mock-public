@@ -5068,18 +5068,18 @@ Object.assign(ACT,{
    Files other companies add to a project are shown on that project's Documents tab, not here. */
 {
  P.docs=function(){
-  const own=S.role==='owner',f=F.dl||(F.dl={q:''}),fs=own?'Project':(S.filter.dls||'All'),q=(f.q||'').toLowerCase();
+  const own=S.role==='owner',f=F.dl||(F.dl={q:''}),fs=own?'Project':curTab('dl','My')==='Project'?'Project':'My',q=(f.q||'').toLowerCase();
   const created=pdVisible().filter(d=>{const p=pdProj(d.proj);return pdMine(d)&&p&&p.kind==='managed'}).filter(d=>(d.n+' '+d.proj+' '+d.cat).toLowerCase().includes(q));
   const mine=own?[]:DOCS.map((d,i)=>({d,i})).filter(x=>(x.d.n+' '+x.d.t).toLowerCase().includes(q));
-  const showMine=fs==='All'||fs==='My',showProj=fs==='All'||fs==='Project';
+  const showMine=fs==='My',showProj=fs==='Project',allCreated=pdVisible().filter(d=>{const p=pdProj(d.proj);return pdMine(d)&&p&&p.kind==='managed'}).length;
   const dlb=(a,id,ic,l)=>`<a class="btn sm g" data-act="${a}" ${id} title="${l}" aria-label="${l}">${I(ic,'sm')}</a>`;
   const ic=d=>`<div class="file" style="padding:0;border:0"><div class="fi ${d.ext==='DOC'?'d':''}">${d.ext}</div></div>`;
   const myCard=card('My uploaded documents',mine.length?`<table><thead><tr><th>Document</th><th>Type</th><th>From</th><th>Expires</th><th></th></tr></thead><tbody>${mine.map(({d,i})=>`<tr><td data-label="Document"><div class="cell">${ic(d)}<b>${esc(d.n)}</b></div></td><td data-label="Type" class="muted">${esc(d.t)}</td><td data-label="From" class="muted">${docSrc(d.src)}</td><td data-label="Expires">${d.exp==='—'?'<span class="muted">—</span>':expCell(d.exp,daysTo(d.exp))}</td><td class="ta-r" style="white-space:nowrap">${dlb('docdl','data-i="'+i+'"','dl','Download')}${isAdmin()?dlb('docdel','data-i="'+i+'"','trash','Delete'):''}</td></tr>`).join('')}</tbody></table>`:`<div class="muted" style="padding:30px;text-align:center">${q?'No documents match.':'Documents you upload to your profile or a questionnaire show up here.'}</div>`,`<span class="muted sm">${mine.length} document${mine.length===1?'':'s'}</span>`,true);
   const projCard=card('Project documents',created.length?`<table><thead><tr><th>Document</th><th>Project</th><th>Category</th><th>Added</th><th></th></tr></thead><tbody>${created.map(d=>{const p=pdProj(d.proj);return `<tr><td data-label="Document"><div class="cell">${ic(d)}<b>${esc(d.n)}</b></div></td><td data-label="Project">${p?`<a class="colink" data-go="project/${p.id}?tab=docs">${esc(d.proj)}</a>`:esc(d.proj)}</td><td data-label="Category" class="muted">${esc(d.cat)}</td><td data-label="Added" class="muted">${fmtD(d.at)}</td><td class="ta-r" style="white-space:nowrap">${dlb('pddl','data-id="'+d.id+'"','dl','Download')}${pdCanDel(d)?dlb('pddel','data-id="'+d.id+'"','trash','Delete'):''}</td></tr>`}).join('')}</tbody></table>`:`<div class="muted" style="padding:30px;text-align:center">${q?'No documents match.':'Documents you add to projects you create show up here.'}</div>`,`<span class="muted sm">${created.length} document${created.length===1?'':'s'}</span>`,true);
   const acts=own?'':`<a class="btn p" data-act="upload">${I('upload','sm')} Upload document</a>`;
-  const bar=`<div class="card"><div class="toolbar tfbar"><div class="search">${I('search','sm')}<input placeholder="Search documents" aria-label="Search documents" data-bind="dl.q" data-rr="focus" value="${esc(f.q)}"></div>${own?'':`<div class="tfgroup">${fsel('Show','filter','dls',[['All','All documents'],['My','My uploaded documents'],['Project','Project documents']],fs)}</div>`}</div></div><div class="mt"></div>`;
-  return head('Document Library',own?'Documents you added to the projects you created':'Your own documents',acts)+bar+
-   [showMine&&!own?myCard:'',showMine&&showProj&&!own?'<div class="mt"></div>':'',showProj?projCard:''].join('');
+  const bar=`<div class="card"><div class="toolbar tfbar"><div class="search">${I('search','sm')}<input placeholder="Search documents" aria-label="Search documents" data-bind="dl.q" data-rr="focus" value="${esc(f.q)}"></div></div></div><div class="mt"></div>`;
+  const tb=own?'':tabs('dl',[['My','My uploaded documents',DOCS.length],['Project','Project documents',allCreated]]);
+  return head('Document Library',own?'Documents you added to the projects you created':'Your own documents',acts)+tb+bar+(showProj?projCard:myCard);
  };
 }
 
