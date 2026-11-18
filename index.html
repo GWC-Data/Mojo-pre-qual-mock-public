@@ -1605,9 +1605,9 @@ const INVS=[
 ];
 const INV_TYPES={owner:['gc','trade','member'],gc:['trade','gc','member'],trade:['trade','member'],mojo:['member']};
 const INVMETA={
- gc:{h:'Invite a General Contractor',ic:'hard',sub:'Send an email invite or generate a QR code to share in person',lbl:'General Contractor'},
- trade:{h:'Invite a Trade Subcontractor',ic:'wrench',sub:'Send an email invite or generate a QR code to share in person',lbl:'Trade'},
- member:{h:'Invite a Team Member',ic:'user',sub:'Invite a colleague to join your company on the platform',lbl:'Team member'}
+ gc:{h:'Invite a General Contractor',ic:'hard',sub:'Sent by email, with a QR code included for the recipient',lbl:'General Contractor'},
+ trade:{h:'Invite a Trade Subcontractor',ic:'wrench',sub:'Sent by email, with a QR code included for the recipient',lbl:'Trade'},
+ member:{h:'Invite a Team Member',ic:'user',sub:'Invite a colleague by email or QR code. They join as a Contributor',lbl:'Team member'}
 };
 const INVITES={
  gc:{sender:'Sarah Whitfield',company:'Lonestar General',roleLbl:'General Contractor',base:'gc',member:false,projects:['Riverside Mixed-Use'],email:'bids@lonestargeneral.com',qr:false},
@@ -1973,10 +1973,10 @@ P.invite=(arg)=>{
  if(F.inv._key!==key)F.inv={_key:key,tab:'email',email:'',company:'',userRole:'contributor',projects:pid?[pid]:[],sent:null,qr:null,qrEmail:"",qrSent:null,copied:false,err:{}};
  const v=F.inv,meta=INVMETA[role],isMember=role==='member',isNew=!isMember;
  const fields=`${isNew?`<div class="fld"><label>${role==='gc'?'GC':'Trade'} company name${reqI}</label>${bin('inv.company',role==='gc'?'Ironbridge Construction LLC':'Acme Electrical LLC',{err:v.err.company})}${ferr(v.err.company)}</div>`:''}
- ${isMember?`<div class="fld"><label>Role in your company</label><div class="rolegrid">${[['admin','Admin','Full access to all projects and company settings'],['contributor','Contributor','Access limited to assigned projects']].map(r=>`<button type="button" class="rolecard ${v.userRole===r[0]?'on':''}" data-act="fset" data-path="inv.userRole" data-v="${r[0]}"><b>${r[1]}</b><span>${r[2]}</span></button>`).join('')}</div></div>`:''}
+ ${isMember?`<div class="banner info" style="margin:0">${I('users')}<div class="sm">Everyone who joins this way starts as a <b>Contributor</b>. An admin can change their role later in <b>People</b>.</div></div>`:''}
  ${isNew?(proj?`<div class="fld"><label>Project</label><div class="lock">${I('folder','sm')} ${proj.name}<span class="muted sm ml fw">Invitation will be linked to this project</span></div></div>`
  :`<div class="fld"><label>Attach to project(s)</label><div class="picker">${PROJECTS.map(p=>`<label class="chkrow"><input type="checkbox" data-act="ftoggle" data-path="inv.projects" data-v="${p.id}" ${v.projects.includes(p.id)?'checked':''}>${p.name}</label>`).join('')}</div><small>Leave unchecked to add them to your network without connecting a project yet.</small></div>`):''}`;
- const sentBanner=v.sent?`<div class="banner ok">${I('check')}<div style="flex:1"><b>Invitation sent!</b><div class="sm">Email sent to <b>${esc(v.sent.email)}</b>, expires in 7 days</div><a class="sm fw" data-act="invemail">View email</a></div><a class="btn sm g" data-act="fset" data-path="inv.sent" data-v="">${I('x','sm')}</a></div>`:'';
+ const sentBanner=v.sent?`<div class="banner ok">${I('check')}<div style="flex:1"><b>Invitation sent!</b><div class="sm">Email sent to <b>${esc(v.sent.email)}</b>${isMember?'':', with a QR code inside'}. Expires in 7 days</div><a class="sm fw" data-act="invemail">View email</a></div><a class="btn sm g" data-act="fset" data-path="inv.sent" data-v="">${I('x','sm')}</a></div>`:'';
  const emailTab=`${sentBanner}<div class="card"><div class="bd"><div class="form1">${fields}<div class="fld"><label>Recipient email address${reqI}</label>${bin('inv.email','contractor@company.com',{type:'email',err:v.err.email,enter:'invsend'})}${ferr(v.err.email)}</div></div><div class="row mt wrap" style="justify-content:space-between"><a class="btn" data-act="back">Cancel</a><span class="row wrap" style="gap:8px"><a class="btn" data-act="invpreview">${I('eye','sm')} Preview email</a><a class="btn p" data-act="invsend" ${invReady(v,isMember)?'':'disabled aria-disabled="true" title="Fill in the required fields to send"'}>${I('send','sm')} Send invitation</a></span></div></div></div>`;
  const qrTab=`<div class="card"><div class="bd"><div class="form1">${fields}</div>${v.qr?`<div class="qrbox"><div class="qrwrap">${qrSvg(v.qr.url,200)}</div><b>${meta.h}</b><small class="muted">Scan with a phone camera to create an account and join, valid for 7 days</small><div class="muted sm" style="word-break:break-all;max-width:320px">${v.qr.url}</div><div class="row wrap" style="justify-content:center"><a class="btn" data-act="invcopy">${I(v.copied?'check':'copy','sm')} ${v.copied?'Copied!':'Copy link'}</a><a class="btn" data-act="qrpng">${I('dl','sm')} PNG</a><a class="btn" data-act="qrsvg">${I('dl','sm')} SVG</a><a class="btn" data-act="qrprint">${I('file','sm')} Print</a><a class="btn" data-act="invnewqr">${I('qr','sm')} New QR code</a></div></div>
  <hr class="invrule">
@@ -1990,9 +1990,9 @@ P.invite=(arg)=>{
  return head(meta.h,'','',bc)+
  `<div class="seg">${allowed.map(t=>`<a class="${t===role?'on':''}" data-go="invite/${t}${pid&&t!=='member'?'/'+pid:''}">${I(INVMETA[t].ic,'sm')} ${INVMETA[t].lbl}</a>`).join('')}</div>
  <hr class="invrule">
- <div class="seg" style="margin-bottom:16px">${[['email','mail','Email invite'],['qr','qr','QR code']].map(t=>`<button class="${v.tab===t[0]?'on':''}" data-act="fset" data-path="inv.tab" data-v="${t[0]}">${I(t[1],'sm')} ${t[2]}</button>`).join('')}</div>
- <div class="grid g21"><div>${v.tab==='qr'?qrTab:emailTab}</div>
- <div class="grid" style="gap:18px;align-content:start">${card('What happens next',`<div class="tl"><div><b class="sm">Invitation delivered</b><br><small class="muted">${v.tab==='qr'?'Recipient scans the QR code':'Email sent from PreQual Pro'}</small></div><div><b class="sm">Recipient accepts</b><br><small class="muted">Link is valid for 7 days</small></div><div><b class="sm">${isMember?'Joins your team':'Joins your network'}</b><br><small class="muted">${isMember?'With the role you selected':'Linked to selected projects and you are notified'}</small></div></div>`)}
+ ${isMember?`<div class="seg" style="margin-bottom:16px">${[['email','mail','Email invite'],['qr','qr','QR code']].map(t=>`<button class="${v.tab===t[0]?'on':''}" data-act="fset" data-path="inv.tab" data-v="${t[0]}">${I(t[1],'sm')} ${t[2]}</button>`).join('')}</div>`:''}
+ <div class="grid g21"><div>${isMember&&v.tab==='qr'?qrTab:emailTab}</div>
+ <div class="grid" style="gap:18px;align-content:start">${card('What happens next',`<div class="tl"><div><b class="sm">Invitation delivered</b><br><small class="muted">${isMember&&v.tab==='qr'?'Recipient scans the QR code':isMember?'Email sent from PreQual Pro':'Email sent from PreQual Pro, with a QR code inside'}</small></div><div><b class="sm">Recipient accepts</b><br><small class="muted">Link is valid for 7 days</small></div><div><b class="sm">${isMember?'Joins your team':'Joins your network'}</b><br><small class="muted">${isMember?'As a Contributor':'Linked to selected projects and you are notified'}</small></div></div>`)}
  ${isMember?'':card('Good to know',`<div class="sm muted">Invitees confirm their company name, contact and phone or email, then get straight to work. They can finish their profile later.</div>`)}</div></div>`+
  card('Recent invitations',recent.length?`<table><thead><tr><th>Recipient</th>${isMember?'':'<th>Project(s)</th>'}<th>Sent</th><th>Status</th></tr></thead><tbody>${recent.map(i=>`<tr><td><b>${esc(i.email)}</b>${i.company?`<div class="muted sm">${esc(i.company)}</div>`:''}</td>${isMember?'':`<td>${i.projects.length?`<span class="fw sm">${i.projects[0]}</span>${i.projects.length>1?`<span class="muted sm"> +${i.projects.length-1} more</span>`:''}`:'<span class="muted sm" style="font-style:italic">Ecosystem only</span>'}</td>`}<td class="muted">${dnorm(i.date)}</td><td>${ib(i.status)}</td></tr>`).join('')}</tbody></table>`:'<div class="muted" style="padding:26px;text-align:center">No invitations sent yet.</div>','',true).replace('class="card"','class="card mt"');
 };
@@ -2099,6 +2099,7 @@ P['project-new']=()=>{
  const n=F.np;
  return head('Create project','','',crumb(['Projects','projects'],['New project']))+
  card('Project details',`<div class="form"><div class="fld"><label>Project name${reqI}</label>${bin('np.name','e.g. Harbor Point Tower',{err:n.err.name})}${ferr(n.err.name)}</div><div class="fld"><label>Address</label>${bin('np.addr','Street, city, state')}</div><div class="fld"><label>Start date</label>${bin('np.start','',{type:'date'})}</div><div class="fld"><label>End date</label>${bin('np.end','',{type:'date',err:n.err.end})}${ferr(n.err.end)}</div><div class="fld full"><label>Description</label>${bta('np.desc','What is being built?',3)}</div><div class="fld full">${bchk('np.approval','This project requires approval','','When on, any invitation to this project sent by someone other than you waits for your approval before it goes out.')}</div></div>`)+
+ `<div class="mt">${card('Project documents',`<p class="sm muted" style="margin:0 0 12px">Add the documents everyone on this project should have, such as scope, drawings and safety requirements. Invited companies can see them and add their own.</p><label class="drop" style="display:block"><input type="file" multiple data-change="npdocs" style="display:none">${I('upload')}<div class="fw" style="margin-top:6px">Drop files or click to browse</div><small>PDF, Word, drawings, images, CSV. You can add more later from the project.</small></label>${(n.docs||[]).length?`<div style="display:grid;gap:8px;margin-top:12px">${n.docs.map((d,i)=>`<div class="file row-card"><div class="fi ${d.ext==='DOC'?'d':''}">${d.ext}</div><div style="min-width:0;flex:1"><b class="sm">${esc(d.n)}</b><div class="muted sm">${fmtSize(d.size)}</div></div><a class="btn sm g" data-act="npdocdel" data-i="${i}" aria-label="Remove ${esc(d.n)}">${I('x','sm')}</a></div>`).join('')}</div>`:''}`)}</div>`+
  `<div class="row mt" style="justify-content:flex-end"><a class="btn" data-go="projects">Cancel</a><a class="btn p" data-act="npsave">Create project</a></div>`;
 };
 
@@ -2845,7 +2846,8 @@ Object.assign(ACT,{
   if(n.start&&n.end&&n.end<n.start)n.err.end='End date must be after the start date';
   if(Object.keys(n.err).length){rerender();return}
   PROJECTS.unshift({id:'p'+Date.now(),name:n.name.trim(),addr:n.addr||'—',start:fmtD(n.start),end:fmtD(n.end),status:'Planning',gc:S.role!=='owner'?meName():'Unassigned',trades:0,pend:0,pct:0,kind:'managed',needsApproval:!!n.approval,createdBy:CUR?CUR.name:'',approvals:[]});
-  F.np=null;toast('Project created');go('projects');
+  (n.docs||[]).forEach(d=>PDOCS.unshift({id:'pd'+Date.now()+Math.random().toString(36).slice(2,5),proj:n.name.trim(),n:d.n,cat:d.cat||'Other',size:fmtSize(d.size),ext:d.ext,by:CUR?CUR.name:'',byCo:meName(),byRole:S.role==='owner'?'Project owner':pdRoleOf(),kind:'project',at:isoD(new Date())}));
+  F.np=null;toast('Project created'+((n.docs||[]).length?' with '+n.docs.length+' document'+(n.docs.length===1?'':'s'):''));go('projects');
  },
  editproject:e=>{
   const p=PROJECTS.find(x=>x.id===e.dataset.id);F.ep={id:p.id,name:p.name,addr:p.addr};
@@ -3470,7 +3472,7 @@ P.project=(id)=>{
  if(t==='people'){
   const groups=[];ppl.forEach(x=>{let g=groups.find(y=>y.co===x.co);if(!g){g={co:x.co,l:[]};groups.push(g)}g.l.push(x)});
   const nk=TRADES.filter(x=>x.proj.includes(p.name)).length,more=!isT&&p.trades>nk;
-  body=`<div class="pbar2">${isT?'':`<a class="btn sm" data-act="addTrade" data-id="${p.id}">${I('plus','sm')} Add existing trade</a><a class="btn sm" data-act="projqr" data-id="${p.id}">${I('qr','sm')} QR invite</a>`}${groups.length>1?`<span class="ml row" style="gap:var(--space-md)"><a class="lnk" role="button" tabindex="0" data-act="pdexp" data-v="1">Expand all</a><a class="lnk" role="button" tabindex="0" data-act="pdexp" data-v="0">Collapse all</a></span>`:''}</div>`+
+  body=`<div class="pbar2">${isT?'':`<a class="btn sm" data-act="addTrade" data-id="${p.id}">${I('plus','sm')} Add existing trade</a>`}${groups.length>1?`<span class="ml row" style="gap:var(--space-md)"><a class="lnk" role="button" tabindex="0" data-act="pdexp" data-v="1">Expand all</a><a class="lnk" role="button" tabindex="0" data-act="pdexp" data-v="0">Collapse all</a></span>`:''}</div>`+
   (groups.length?groups.map((g,gi)=>`<details class="card team-co" ${gi<3?'open':''}><summary class="ghd">${avt(g.co)}<div class="gtx"><b>${coLink(g.co)}</b><span class="muted sm">${g.co===me?'Your company':coType(g.co)} · ${g.l.length} ${g.l.length===1?'person':'people'}</span></div>${canRemoveFromProject(p,g.co)?`<a class="lnk rm" role="button" tabindex="0" data-act="projremove" data-id="${p.id}" data-v="${esc(g.co)}">Remove</a>`:''}<span class="gch">${I('down','sm')}</span></summary>${g.l.map(x=>`<div class="prs"><a data-act="person" data-v="${esc(x.n+'|'+x.co)}" style="cursor:pointer">${pav(x.n,34)}</a><div class="who"><b>${esc(x.n)}</b><small>${esc(x.title||'')}</small></div><span class="muted sm">${esc(x.role)}</span><a class="btn sm g" data-act="mailto" data-v="${esc(x.n)}" title="Email ${esc(x.n)}" aria-label="Email ${esc(x.n)}">${I('mail','sm')}</a></div>`).join('')}</details>`).join(''):emptyState('Nobody assigned yet','Invite a GC or trade to build the project team.','invite/trade/'+p.id,'Invite'))+
   (more?`<p class="muted sm" style="text-align:center">${p.trades-nk} more trade(s) on this project aren't in your network yet.</p>`:'');
  }
@@ -4520,12 +4522,12 @@ function showInvMail(ctx){
  const row=(k,v)=>`<div style="display:flex;gap:10px;font-size:13px;padding:2px 0"><span class="muted" style="width:56px">${k}</span><span>${v}</span></div>`;
  const subject=rec.member?`${sender} invited you to join ${myCo} on PreQual Pro`:`${sender} invited ${rec.company?rec.company:'you'} to PreQual Pro${projs.length?' — '+projs[0]:''}`;
  const what=rec.member
-  ?`<b>${esc(sender)}</b> has invited you to join <b>${esc(myCo)}</b> on PreQual Pro as ${rec.userRole==='admin'?'an <b>Admin</b>':'a <b>Contributor</b>'}.`
+  ?`<b>${esc(sender)}</b> has invited you to join <b>${esc(myCo)}</b> on PreQual Pro as ${rec.base==='mojo'?'a <b>Mojo Admin</b>':rec.userRole==='admin'?'an <b>Admin</b>':'a <b>Contributor</b>'}.`
   :`<b>${esc(sender)}</b> from <b>${esc(myCo)}</b> has invited ${rec.company?'<b>'+esc(rec.company)+'</b>':'you'} to join PreQual Pro as a <b>${esc(rec.roleLbl)}</b>${projs.length?`, linked to <b>${projs.map(esc).join(', ')}</b>`:''}.`;
- const hint=rec.member?(rec.userRole==='admin'?'Admins can edit the Organization profile and manage the team.':'Contributors work on the projects and questionnaires they are assigned to.'):'Create an account to complete your company profile and upload your insurance, safety and compliance documents.';
- const qrMode=!!rec.qr; /* email invite = login link only; QR invite = mail that carries the QR code */
- const qr=qrMode?(pre?`<div style="border:1.5px dashed var(--border2);border-radius:12px;padding:16px;text-align:center;color:var(--muted);margin:18px 0 4px"><div style="display:grid;place-items:center">${I('qr')}</div><div class="sm" style="margin-top:6px">A QR code for this invitation is added when you send it.</div></div>`
-   :`<div style="text-align:center;margin:18px 0 4px"><div style="display:inline-block;background:var(--color-qr-paper);border:1px solid var(--border);border-radius:12px;padding:10px">${qrSvg(link,150)}</div><div class="sm muted" style="margin-top:6px">On your phone? Scan to open the invitation.</div></div>`):'';
+ const hint=rec.member?(rec.base==='mojo'?'Mojo admins manage companies, the review queue and the question bank, and can add other Mojo admins.':rec.userRole==='admin'?'Admins can edit the Organization profile and manage the team.':'Contributors work on the projects and questionnaires they are assigned to.'):'Create an account to complete your company profile and upload your insurance, safety and compliance documents.';
+ const qrMode=!!rec.qr,showQr=qrMode||!rec.member; /* team email = login link only; QR invite and every GC/trade email carry the QR code */
+ const qr=showQr?(pre?`<div style="border:1.5px dashed var(--border2);border-radius:12px;padding:16px;text-align:center;color:var(--muted);margin:18px 0 4px"><div style="display:grid;place-items:center">${I('qr')}</div><div class="sm" style="margin-top:6px">A QR code for this invitation is added when you send it.</div></div>`
+   :`<div style="text-align:center;margin:18px 0 4px"><div style="display:inline-block;background:var(--color-qr-paper);border:1px solid var(--border);border-radius:12px;padding:10px">${qrSvg(link,150)}</div><div class="sm muted" style="margin-top:6px">On your phone or on site? Scan to open the invitation.</div></div>`):'';
  openModal(`<div class="mh"><span class="tav" style="background:${pre?'var(--brand)':'var(--ok)'}">${I(pre?'eye':'check','sm')}</span><div><h2 class="sh">${pre?'Email preview':'Invitation email'}</h2><div class="muted sm">${pre?'Nothing has been sent yet':'Sent to '+esc(to)}</div></div><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div>
  <div class="mb"><div class="muted sm" style="margin-bottom:10px">This is a mockup for reference — it is what <b>${esc(to)}</b> receives:</div>
  <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden">
@@ -4923,6 +4925,179 @@ Object.assign(ACT,{
   }));
   return M;
  };
+}
+
+
+/* ============ v19, MOJO ADMINS: create and manage several Mojo admins ============ */
+/* every Mojo admin has the same access. The list is the Mojo Platform workspace team. */
+const maTeam=()=>wsData('m1').TEAM;
+const maSt=m=>m.st||'Active';
+const maActive=()=>maTeam().filter(m=>maSt(m)==='Active');
+const maSelf=m=>!!CUR&&(m.e||'').toLowerCase()===CUR.email.toLowerCase();
+const maProt=m=>maSelf(m)||(maSt(m)==='Active'&&maActive().length<=1);
+const maFind=e=>maTeam().find(x=>(x.e||'').toLowerCase()===String(e.dataset.v||'').toLowerCase());
+const maLog=msg=>ACTIVITY.unshift({t:nowStamp(),cat:'Team',actor:CUR?CUR.name:MOJO_ACTOR,co:'Mojo Platform',msg});
+const maRec=m=>({userRole:'admin',sender:CUR?CUR.name:MOJO_ACTOR,company:'Mojo Platform',roleLbl:'Mojo Admin',base:'mojo',member:true,projects:[],email:m.e,qr:false,ws:'m1'});
+function maInv(m){
+ let i=INVS.find(x=>x.ws==='m1'&&x.role==='member'&&(x.email||'').toLowerCase()===m.e.toLowerCase()&&x.status!=='Revoked'&&x.status!=='Accepted');
+ if(!i){i={ws:'m1',email:m.e,company:'',role:'member',userRole:'admin',projects:[],date:todayS(),status:'Pending'};INVS.unshift(i)}
+ if(!i.token)i.token=Math.random().toString(36).slice(2,10);
+ return i;
+}
+const maLink=m=>inviteLink(maInv(m).token,maRec(m));
+P['mojo-admins']=()=>{
+ const T=maTeam(),n=s=>T.filter(m=>maSt(m)===s).length,ord={Active:0,Invited:1,Inactive:2};
+ const rows=T.slice().sort((a,b)=>(ord[maSt(a)]-ord[maSt(b)])||a.n.localeCompare(b.n));
+ const act=m=>{
+  const st=maSt(m),ee=esc(m.e),b=(a,ic,l,cls='g')=>`<a class="btn sm ${cls}" data-act="${a}" data-v="${ee}" title="${l}" aria-label="${l} ${esc(m.n)}">${I(ic,'sm')}${cls==='g'?'':' '+l}</a>`;
+  if(maProt(m))return b('maedit','edit','Edit')+`<span class="muted sm" title="${maSelf(m)?"You can't remove or deactivate yourself":'Mojo needs at least one active admin'}" style="padding:0 6px">${I('lock','sm')}</span>`;
+  return st==='Invited'?b('mamail','mail','View invitation email')+b('macopy','copy','Copy invite link')+b('maresend','send','Resend invitation')+b('maedit','edit','Edit')+b('maremove','trash','Remove')
+   :st==='Inactive'?b('mareact','check','Reactivate','')+b('maedit','edit','Edit')+b('maremove','trash','Remove')
+   :b('maedit','edit','Edit')+b('madeact','lock','Deactivate')+b('maremove','trash','Remove');
+ };
+ return head('Mojo Admins','Everyone listed here is a full Mojo admin with the same access to companies, reviews and the question bank.',`<a class="btn p" data-act="maadd">${I('plus','sm')} Add Mojo admin</a>`)+
+ `<div class="sumline"><span><b>${n('Active')}</b> active</span>${n('Invited')?`<span class="muted">${n('Invited')} invited</span>`:''}${n('Inactive')?`<span class="muted">${n('Inactive')} inactive</span>`:''}</div>`+
+ card('',`<table><thead><tr><th>Admin</th><th>Status</th><th>Last active</th><th></th></tr></thead><tbody>${rows.map(m=>{const st=maSt(m);return `<tr style="${st==='Inactive'?'opacity:.65':''}"><td data-label="Admin"><div class="cell">${pav(m.n,34)}<div><b>${esc(m.n)}${maSelf(m)?' <span class="b mute nodot">You</span>':''}</b><small>${esc(m.e)}</small></div></div></td><td data-label="Status">${badge(st)}</td><td data-label="Last active" class="muted">${esc(m.last||'—')}</td><td data-label="Actions" class="ta-r" style="white-space:nowrap"><div class="row" style="gap:4px;justify-content:flex-end">${act(m)}</div></td></tr>`}).join('')}</tbody></table>`,'',true)+
+ `<p class="muted sm" style="margin-top:12px">Every Mojo admin can add and manage other Mojo admins. The platform always keeps at least one active admin.</p>`;
+};
+function maModal(){
+ const f=F.mad;if(!f)return;const add=f.mode==='add';
+ openModal(`<div class="mh"><span class="sq" style="background:var(--brand);width:34px;height:34px">${I(add?'plus':'edit','sm')}</span><div style="min-width:0"><h2 class="sh">${add?'Add Mojo admin':'Edit Mojo admin'}</h2><div class="muted sm">${add?'They get an email invitation and join with full Mojo admin access.':esc(f.orig)}</div></div><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div>
+ <div class="mb"><div style="display:grid;gap:14px"><div class="fld"><label>Full name${reqI}</label>${bin('mad.name','e.g. Jamie Rivera')}</div>
+ <div class="fld"><label>Email${reqI}</label>${f.locked?`<input class="inp" value="${esc(f.email)}" disabled><small>Email can't be changed once the person has joined.</small>`:bin('mad.email','name@mojo-platform.com',{type:'email'})}</div>
+ <p class="ferr" id="maerr"></p></div></div>
+ <div class="mf"><a class="btn" data-act="closeModal">Cancel</a><a class="btn p" data-act="masave">${add?'Add and send invitation':'Save changes'}</a></div>`);
+}
+Object.assign(ACT,{
+ maadd:()=>{if(S.role!=='mojo')return;F.mad={mode:'add',name:'',email:'',locked:false};maModal()},
+ maedit:e=>{const m=maFind(e);if(!m)return;F.mad={mode:'edit',orig:m.e,name:m.n,email:m.e,locked:maSt(m)!=='Invited'};maModal()},
+ masave:()=>{
+  const f=F.mad;if(!f)return;const err=t=>{const el=$('#maerr');if(el)el.textContent=t};
+  const name=(f.name||'').trim(),email=(f.email||'').trim().toLowerCase(),T=maTeam();
+  if(!name){err('Full name is required');return}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){err('Enter a valid email address');return}
+  if(f.mode==='add'){
+   if(T.some(x=>(x.e||'').toLowerCase()===email)||ACCOUNTS[email]){err('A user with this email already exists');return}
+   const m={n:name,e:email,r:'Admin',st:'Invited',last:'—'};T.push(m);
+   const link=maLink(m);maLog('Added Mojo admin '+name+' ('+email+') and sent an invitation');
+   F.mad=null;closeModal();rerender();showInvMail({rec:maRec(m),link,to:email,pre:false});toast('Mojo admin added, invitation sent');return;
+  }
+  const m=T.find(x=>(x.e||'').toLowerCase()===(f.orig||'').toLowerCase());if(!m)return;
+  if(!f.locked&&email!==f.orig.toLowerCase()&&(T.some(x=>x!==m&&(x.e||'').toLowerCase()===email)||ACCOUNTS[email])){err('A user with this email already exists');return}
+  const oldE=m.e;m.n=name;if(!f.locked)m.e=email;
+  if(ACCOUNTS[m.e])ACCOUNTS[m.e].name=name;
+  const iv=INVS.find(x=>x.ws==='m1'&&x.role==='member'&&(x.email||'').toLowerCase()===oldE.toLowerCase()&&x.status==='Pending');if(iv)iv.email=m.e;
+  maLog('Updated Mojo admin '+name);F.mad=null;closeModal();rerender();toast('Mojo admin updated');
+ },
+ madeact:e=>{const m=maFind(e);if(!m||maProt(m))return;confirmBox('Deactivate Mojo admin',`<b>${esc(m.n)}</b> will lose Mojo admin access but keeps their account. You can reactivate them any time.`,'madeactok',m.e,'Deactivate')},
+ madeactok:e=>{const m=maFind(e);if(!m||maProt(m))return;m.st='Inactive';m.last='Deactivated '+shortDate();maLog('Deactivated Mojo admin '+m.n);closeModal();rerender();toast(m.n+' deactivated')},
+ mareact:e=>{const m=maFind(e);if(!m)return;m.st='Active';m.last='Reactivated '+shortDate();maLog('Reactivated Mojo admin '+m.n);rerender();toast(m.n+' reactivated')},
+ maremove:e=>{const m=maFind(e);if(!m||maProt(m))return;confirmBox('Remove Mojo admin',`Remove <b>${esc(m.n)}</b> as a Mojo admin? They lose access to the Mojo workspace. Reviews they completed stay in the history.`,'maremoveok',m.e,'Remove')},
+ maremoveok:e=>{
+  const T=maTeam(),i=T.findIndex(x=>(x.e||'').toLowerCase()===String(e.dataset.v||'').toLowerCase());if(i<0||maProt(T[i]))return;
+  const m=T.splice(i,1)[0];
+  INVS.forEach(x=>{if(x.ws==='m1'&&x.role==='member'&&(x.email||'').toLowerCase()===m.e.toLowerCase()&&x.status==='Pending')x.status='Revoked'});
+  const a=ACCOUNTS[m.e];if(a){a.memberships=a.memberships.filter(x=>x.ws!=='m1');if(!a.memberships.length)delete ACCOUNTS[m.e]}
+  maLog('Removed Mojo admin '+m.n);closeModal();rerender();toast(m.n+' removed');
+ },
+ maresend:e=>{const m=maFind(e);if(!m)return;const i=maInv(m);i.status='Pending';i.date=todayS();m.last='Re-sent '+shortDate();maLog('Resent invitation to '+m.e);rerender();toast('Invitation re-sent to '+m.e)},
+ macopy:e=>{const m=maFind(e);if(!m)return;try{navigator.clipboard.writeText(maLink(m))}catch(_){}toast('Invite link copied')},
+ mamail:e=>{const m=maFind(e);if(!m)return;showInvMail({rec:maRec(m),link:maLink(m),to:m.e,pre:false})}
+});
+NAV.mojo.splice(NAV.mojo.findIndex(n=>n[0]==='mojo-activity'),0,['mojo-admins','Mojo Admins','users']);
+
+/* ============ v19, PROJECT DOCUMENTS: the owner adds them at creation, invited companies add theirs ============ */
+const PDCATS=['Scope & specifications','Drawings','Safety requirements','Insurance & compliance','Site logistics','Other'];
+const PDOCS=[
+ {id:'pd1',proj:'Harbor Point Tower',n:'Harbor Point Scope & Specifications.pdf',cat:'Scope & specifications',size:'4.6 MB',ext:'PDF',by:'Sarah Whitfield',byCo:'Meridian Development',byRole:'Project owner',kind:'project',at:dAgo(58)},
+ {id:'pd2',proj:'Harbor Point Tower',n:'Site Logistics & Access Plan.pdf',cat:'Site logistics',size:'1.9 MB',ext:'PDF',by:'Sarah Whitfield',byCo:'Meridian Development',byRole:'Project owner',kind:'project',at:dAgo(58)},
+ {id:'pd3',proj:'Harbor Point Tower',n:'Owner Safety Requirements v3.pdf',cat:'Safety requirements',size:'820 KB',ext:'PDF',by:'Marcus Lee',byCo:'Meridian Development',byRole:'Project owner',kind:'project',at:dAgo(41)},
+ {id:'pd4',proj:'Harbor Point Tower',n:'Ironbridge Site Safety Plan, Harbor Point.pdf',cat:'Safety requirements',size:'2.4 MB',ext:'PDF',by:'Daniel Ortiz',byCo:'Ironbridge Construction',byRole:'General contractor',kind:'participant',at:dAgo(30)},
+ {id:'pd5',proj:'Harbor Point Tower',n:'Apex Electrical Certificate of Insurance.pdf',cat:'Insurance & compliance',size:'396 KB',ext:'PDF',by:'Priya Raman',byCo:'Apex Electrical',byRole:'Trade',kind:'participant',at:dAgo(12)},
+ {id:'pd6',proj:'Eastgate Distribution Center',n:'Eastgate Civil Drawings Set.pdf',cat:'Drawings',size:'12.8 MB',ext:'PDF',by:'Sarah Whitfield',byCo:'Meridian Development',byRole:'Project owner',kind:'project',at:dAgo(70)},
+ {id:'pd7',proj:'Eastgate Distribution Center',n:'Eastgate Safety Requirements.pdf',cat:'Safety requirements',size:'640 KB',ext:'PDF',by:'Sarah Whitfield',byCo:'Meridian Development',byRole:'Project owner',kind:'project',at:dAgo(70)},
+ {id:'pd8',proj:'Medical Plaza Renovation',n:'Infection Control Risk Assessment.pdf',cat:'Safety requirements',size:'1.2 MB',ext:'PDF',by:'Sarah Whitfield',byCo:'Meridian Development',byRole:'Project owner',kind:'project',at:dAgo(46)},
+ {id:'pd9',proj:'Medical Plaza Renovation',n:'Medical Plaza Scope of Work.docx',cat:'Scope & specifications',size:'210 KB',ext:'DOC',by:'Sarah Whitfield',byCo:'Meridian Development',byRole:'Project owner',kind:'project',at:dAgo(46)},
+ {id:'pd10',proj:'Pasadena Refinery Turnaround',n:'Turnaround Scope Package.pdf',cat:'Scope & specifications',size:'5.1 MB',ext:'PDF',by:'Daniel Ortiz',byCo:'Ironbridge Industrial',byRole:'Project owner',kind:'project',at:dAgo(33)},
+ {id:'pd11',proj:'Pasadena Refinery Turnaround',n:'Hot Work Permit Procedure.pdf',cat:'Safety requirements',size:'430 KB',ext:'PDF',by:'Daniel Ortiz',byCo:'Ironbridge Industrial',byRole:'Project owner',kind:'project',at:dAgo(33)},
+ {id:'pd12',proj:'Westside Clinic Expansion',n:'Clinic Expansion Specifications.pdf',cat:'Scope & specifications',size:'3.3 MB',ext:'PDF',by:'Hannah Cole',byCo:'Meridian Healthcare Realty',byRole:'Project owner',kind:'project',at:dAgo(52)}
+];
+const pdVisible=()=>PDOCS.filter(d=>PROJECTS.some(p=>p.name===d.proj));
+const pdMine=d=>d.byCo===meName();
+const pdProj=n=>PROJECTS.find(p=>p.name===n);
+const pdCanDel=d=>!!CUR&&pdMine(d)&&(isAdmin()||d.by===CUR.name);
+const pdRoleOf=()=>S.role==='owner'?'Project owner':S.role==='gc'?'General contractor':'Trade';
+function pdRow(d,o={}){
+ const p=pdProj(d.proj),qs=ASSIGN.filter(a=>a.co===meName()&&a.proj===d.proj).map(a=>a.q);
+ return `<tr><td data-label="Document"><div class="cell"><div class="file" style="padding:0;border:0"><div class="fi ${d.ext==='DOC'?'d':''}">${d.ext}</div></div><div><b>${esc(d.n)}</b><small class="muted">${esc(d.cat)} · ${esc(d.size)}</small></div></div></td>`+
+  (o.proj?`<td data-label="Project">${p?`<a class="colink" data-go="project/${p.id}?tab=docs">${esc(d.proj)}</a>`:esc(d.proj)}${o.q&&qs.length?`<div class="muted sm">Questionnaire${qs.length>1?'s':''}: ${esc(qs.join(', '))}</div>`:''}</td>`:'')+
+  `<td data-label="Uploaded by"><div class="sm"><b>${esc(d.by)}</b></div><div class="muted sm">${esc(d.byCo)} · ${esc(d.byRole)}</div></td><td data-label="Added" class="muted">${fmtD(d.at)}</td><td class="ta-r" style="white-space:nowrap"><a class="btn sm g" data-act="pddl" data-id="${d.id}" title="Download" aria-label="Download ${esc(d.n)}">${I('dl','sm')}</a>${pdCanDel(d)?`<a class="btn sm g" data-act="pddel" data-id="${d.id}" title="Delete" aria-label="Delete ${esc(d.n)}">${I('trash','sm')}</a>`:''}</td></tr>`;
+}
+const pdTable=(list,o)=>`<table><thead><tr><th>Document</th>${o.proj?'<th>Project</th>':''}<th>Uploaded by</th><th>Added</th><th></th></tr></thead><tbody>${list.map(d=>pdRow(d,o)).join('')}</tbody></table>`;
+function pdModal(){
+ const f=F.pdu;if(!f)return;const p=f.pid&&PROJECTS.find(x=>x.id===f.pid);
+ openModal(`<div class="mh"><h2 class="sh">Upload project document</h2><a class="btn g sm ml" data-act="closeModal">${I('x')}</a></div><div class="mb"><div style="display:grid;gap:14px">
+ ${f.fixed&&p?`<div class="fld"><label>Project</label><div class="lock">${I('folder','sm')} ${esc(p.name)}</div></div>`:`<div class="fld"><label>Project${reqI}</label>${bsel('pdu.pid',[['','Choose a project'],...PROJECTS.map(x=>[x.id,x.name])])}</div>`}
+ <label class="drop" style="display:block"><input type="file" data-change="pdfile" style="display:none">${I('upload')}<div class="fw" id="pdname" style="margin-top:6px">${f.file?esc(f.file):'Drop a file or click to browse'}</div><small>PDF, Word, drawings, images, CSV</small></label>
+ <div class="fld"><label>Category</label>${bsel('pdu.cat',PDCATS.map(x=>[x,x]))}</div>
+ <p class="muted sm" style="margin:0">Everyone on the project can see and download this document.</p><p class="ferr" id="pderr"></p></div></div>
+ <div class="mf"><a class="btn" data-act="closeModal">Cancel</a><a class="btn p" data-act="pdsave">Upload</a></div>`);
+}
+Object.assign(ACT,{
+ pdupload:e=>{if(!can('docs.upload'))return;if(!PROJECTS.length){toast('Create or join a project first');return}const pid=e.dataset.pid||'';F.pdu={pid,fixed:!!pid,file:'',size:0,cat:'Scope & specifications'};pdModal()},
+ pdfile:t=>{const f=t.files&&t.files[0];if(f){F.pdu.file=f.name;F.pdu.size=f.size;document.getElementById('pdname').textContent=f.name;document.getElementById('pderr').textContent=''}},
+ pdsave:()=>{
+  const f=F.pdu,er=m=>{document.getElementById('pderr').textContent=m};if(!f)return;
+  const p=PROJECTS.find(x=>x.id===f.pid);
+  if(!p){er('Choose a project');return}
+  if(!f.file){er('Choose a file to upload');return}
+  PDOCS.unshift({id:'pd'+Date.now(),proj:p.name,n:f.file,cat:f.cat,size:fmtSize(f.size),ext:extOf(f.file),by:CUR?CUR.name:'',byCo:meName(),byRole:p.kind==='managed'?'Project owner':pdRoleOf(),kind:p.kind==='managed'?'project':'participant',at:isoD(new Date())});
+  S.notifs.unshift({t:'You added "'+f.file+'" to '+p.name,time:'Just now',un:false,go:'project/'+p.id+'?tab=docs'});
+  F.pdu=null;closeModal();rerender();toast('Document added to '+p.name);
+ },
+ pddl:e=>{const d=PDOCS.find(x=>x.id===e.dataset.id);if(!d)return;dl(d.n+'.txt','Sample download for "'+d.n+'" ('+d.cat+', '+d.proj+'). This is a UI mockup — no real file is stored.','text/plain');toast('Downloading '+d.n)},
+ pddel:e=>{const d=PDOCS.find(x=>x.id===e.dataset.id);if(d&&pdCanDel(d))confirmBox('Delete project document',`Delete <b>${esc(d.n)}</b> from <b>${esc(d.proj)}</b>? Everyone on the project loses access to it.`,'pddelok',d.id)},
+ pddelok:e=>{const i=PDOCS.findIndex(x=>x.id===e.dataset.v);if(i>=0)PDOCS.splice(i,1);closeModal();rerender();toast('Document deleted')},
+ npdocs:t=>{const n=F.np;if(!n)return;n.docs=n.docs||[];[...(t.files||[])].forEach(f=>n.docs.push({n:f.name,size:f.size,ext:extOf(f.name),cat:'Scope & specifications'}));rerender()},
+ npdocdel:e=>{const n=F.np;if(n&&n.docs){n.docs.splice(+e.dataset.i,1);rerender()}}
+});
+
+/* Document Library = the current user's own library.
+   My uploaded documents: profile and questionnaire files they uploaded.
+   Project documents: files they added to projects they created (owners only see this).
+   Files other companies add to a project are shown on that project's Documents tab, not here. */
+{
+ P.docs=function(){
+  const own=S.role==='owner',f=F.dl||(F.dl={q:''}),fs=own?'Project':(S.filter.dls||'All'),q=(f.q||'').toLowerCase();
+  const created=pdVisible().filter(d=>{const p=pdProj(d.proj);return pdMine(d)&&p&&p.kind==='managed'}).filter(d=>(d.n+' '+d.proj+' '+d.cat).toLowerCase().includes(q));
+  const mine=own?[]:DOCS.map((d,i)=>({d,i})).filter(x=>(x.d.n+' '+x.d.t).toLowerCase().includes(q));
+  const showMine=fs==='All'||fs==='My',showProj=fs==='All'||fs==='Project';
+  const dlb=(a,id,ic,l)=>`<a class="btn sm g" data-act="${a}" ${id} title="${l}" aria-label="${l}">${I(ic,'sm')}</a>`;
+  const ic=d=>`<div class="file" style="padding:0;border:0"><div class="fi ${d.ext==='DOC'?'d':''}">${d.ext}</div></div>`;
+  const myCard=card('My uploaded documents',mine.length?`<table><thead><tr><th>Document</th><th>Type</th><th>From</th><th>Expires</th><th></th></tr></thead><tbody>${mine.map(({d,i})=>`<tr><td data-label="Document"><div class="cell">${ic(d)}<b>${esc(d.n)}</b></div></td><td data-label="Type" class="muted">${esc(d.t)}</td><td data-label="From" class="muted">${docSrc(d.src)}</td><td data-label="Expires">${d.exp==='—'?'<span class="muted">—</span>':expCell(d.exp,daysTo(d.exp))}</td><td class="ta-r" style="white-space:nowrap">${dlb('docdl','data-i="'+i+'"','dl','Download')}${isAdmin()?dlb('docdel','data-i="'+i+'"','trash','Delete'):''}</td></tr>`).join('')}</tbody></table>`:`<div class="muted" style="padding:30px;text-align:center">${q?'No documents match.':'Documents you upload to your profile or a questionnaire show up here.'}</div>`,`<span class="muted sm">${mine.length} document${mine.length===1?'':'s'}</span>`,true);
+  const projCard=card('Project documents',created.length?`<table><thead><tr><th>Document</th><th>Project</th><th>Category</th><th>Added</th><th></th></tr></thead><tbody>${created.map(d=>{const p=pdProj(d.proj);return `<tr><td data-label="Document"><div class="cell">${ic(d)}<b>${esc(d.n)}</b></div></td><td data-label="Project">${p?`<a class="colink" data-go="project/${p.id}?tab=docs">${esc(d.proj)}</a>`:esc(d.proj)}</td><td data-label="Category" class="muted">${esc(d.cat)}</td><td data-label="Added" class="muted">${fmtD(d.at)}</td><td class="ta-r" style="white-space:nowrap">${dlb('pddl','data-id="'+d.id+'"','dl','Download')}${pdCanDel(d)?dlb('pddel','data-id="'+d.id+'"','trash','Delete'):''}</td></tr>`}).join('')}</tbody></table>`:`<div class="muted" style="padding:30px;text-align:center">${q?'No documents match.':'Documents you add to projects you create show up here.'}</div>`,`<span class="muted sm">${created.length} document${created.length===1?'':'s'}</span>`,true);
+  const acts=own?'':`<a class="btn p" data-act="upload">${I('upload','sm')} Upload document</a>`;
+  const bar=`<div class="card"><div class="toolbar tfbar"><div class="search">${I('search','sm')}<input placeholder="Search documents" aria-label="Search documents" data-bind="dl.q" data-rr="focus" value="${esc(f.q)}"></div>${own?'':`<div class="tfgroup">${fsel('Show','filter','dls',[['All','All documents'],['My','My uploaded documents'],['Project','Project documents']],fs)}</div>`}</div></div><div class="mt"></div>`;
+  return head('Document Library',own?'Documents you added to the projects you created':'Your own documents',acts)+bar+
+   [showMine&&!own?myCard:'',showMine&&showProj&&!own?'<div class="mt"></div>':'',showProj?projCard:''].join('');
+ };
+}
+
+/* Project page: Documents tab */
+{
+ const _pj=P.project;
+ P.project=function(id){
+  const h=_pj(id),p=PROJECTS.find(x=>x.id===id);if(!p||!/data-k="pd"/.test(h))return h;
+  const on=S.tab.pd==='docs',list=PDOCS.filter(d=>d.proj===p.name),own=list.filter(d=>d.kind==='project'),oth=list.filter(d=>d.kind!=='project');
+  const btn=`<button class="${on?'on':''}" data-act="tab" data-k="pd" data-v="docs">Documents<span class="n">${list.length}</span></button>`;
+  const out=h.replace(/<button class="(?:on)?" data-act="tab" data-k="pd" data-v="activity">/,m=>btn+(on?m.replace('class="on"','class=""'):m));
+  if(!on)return out;
+  const empty=m=>`<div class="muted" style="padding:30px;text-align:center">${m}</div>`;
+  return out+`<div class="pbar2">${can('docs.upload')?`<a class="btn sm p" data-act="pdupload" data-pid="${p.id}">${I('upload','sm')} Upload document</a>`:''}<span class="muted sm ml">Added by the project owner and by every company invited to this project</span></div>`+
+   card('Project documents',own.length?pdTable(own,{}):empty('The project owner has not added any documents yet.'),`<span class="muted sm">${own.length}</span>`,true)+
+   `<div class="mt">${card('Uploaded by invited companies',oth.length?pdTable(oth,{}):empty('No one has uploaded a document to this project yet.'),`<span class="muted sm">${oth.length}</span>`,true)}</div>`;
+ };
+ TABLBL.pd=Object.assign(TABLBL.pd||{},{docs:'Documents'});
 }
 
 applyTheme();
